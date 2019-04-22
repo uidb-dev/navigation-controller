@@ -3,15 +3,18 @@
   "version": "1.0.0",
   "description": "Navigator for Cordova with React.js, This will help you to manage your pages history in the app and change pages with animation.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/orchoban/navigator-cordova-react_js.git"
   },
   "keywords": [
-    "navigator-cordova-react_js"
+    "navigator-cordova-react_js",
+    "manage-pages",
+    "historyPages",
+    "Cordova",
+    "PhoneGap",
+    "jqm",
+    "back-button-android"
   ],
   "author": "Or Choban",
   "license": "ISC",
