@@ -1,6 +1,6 @@
 {
   "name": "navigator-cordova-reactjs",
-  "version": "1.0.1",
+  "version": "1.0.5",
   "description": "Navigator for Cordova with React.js, This will help you to manage your pages history in the app and change pages with animation.",
   "main": "index.js",
   "repository": {
@@ -21,5 +21,26 @@
   "bugs": {
     "url": "https://github.com/orchoban/navigator-cordova-react_js/issues"
   },
-  "homepage": "https://github.com/orchoban/navigator-cordova-react_js#readme"
+  "homepage": "https://github.com/orchoban/navigator-cordova-react_js#readme",
+  "scripts": {
+    "build": "webpack"
+  },
+  "peerDependencies": {
+    "prop-types": "^15.6.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.21.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "path": "^0.12.7",
+    "prop-types": "^15.6.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "webpack": "^4.5.0",
+    "webpack-cli": "^3.3.2"
+  }
 }
