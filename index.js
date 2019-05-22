@@ -1,26 +1,43 @@
 import React from 'react';
-import $ from '../navigator-cordova-reactjs/jquery-3.3.1.min';
-// import './css/animation';
-
+import $ from 'jquery';
 
 export default class Navigator extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      historyPages: [this.props.homePageName],
-      // startFromHome=null
+      historyPages: [this.props.homePageKey]
+      ,nowPage:this.props.homePageKey
     }
+    this.myComponentApp = this.props.myComponentApp;
+
+
+    this.historyPages = this.state.historyPages;
+
+    this.listLevelPages = [];
+
+    let listLevelPages = this.listLevelPages;
+    this.props.children.map((child) => {
+      listLevelPages[child.key] =
+        child.props.levelPage === undefined
+          ? child.key === this.props.homePageKey
+            ? 0 : 99
+          : child.props.levelPage
+    });
+
+
+    // const childrenWithProps = React.Children.map(this.props.children, child =>
+    //   React.cloneElement(child, { doSomething: this.doSomething })
+    // );
+    // this.props.nowPage(this.historyPages[this.historyPages.length - 1]);
 
     this.bezy = false;
-    this.listLevelPages = this.props.listLevelPages;
 
-    this.props.myApp.navigator = this;
-    this.myApp = this.props.myApp;
 
-    this.ChangePage = this.ChangePage.bind(this);
+    this.props.myComponentApp.managerPages = this;
+
+    this.changePage = this.changePage.bind(this);
   }
-
 
 
   //----navigator and animation----///
@@ -50,6 +67,9 @@ export default class Navigator extends React.Component {
     $('#' + fromPage).removeClass('scrollPage');
     $('#' + fromPage).addClass('hiddenPage');
     this.bezy = false;
+    
+    if (this.props.onChangePage !== undefined)
+    this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1]);
   }
 
   funAnimationOut1(goToPage, fromPage) {
@@ -73,20 +93,23 @@ export default class Navigator extends React.Component {
     $('#' + fromPage).removeClass('scrollPage');
     $('#' + fromPage).addClass('hiddenPage');
     this.bezy = false;
+
+    if (this.props.onChangePage !== undefined)
+    this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1]);
   }
 
 
-  ChangePage(goToPage, fromPage, animation, timeAnimationInMS, callbackFun) {
-
+  changePage(goToPage, animationIn,animationOut, timeAnimationInMS, callbackFun) {
+    //debugger
     if (!this.bezy) {
       const fthis = this;
 
-      if (fromPage === null || fromPage === undefined) {
-        fromPage = "" + this.state.historyPages[this.state.historyPages.length - 1] + "";
-      }
+      const fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
 
-      //--זמן האנימציה
-      const timeAnimation = timeAnimationInMS !== undefined && timeAnimationInMS !== null ? timeAnimationInMS : 250;//250;//ms
+
+      //--animation time defult
+      const timeAnimation = timeAnimationInMS !== undefined && timeAnimationInMS !== null ? timeAnimationInMS
+        : 250;//ms
 
       if (goToPage !== fromPage) {
         //---ניהול חזרות----//
@@ -95,12 +118,12 @@ export default class Navigator extends React.Component {
         if (this.state.historyPages.length === 1
           && goToPage === undefined) {
           console.log('"window.navigator.app.exitApp()"');
-          fthis.state.showSwalLater
-            ? fthis.state.myChildrens.swal.runSwal(true)
+          fthis.showSwalLater
+            ? fthis.myChildrens.swal.runSwal(true)
             : window.navigator.app.exitApp();
         } else {
           ///שמור היסטוריה
-          let new_historyPages = this.state.historyPages;
+          let new_historyPages = this.state.historyPages.slice();
 
           if (this.listLevelPages[goToPage] <= this.listLevelPages[fromPage]) {
             //חוזרים אחורה, מחק את כל הדפים שהרמה שלהם גבוהה משלי.
@@ -109,9 +132,7 @@ export default class Navigator extends React.Component {
           }
           new_historyPages.push(goToPage);
           //שמירת שינויים בהיסטוריה
-          this.setState({
-            historyPages: new_historyPages
-          });
+          this.setState({ historyPages: new_historyPages });
         }
 
         //----navigator and animation----///
@@ -122,22 +143,22 @@ export default class Navigator extends React.Component {
 
           if (this.listLevelPages[goToPage] === 1) {
             //Up from level 0 to level 1
-            $('#' + goToPage).css('animation', (animation !== null && animation !== undefined ? animation : 'slideInRight') + " " + timeAnimation + 'ms');
+            $('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'slideInRight') + " " + timeAnimation + 'ms');
 
           } else { //else if (this.listLevelPages[goToPage] === 2) {
             //Up from level 1 to level 2
-            $('#' + goToPage).css('animation', (animation !== null && animation !== undefined ? animation : 'zoomIn') + " " + timeAnimation + 'ms');
+            $('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'zoomIn') + " " + timeAnimation + 'ms');
           }
         } else {
           //--חזרה בדפים Down--//   
           this.funAnimationOut1(goToPage, fromPage);
           if (this.listLevelPages[fromPage] === 1) {
             //Down from level 1 to level 0
-            $('#' + fromPage).css('animation', (animation !== null && animation !== undefined ? animation : 'slideOutRight') + " " + timeAnimation + 'ms');
+            $('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'slideOutRight') + " " + timeAnimation + 'ms');
           }
           else { //else if (this.listLevelPages[goToPage] === 1) {
             //Down from level 2 to level 1
-            $('#' + fromPage).css('animation', (animation !== null && animation !== undefined ? animation : 'zoomOut') + " " + timeAnimation + 'ms');
+            $('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'zoomOut') + " " + timeAnimation + 'ms');
 
           }
         }
@@ -148,32 +169,45 @@ export default class Navigator extends React.Component {
         //     $('#navigatorBack').css('display', "flex");
         // }
 
-
+     
 
         if (callbackFun !== undefined)
           callbackFun();
       }
     }
+
   }
+
   componentWillMount() {
     this.setAnimateCSS();
-    // window.closeOrBack = () => {
-    //     document.getElementById("navigatorBack").click();
-    // }
-    // $("#" + this.props.homePageName).ready(() => $("#" + this.props.homePageName).addClass('showPage scrollPage'));
-    // $("body").append(`<div id="navigatorBack" style="display: none;" onclick>`)
+    if (window.cordova) {
+
+      // //---lock portrait
+      // window.screen.orientation.lock('portrait');
+
+      //--back button in android
+      document.addEventListener("backbutton"
+        , (e) => {
+          window.closeOrBack();
+        }
+        , false);
+    }
   }
 
   render() {
-    return null;
-    //     const fthis = this;
-    //     return <div id="navigatorBack" key="navigatorBack"
-    //         style={{ display: "none" }}
-    //         onClick={() => {
-    //             fthis.ChangePage(this.state.historyPages[this.state.historyPages.length - 2]
-    //                 , this.state.historyPages[this.state.historyPages.length - 1])
-    //         }}></div>
-    //         ;
+    const fthis = this;
+
+    const nowPage = this.state.historyPages[this.state.historyPages.length - 1];
+   
+
+    this.historyPages = this.state.historyPages.slice();
+    return this.props.children.map(child => {
+      return <div style={{ backgroundColor: "#fff" ,height:fthis.props.height}} id={child.key} className={fthis.props.homePageKey === child.key ? "showPage scrollPage" : "hiddenPage"}>
+        {nowPage === child.key || fthis.state.historyPages.includes(child.key)
+          ? child
+          : <div />}
+      </div>
+    });
   }
 
   setAnimateCSS() {
@@ -184,76 +218,62 @@ export default class Navigator extends React.Component {
      *
      * Copyright (c) 2018 Daniel Eden
      */
+    /*!
+   * managerPages.css
+   * Version - 1.0.3
+   *
+   * Copyright (c) 2019 Or Chuban
+   */
     const animateCSS = $('<style rel="stylesheet" type="text/css">');
     animateCSS.html(`
 
-        ::-webkit-scrollbar {
-
-            width: 0px;  /*  remove scrollbar space  */
-          
-             background: transparent; /* optional: just make scrollbar invisible  */
-          
-          }
-          html.w-mod-touch * {
-            background-attachment: unset !important;
-          }
-          
-          *{
-             -webkit-user-select: none;  
-            /* -webkit-overflow-scrolling:touch; */
-          }
-          input{
-            -webkit-user-select: auto;
-          } 
-           
-           
-           #root,html,body,.body,.top_section,.player_section,.noScroll{
-            background-attachment:unset !important;
-            overflow-x: visible !important;
-            overflow-y: visible !important;
-            overflow:visible !important;
-            -webkit-overflow-scrolling:auto;
-           }
-           
-           html ,body { 
-           overflow: hidden !important; 
-            height: 100%;
-            width: 100%;
-          }
-          
-          body {
-            margin: 0;
-            padding: 0;
-          }
-          
-          
-          
-          .showPage{   
-            width: 100%;
-            height: 100%; 
-            opacity: 1;
-            z-index: 9;
-            display: block;
-              left:0; 
-            position: absolute;
-          } 
-          .scrollPage{
-            position: absolute;
-            overflow-x:hidden; 
-            overflow-y:auto;
-            -webkit-overflow-scrolling:touch;
-          }
-          
-          .hiddenPage {
-            z-index: -1;
-            overflow:hidden;
-             position: absolute;
-              left:0; 
-              height: 0px;
-              display: none;
-          }
-
-
+    #root,html,body,.body,.top_section,.noScroll{
+      background-attachment:unset !important;
+      overflow-x: visible !important;
+      overflow-y: visible !important;
+      overflow:visible !important;
+      -webkit-overflow-scrolling:auto;
+     }
+     
+     html ,body { 
+     overflow: hidden !important; 
+      height: 100%;
+      width: 100%;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    
+    
+    
+    .showPage{   
+      width: 100%;
+      height: 100%; 
+      opacity: 1;
+      z-index: 9;
+      display: block;
+        left:0; 
+      position: absolute;
+    } 
+    .scrollPage{
+      position: absolute;
+      overflow-x:hidden; 
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+    
+    .hiddenPage {
+      z-index: -1;
+      overflow:hidden;
+       position: absolute;
+        left:0; 
+        height: 0px;
+        display: none;
+    }
+    
+    
         @charset "UTF-8";
 @-webkit-keyframes bounce {
   from,
