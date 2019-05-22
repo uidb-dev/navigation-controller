@@ -1,5 +1,6 @@
 # navigator-cordova-react_js
 
+**To run it you must JQuery**
 
 ## Scripts code
 It's manager for your pages like mobile app.<br>
