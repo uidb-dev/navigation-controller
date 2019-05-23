@@ -1,6 +1,6 @@
 {
   "name": "react.cordova-manager_pages",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Navigator for Cordova with React.js(react.cordova), This will help you to manage your pages history in the app and change pages with animation.",
   "main": "dist/index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/orchoban/navigator-cordova-react_js.git"
+    "url": "git+https://github.com/orchoban/react.cordova-manager_pages.git"
   },
   "keywords": [
     "navigator-react.cordova",
@@ -26,9 +26,9 @@
   "author": "Or Choban",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/orchoban/navigator-cordova-react_js/issues"
+    "url": "https://github.com/orchoban/react.cordova-manager_pages/issues"
   },
-  "homepage": "https://github.com/orchoban/navigator-cordova-react_js#readme",
+  "homepage": "https://github.com/orchoban/react.cordova-manager_pages#readme",
   "peerDependencies": {
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
