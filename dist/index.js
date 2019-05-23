@@ -56,7 +56,7 @@ var Navigator = function (_React$Component) {
 
     _this.bezy = false;
 
-    _this.props.myComponentApp.managerPages = _this;
+    _this.props.myComponentApp.navigator = _this;
 
     _this.changePage = _this.changePage.bind(_this);
     return _this;

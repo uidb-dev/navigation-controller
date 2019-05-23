@@ -1,29 +1,29 @@
-# react.cordova-manager_pages
+# react.cordova-navigation_controller
 
-## Scripts code
+## Plugin for react
 It's manager for your pages like mobile app.<br>
 
-#### `import ManagerPages from './react.cordova-manager_pages';`
+#### `import Navigator from './react.cordova-navigation_controller';`
 
 <br>
 In the render function return
 
  ```
- <ManagerPages
+ <Navigator
         myComponentApp={this}
         onChangePage={(nowPageKey) => { ... }}    
         homePageKey={"home"}>
             <MyHomePage key="home" levelPage={0} />
             <AboutPage key="about" levelPage={1} />
-  </ManagerPages>
+  </Navigator>
 ```
-**Node: prop `levelPage` important to manage the returs (from back button) in the structure of a tree**<br><br>
+**Note: prop `levelPage` important to manage the returs (from back button) in the structure of a tree**<br><br>
 
 To change page you need get the component that you send in 'myComponentApp' and do:
-#### `myComponentApp.managerPages.changePage("about");` 
+#### `myComponentApp.navigator.changePage("about");` 
 the option to changePage it's:
 ```
-myComponentApp.managerPages.changePage(
+myComponentApp.navigator.changePage(
                 goToPage //it's must
                 ,animationIn//have defult
                 ,animationOut//have defult
@@ -39,18 +39,18 @@ myComponentApp.managerPages.changePage(
 
 ### Get the historyPages list
 ```
-const historyPages= myComponentApp.managerPages.historyPages();
+const historyPages= myComponentApp.navigator.historyPages();
 ```
 
 ### Get the listLevelPages list
 ```
-const listLevelPages= myComponentApp.managerPages.listLevelPages();
+const listLevelPages= myComponentApp.navigator.listLevelPages();
 ```
 
 
 ### Check if the mangerPages is bezy
 ```
-const managerPages_bezy= myComponentApp.managerPages.bezy;
+const navigator_bezy= myComponentApp.nvigator.bezy;
 ```
 *bezy return boolean  
 <br><br><br>

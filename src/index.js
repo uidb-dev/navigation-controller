@@ -36,7 +36,7 @@ export default class Navigator extends React.Component {
     this.bezy = false;
 
 
-    this.props.myComponentApp.managerPages = this;
+    this.props.myComponentApp.navigator = this;
 
     this.changePage = this.changePage.bind(this);
   }
