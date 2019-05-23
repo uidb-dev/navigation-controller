@@ -1,6 +1,6 @@
 {
   "name": "react.cordova-navigator",
-  "version": "1.0.9",
+  "version": "1.1.1",
   "description": "Navigator for Cordova with React.js, This will help you to manage your pages history in the app and change pages with animation.",
   "main": "index.js",
   "repository": {
