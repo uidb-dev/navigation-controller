@@ -1,8 +1,14 @@
 {
-  "name": "react.cordova-navigator",
-  "version": "1.1.2",
-  "description": "Navigator for Cordova with React.js, This will help you to manage your pages history in the app and change pages with animation.",
-  "main": "index.js",
+  "name": "react.cordova-manager_pages",
+  "version": "1.0.0",
+  "description": "Navigator for Cordova with React.js(react.cordova), This will help you to manage your pages history in the app and change pages with animation.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --mode development",
+    "transpile": "babel src -d dist --copy-files",
+    "prepublishOnly": "npm run transpile"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/orchoban/navigator-cordova-react_js.git"
@@ -23,10 +29,6 @@
     "url": "https://github.com/orchoban/navigator-cordova-react_js/issues"
   },
   "homepage": "https://github.com/orchoban/navigator-cordova-react_js#readme",
-  "scripts": {
-    "start": "webpack --watch",
-    "build": "webpack"
-  },
   "peerDependencies": {
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
@@ -35,17 +37,21 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.5",
+    "babel-loader": "^7.1.4",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.16.0",
+    "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "css-loader": "^2.1.1",
+    "html-webpack-plugin": "^3.2.0",
     "path": "^0.12.7",
     "prop-types": "^15.6.0",
     "react": "^16.8.6",
-    "react-dom": "^16.0.0",
-    "webpack": "^4.32.1",
-    "webpack-cli": "^3.3.2"
+    "react-dom": "^16.8.6",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.32.2",
+    "webpack-cli": "^3.3.2",
+    "webpack-dev-server": "^3.4.1"
   }
 }

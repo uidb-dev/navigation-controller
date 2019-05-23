@@ -1,9 +1,9 @@
-# react.cordova-navigator
+# react.cordova-manager_pages
 
 ## Scripts code
 It's manager for your pages like mobile app.<br>
 
-#### `import ManagerPages from './react.cordova-navigator';`
+#### `import ManagerPages from './react.cordova-manager_pages';`
 
 <br>
 In the render function return
