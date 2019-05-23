@@ -55,5 +55,9 @@ const managerPages_bezy= myComponentApp.managerPages.bezy;
 *bezy return boolean  
 <br><br><br>
 
+
+Credit:
+Arik Wald
+<br><br>
 Credit animated:
  ***animate.css -https://daneden.github.io/animate.css/***
