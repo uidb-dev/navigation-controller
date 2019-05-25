@@ -188,6 +188,7 @@ export default class Navigator extends React.Component {
   }
 
   componentWillMount() {
+    const fthis=this;
     if (window.cordova) {
 
       // //---lock portrait
@@ -196,7 +197,7 @@ export default class Navigator extends React.Component {
       //--back button in android
       document.addEventListener("backbutton"
         , (e) => {
-          window.closeOrBack();
+         fthis.changePage(this.state.historyPages[this.state.historyPages.length - 2])
         }
         , false);
     }

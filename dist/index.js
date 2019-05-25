@@ -205,6 +205,9 @@ var Navigator = function (_React$Component) {
   }, {
     key: 'componentWillMount',
     value: function componentWillMount() {
+      var _this4 = this;
+
+      var fthis = this;
       if (window.cordova) {
 
         // //---lock portrait
@@ -212,7 +215,7 @@ var Navigator = function (_React$Component) {
 
         //--back button in android
         document.addEventListener("backbutton", function (e) {
-          window.closeOrBack();
+          fthis.changePage(_this4.state.historyPages[_this4.state.historyPages.length - 2]);
         }, false);
       }
     }

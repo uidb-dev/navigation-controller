@@ -1,6 +1,6 @@
 {
   "name": "react.cordova-navigation_controller",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Navigator for Cordova with React.js(react.cordova), This will help you to manage your pages history in the app and change pages with animation.",
   "main": "dist/index.js",
   "scripts": {
@@ -15,6 +15,7 @@
   },
   "keywords": [
     "navigator-react.cordova",
+    "react.cordova-manager_pages",
     "react.cordova-navigator-controller",
     "react-cordova-navigator-controller",
     "react-cordova-pages-manager",
