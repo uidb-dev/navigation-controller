@@ -55,7 +55,7 @@ var Navigator = function (_React$Component) {
     // );
     // this.props.nowPage(this.historyPages[this.historyPages.length - 1]);
 
-    _this.bezy = false;
+    _this.busy = false;
 
     _this.props.myComponentApp.navigator = _this;
 
@@ -78,7 +78,7 @@ var Navigator = function (_React$Component) {
 
       document.getElementById(goToPage).addEventListener("webkitAnimationEnd", callbackFun, false);
 
-      this.bezy = true;
+      this.busy = true;
       (0, _jquery2.default)('#' + goToPage).removeClass('hiddenPage');
       (0, _jquery2.default)('#' + goToPage).addClass('scrollPage showPage');
       (0, _jquery2.default)('#' + fromPage).css('z-index', 0);
@@ -93,7 +93,7 @@ var Navigator = function (_React$Component) {
       (0, _jquery2.default)('#' + fromPage).removeClass('showPage');
       (0, _jquery2.default)('#' + fromPage).removeClass('scrollPage');
       (0, _jquery2.default)('#' + fromPage).addClass('hiddenPage');
-      this.bezy = false;
+      this.busy = false;
 
       if (this.props.onChangePage !== undefined) this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1]);
     }
@@ -108,7 +108,7 @@ var Navigator = function (_React$Component) {
         document.getElementById(fromPage).removeEventListener("webkitAnimationEnd", callbackFun);
       };
       document.getElementById(fromPage).addEventListener("webkitAnimationEnd", callbackFun);
-      this.bezy = true;
+      this.busy = true;
       (0, _jquery2.default)('#' + goToPage).css('z-index', 0);
       (0, _jquery2.default)('#' + fromPage).css('z-index', 89);
       (0, _jquery2.default)('#' + goToPage).removeClass('hiddenPage');
@@ -123,7 +123,7 @@ var Navigator = function (_React$Component) {
       (0, _jquery2.default)('#' + fromPage).removeClass('showPage');
       (0, _jquery2.default)('#' + fromPage).removeClass('scrollPage');
       (0, _jquery2.default)('#' + fromPage).addClass('hiddenPage');
-      this.bezy = false;
+      this.busy = false;
 
       if (this.props.onChangePage !== undefined) this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1]);
     }
@@ -133,7 +133,7 @@ var Navigator = function (_React$Component) {
       var _this3 = this;
 
       //debugger
-      if (!this.bezy) {
+      if (!this.busy) {
         var fthis = this;
 
         var fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
@@ -143,7 +143,7 @@ var Navigator = function (_React$Component) {
 
         if (goToPage !== fromPage) {
           //---ניהול חזרות----//
-          this.bezy = true;
+          this.busy = true;
           //סיום האפליקציה, סגור
           if (this.state.historyPages.length === 1 && goToPage === undefined) {
             console.log('"window.navigator.app.exitApp()"');

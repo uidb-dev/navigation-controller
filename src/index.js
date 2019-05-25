@@ -40,7 +40,7 @@ export default class Navigator extends React.Component {
     // );
     // this.props.nowPage(this.historyPages[this.historyPages.length - 1]);
 
-    this.bezy = false;
+    this.busy = false;
 
 
     this.props.myComponentApp.navigator = this;
@@ -60,7 +60,7 @@ export default class Navigator extends React.Component {
 
     document.getElementById(goToPage).addEventListener("webkitAnimationEnd", callbackFun, false);
 
-    this.bezy = true;
+    this.busy = true;
     $('#' + goToPage).removeClass('hiddenPage');
     $('#' + goToPage).addClass('scrollPage showPage');
     $('#' + fromPage).css('z-index', 0);
@@ -75,7 +75,7 @@ export default class Navigator extends React.Component {
     $('#' + fromPage).removeClass('showPage');
     $('#' + fromPage).removeClass('scrollPage');
     $('#' + fromPage).addClass('hiddenPage');
-    this.bezy = false;
+    this.busy = false;
     
     if (this.props.onChangePage !== undefined)
     this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1]);
@@ -88,7 +88,7 @@ export default class Navigator extends React.Component {
       document.getElementById(fromPage).removeEventListener("webkitAnimationEnd", callbackFun);
     };
     document.getElementById(fromPage).addEventListener("webkitAnimationEnd", callbackFun);
-    this.bezy = true;
+    this.busy = true;
     $('#' + goToPage).css('z-index', 0);
     $('#' + fromPage).css('z-index', 89);
     $('#' + goToPage).removeClass('hiddenPage');
@@ -101,7 +101,7 @@ export default class Navigator extends React.Component {
     $('#' + fromPage).removeClass('showPage');
     $('#' + fromPage).removeClass('scrollPage');
     $('#' + fromPage).addClass('hiddenPage');
-    this.bezy = false;
+    this.busy = false;
 
     if (this.props.onChangePage !== undefined)
     this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1]);
@@ -110,7 +110,7 @@ export default class Navigator extends React.Component {
 
   changePage(goToPage, animationIn,animationOut, timeAnimationInMS, callbackFun) {
     //debugger
-    if (!this.bezy) {
+    if (!this.busy) {
       const fthis = this;
 
       const fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
@@ -122,7 +122,7 @@ export default class Navigator extends React.Component {
 
       if (goToPage !== fromPage) {
         //---ניהול חזרות----//
-        this.bezy = true;
+        this.busy = true;
         //סיום האפליקציה, סגור
         if (this.state.historyPages.length === 1
           && goToPage === undefined) {
