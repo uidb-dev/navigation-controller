@@ -10,10 +10,14 @@ In the render function return
 
  ```
  <Navigator
+        height={"90%"}
         myComponentApp={this}
-        onChangePage={(nowPageKey) => { ... }}    
+        onChangePage={(nowPageKey,levelAction) => { ... }}//levelAction="Out"||"In"||"SameLevel"   
         homePageKey={"home"}>
-            <MyHomePage key="home" levelPage={0} />
+            <MyHomePage height={"100%"} key="home" levelPage={0} 
+           //alwaysLive={true} ///defult=>false
+           //backgroundColor="..." ///defult=>#fff
+            />   
             <AboutPage key="about" levelPage={1} />
   </Navigator>
 ```

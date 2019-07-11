@@ -9,7 +9,7 @@ export default class Navigator extends React.Component {
     super(props);
     this.state = {
       historyPages: [this.props.homePageKey]
-      ,nowPage:this.props.homePageKey
+      , nowPage: this.props.homePageKey
     }
     this.myComponentApp = this.props.myComponentApp;
 
@@ -19,7 +19,7 @@ export default class Navigator extends React.Component {
     this.listLevelPages = [];
 
     let listLevelPages = this.listLevelPages;
-   
+
     Array.isArray(this.props.children) ?
       this.props.children.forEach((child) => {
         listLevelPages[child.key] =
@@ -76,9 +76,9 @@ export default class Navigator extends React.Component {
     $('#' + fromPage).removeClass('scrollPage');
     $('#' + fromPage).addClass('hiddenPage');
     this.busy = false;
-    
+
     if (this.props.onChangePage !== undefined)
-    this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1]);
+      this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], this.compareTwoPagesLavel(goToPage, fromPage));
   }
 
   funAnimationOut1(goToPage, fromPage) {
@@ -104,17 +104,24 @@ export default class Navigator extends React.Component {
     this.busy = false;
 
     if (this.props.onChangePage !== undefined)
-    this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1]);
+      this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], this.compareTwoPagesLavel(goToPage, fromPage));
   }
 
+  compareTwoPagesLavel(goToPage, fromPage) {
+    if (this.listLevelPages[goToPage] < this.listLevelPages[fromPage])
+      return "Out";
+    if (this.listLevelPages[goToPage] > this.listLevelPages[fromPage])
+      return "In";
+    return "SameLevel";
 
-  changePage(goToPage, animationIn,animationOut, timeAnimationInMS, callbackFun) {
+  }
+
+  changePage(goToPage, animationIn, animationOut, timeAnimationInMS, callbackFun) {
     //debugger
     if (!this.busy) {
       const fthis = this;
 
       const fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
-
 
       //--animation time defult
       const timeAnimation = timeAnimationInMS !== undefined && timeAnimationInMS !== null ? timeAnimationInMS
@@ -152,22 +159,22 @@ export default class Navigator extends React.Component {
 
           if (this.listLevelPages[goToPage] === 1) {
             //Up from level 0 to level 1
-            $('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'slideInRight') + " " + timeAnimation + 'ms');
+            $('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'zoomIn') + " " + timeAnimation + 'ms');
 
           } else { //else if (this.listLevelPages[goToPage] === 2) {
             //Up from level 1 to level 2
-            $('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'zoomIn') + " " + timeAnimation + 'ms');
+            $('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'slideInRight') + " " + timeAnimation + 'ms');
           }
         } else {
           //--חזרה בדפים Down--//   
           this.funAnimationOut1(goToPage, fromPage);
           if (this.listLevelPages[fromPage] === 1) {
             //Down from level 1 to level 0
-            $('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'slideOutRight') + " " + timeAnimation + 'ms');
+            $('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'zoomOut') + " " + timeAnimation + 'ms');
           }
           else { //else if (this.listLevelPages[goToPage] === 1) {
             //Down from level 2 to level 1
-            $('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'zoomOut') + " " + timeAnimation + 'ms');
+            $('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'slideOutRight') + " " + timeAnimation + 'ms');
 
           }
         }
@@ -178,7 +185,7 @@ export default class Navigator extends React.Component {
         //     $('#navigatorBack').css('display', "flex");
         // }
 
-     
+
 
         if (callbackFun !== undefined)
           callbackFun();
@@ -188,7 +195,7 @@ export default class Navigator extends React.Component {
   }
 
   componentWillMount() {
-    const fthis=this;
+    const fthis = this;
     if (window.cordova) {
 
       // //---lock portrait
@@ -197,7 +204,7 @@ export default class Navigator extends React.Component {
       //--back button in android
       document.addEventListener("backbutton"
         , (e) => {
-         fthis.changePage(this.state.historyPages[this.state.historyPages.length - 2])
+          fthis.changePage(fthis.state.historyPages[fthis.state.historyPages.length - 2])
         }
         , false);
     }
@@ -207,22 +214,22 @@ export default class Navigator extends React.Component {
     const fthis = this;
 
     const nowPage = this.state.historyPages[this.state.historyPages.length - 1];
-   
+
 
     this.historyPages = this.state.historyPages.slice();
     return Array.isArray(this.props.children)
-    ? this.props.children.map(child => {
-      return <div style={{ backgroundColor: "#fff", height: fthis.props.height }} id={child.key} className={fthis.props.homePageKey === child.key ? "showPage scrollPage" : "hiddenPage"}>
-        {nowPage === child.key || fthis.state.historyPages.includes(child.key)
-          ? child
+      ? this.props.children.map(child => {
+        return <div style={{ backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff", height: fthis.props.height }} id={child.key} key={child.key} className={fthis.props.homePageKey === child.key ? "showPage scrollPage" : "hiddenPage"}>
+          {nowPage === child.key || fthis.state.historyPages.includes(child.key) || child.props.alwaysLive
+            ? child
+            : <div />}
+        </div>
+      })
+      : <div style={{ backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff", height: fthis.props.height }} id={this.props.children.key} key={child.key} className={fthis.props.homePageKey === this.props.children.key ? "showPage scrollPage" : "hiddenPage"}>
+        {nowPage === this.props.children.key || fthis.state.historyPages.includes(this.props.children.key) || child.props.alwaysLive
+          ? this.props.children
           : <div />}
-      </div>
-    })
-    : <div style={{ backgroundColor: "#fff", height: fthis.props.height }} id={this.props.children.key} className={fthis.props.homePageKey === this.props.children.key ? "showPage scrollPage" : "hiddenPage"}>
-      {nowPage === this.props.children.key || fthis.state.historyPages.includes(this.props.children.key)
-        ? this.props.children
-        : <div />}
-    </div>;
+      </div>;
   }
 
 }
