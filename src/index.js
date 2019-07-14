@@ -76,6 +76,7 @@ export default class Navigator extends React.Component {
     $('#' + fromPage).removeClass('scrollPage');
     $('#' + fromPage).addClass('hiddenPage');
     this.busy = false;
+    this.setState({ nowPage: goToPage });
 
     if (this.props.onChangePage !== undefined)
       this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], this.compareTwoPagesLavel(goToPage, fromPage));
@@ -102,6 +103,7 @@ export default class Navigator extends React.Component {
     $('#' + fromPage).removeClass('scrollPage');
     $('#' + fromPage).addClass('hiddenPage');
     this.busy = false;
+    this.setState({ nowPage: goToPage });
 
     if (this.props.onChangePage !== undefined)
       this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], this.compareTwoPagesLavel(goToPage, fromPage));

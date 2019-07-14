@@ -94,6 +94,7 @@ var Navigator = function (_React$Component) {
       (0, _jquery2.default)('#' + fromPage).removeClass('scrollPage');
       (0, _jquery2.default)('#' + fromPage).addClass('hiddenPage');
       this.busy = false;
+      this.setState({ nowPage: goToPage });
 
       if (this.props.onChangePage !== undefined) this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], this.compareTwoPagesLavel(goToPage, fromPage));
     }
@@ -124,6 +125,7 @@ var Navigator = function (_React$Component) {
       (0, _jquery2.default)('#' + fromPage).removeClass('scrollPage');
       (0, _jquery2.default)('#' + fromPage).addClass('hiddenPage');
       this.busy = false;
+      this.setState({ nowPage: goToPage });
 
       if (this.props.onChangePage !== undefined) this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], this.compareTwoPagesLavel(goToPage, fromPage));
     }
