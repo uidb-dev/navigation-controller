@@ -221,6 +221,7 @@ var Navigator = function (_React$Component) {
         // window.screen.orientation.lock('portrait');
 
         //--back button in android
+
         document.addEventListener("backbutton", function (e) {
           fthis.changePage(fthis.state.historyPages[fthis.state.historyPages.length - 2]);
         }, false);
@@ -242,8 +243,8 @@ var Navigator = function (_React$Component) {
         );
       }) : _react2.default.createElement(
         'div',
-        { style: { backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff", height: fthis.props.height }, id: this.props.children.key, key: child.key, className: fthis.props.homePageKey === this.props.children.key ? "showPage scrollPage" : "hiddenPage" },
-        nowPage === this.props.children.key || fthis.state.historyPages.includes(this.props.children.key) || child.props.alwaysLive ? this.props.children : _react2.default.createElement('div', null)
+        { style: { backgroundColor: this.props.children.props.backgroundColor ? this.props.children.props.backgroundColor : "#fff", height: fthis.props.height }, id: this.props.children.key, key: this.props.children.key, className: fthis.props.homePageKey === this.props.children.key ? "showPage scrollPage" : "hiddenPage" },
+        nowPage === this.props.children.key || fthis.state.historyPages.includes(this.props.children.key) || this.props.children.props.alwaysLive ? this.props.children : _react2.default.createElement('div', null)
       );
     }
   }]);
