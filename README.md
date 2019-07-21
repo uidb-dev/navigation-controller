@@ -12,7 +12,8 @@ In the render function return
  <Navigator
         height={"90%"}
         myComponentApp={this}
-        onChangePage={(nowPageKey,levelAction) => { ... }}//levelAction="Out"||"In"||"SameLevel"   
+        onChangePage={(nowPageKey,levelAction) => { ... }}//levelAction="Out"||"In"||"SameLevel"  
+         beforChangePage={(goToPageKey,levelAction) => { ... }}//levelAction="Out"||"In"||"SameLevel"    
         homePageKey={"home"}>
             <MyHomePage height={"100%"} key="home" levelPage={0} 
            //alwaysLive={true} ///defult=>false
@@ -50,7 +51,10 @@ const historyPages= myComponentApp.navigator.historyPages();
 ```
 const listLevelPages= myComponentApp.navigator.listLevelPages();
 ```
-
+### Back 1 page history
+```
+myComponentApp.nvigator.back();
+```
 
 ### Check if the mangerPages is busy
 ```

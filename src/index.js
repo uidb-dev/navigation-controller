@@ -52,6 +52,10 @@ export default class Navigator extends React.Component {
   //----navigator and animation----///
   funAnimationIn1(goToPage, fromPage) {
     const fthis = this;
+
+    if (this.props.beforChangePage !== undefined)
+      this.props.beforChangePage(goToPage, this.compareTwoPagesLavel(goToPage, fromPage));
+
     //--נכנסים דף פנימה Up--//
     let callbackFun = () => {
       fthis.funAnimationIn2(goToPage, fromPage);
@@ -84,6 +88,10 @@ export default class Navigator extends React.Component {
 
   funAnimationOut1(goToPage, fromPage) {
     //--חזרה בדפים Down--//  
+
+    if (this.props.beforChangePage !== undefined)
+      this.props.beforChangePage(goToPage, this.compareTwoPagesLavel(goToPage, fromPage));
+
     let callbackFun = () => {
       this.funAnimationOut2(goToPage, fromPage);
       document.getElementById(fromPage).removeEventListener("webkitAnimationEnd", callbackFun);
@@ -204,7 +212,7 @@ export default class Navigator extends React.Component {
       // window.screen.orientation.lock('portrait');
 
       //--back button in android
-      
+
       document.addEventListener("backbutton"
         , (e) => {
           fthis.changePage(fthis.state.historyPages[fthis.state.historyPages.length - 2])
@@ -213,6 +221,9 @@ export default class Navigator extends React.Component {
     }
   }
 
+  back() {
+    this.changePage(this.state.historyPages[this.state.historyPages.length - 2]);
+  }
   render() {
     const fthis = this;
 

@@ -70,6 +70,9 @@ var Navigator = function (_React$Component) {
     key: 'funAnimationIn1',
     value: function funAnimationIn1(goToPage, fromPage) {
       var fthis = this;
+
+      if (this.props.beforChangePage !== undefined) this.props.beforChangePage(goToPage, this.compareTwoPagesLavel(goToPage, fromPage));
+
       //--נכנסים דף פנימה Up--//
       var callbackFun = function callbackFun() {
         fthis.funAnimationIn2(goToPage, fromPage);
@@ -104,6 +107,9 @@ var Navigator = function (_React$Component) {
       var _this2 = this;
 
       //--חזרה בדפים Down--//  
+
+      if (this.props.beforChangePage !== undefined) this.props.beforChangePage(goToPage, this.compareTwoPagesLavel(goToPage, fromPage));
+
       var callbackFun = function callbackFun() {
         _this2.funAnimationOut2(goToPage, fromPage);
         document.getElementById(fromPage).removeEventListener("webkitAnimationEnd", callbackFun);
@@ -226,6 +232,11 @@ var Navigator = function (_React$Component) {
           fthis.changePage(fthis.state.historyPages[fthis.state.historyPages.length - 2]);
         }, false);
       }
+    }
+  }, {
+    key: 'back',
+    value: function back() {
+      this.changePage(this.state.historyPages[this.state.historyPages.length - 2]);
     }
   }, {
     key: 'render',
