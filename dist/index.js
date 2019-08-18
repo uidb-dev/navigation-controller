@@ -36,7 +36,8 @@ var Navigator = function (_React$Component) {
 
     _this.state = {
       historyPages: [_this.props.homePageKey],
-      nowPage: _this.props.homePageKey
+      nowPage: _this.props.homePageKey,
+      height: _this.props.height === null ? "100%" : _this.props.height
     };
     _this.myComponentApp = _this.props.myComponentApp;
 
@@ -187,22 +188,22 @@ var Navigator = function (_React$Component) {
 
             if (this.listLevelPages[goToPage] === 1) {
               //Up from level 0 to level 1
-              (0, _jquery2.default)('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'zoomIn') + " " + timeAnimation + 'ms');
+              (0, _jquery2.default)('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'slideInRight') + " " + timeAnimation + 'ms');
             } else {
               //else if (this.listLevelPages[goToPage] === 2) {
               //Up from level 1 to level 2
-              (0, _jquery2.default)('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'slideInRight') + " " + timeAnimation + 'ms');
+              (0, _jquery2.default)('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'zoomIn') + " " + timeAnimation + 'ms');
             }
           } else {
             //--חזרה בדפים Down--//   
             this.funAnimationOut1(goToPage, fromPage);
             if (this.listLevelPages[fromPage] === 1) {
               //Down from level 1 to level 0
-              (0, _jquery2.default)('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'zoomOut') + " " + timeAnimation + 'ms');
+              (0, _jquery2.default)('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'slideOutRight') + " " + timeAnimation + 'ms');
             } else {
               //else if (this.listLevelPages[goToPage] === 1) {
               //Down from level 2 to level 1
-              (0, _jquery2.default)('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'slideOutRight') + " " + timeAnimation + 'ms');
+              (0, _jquery2.default)('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'zoomOut') + " " + timeAnimation + 'ms');
             }
           }
           // //עיצוב כפתור חזרה
@@ -249,12 +250,14 @@ var Navigator = function (_React$Component) {
       return Array.isArray(this.props.children) ? this.props.children.map(function (child) {
         return _react2.default.createElement(
           'div',
-          { style: { backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff", height: fthis.props.height }, id: child.key, key: child.key, className: fthis.props.homePageKey === child.key ? "showPage scrollPage" : "hiddenPage" },
+          { style: { backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff", height: fthis.state.height },
+            id: child.key, key: child.key, className: fthis.props.homePageKey === child.key ? "showPage scrollPage" : "hiddenPage" },
           nowPage === child.key || fthis.state.historyPages.includes(child.key) || child.props.alwaysLive ? child : _react2.default.createElement('div', null)
         );
       }) : _react2.default.createElement(
         'div',
-        { style: { backgroundColor: this.props.children.props.backgroundColor ? this.props.children.props.backgroundColor : "#fff", height: fthis.props.height }, id: this.props.children.key, key: this.props.children.key, className: fthis.props.homePageKey === this.props.children.key ? "showPage scrollPage" : "hiddenPage" },
+        { style: { backgroundColor: this.props.children.props.backgroundColor ? this.props.children.props.backgroundColor : "#fff", height: fthis.state.height },
+          id: this.props.children.key, key: this.props.children.key, className: fthis.props.homePageKey === this.props.children.key ? "showPage scrollPage" : "hiddenPage" },
         nowPage === this.props.children.key || fthis.state.historyPages.includes(this.props.children.key) || this.props.children.props.alwaysLive ? this.props.children : _react2.default.createElement('div', null)
       );
     }
