@@ -7,13 +7,44 @@ export default class Navigator extends React.Component {
 
   constructor(props) {
     super(props);
+
+    let startPage = "";
+    let mobileMode = false;
+    if (window.cordova) {
+      if (window.cordova.platformId !== "browser")
+        mobileMode = true;
+    }
+
+    if (mobileMode) {
+      startPage = this.props.homePageKey;
+    } else {
+      startPage = location.href.substr(
+        location.href.lastIndexOf("/")) === "/"
+        || location.href.substr(
+          location.href.lastIndexOf("/")) === "/#"
+        ? this.props.homePageKey
+        : location.href.substr(
+          location.href.lastIndexOf("/") + 2);
+    }
+
+
+    const historyPages = [];
+    historyPages.push(this.props.homePageKey);
+    if (startPage !== this.props.homePageKey)
+      historyPages.push(startPage);
+
+
     this.state = {
-      historyPages: [this.props.homePageKey]
-      , nowPage: this.props.homePageKey
-      ,height:this.props.height===null?"100%":this.props.height
+      historyPages: historyPages
+      , nowPage: startPage
+      , homePageKey: this.props.homePageKey
+      , height: this.props.height === null ? "100%" : this.props.height
+      , startPage: startPage
+      , mobileMode: mobileMode
     }
     this.myComponentApp = this.props.myComponentApp;
 
+    this.first = true;
 
     this.historyPages = this.state.historyPages;
 
@@ -25,13 +56,13 @@ export default class Navigator extends React.Component {
       this.props.children.forEach((child) => {
         listLevelPages[child.key] =
           child.props.levelPage === undefined
-            ? child.key === this.props.homePageKey
+            ? child.key === this.state.homePageKey
               ? 0 : 99
             : child.props.levelPage
       })
       : listLevelPages[this.props.children.key] =
       this.props.children.props.levelPage === undefined
-        ? this.props.children.key === this.props.homePageKey
+        ? this.props.children.key === this.state.homePageKey
           ? 0 : 99
         : this.props.children.props.levelPage;
 
@@ -44,7 +75,7 @@ export default class Navigator extends React.Component {
     this.busy = false;
 
 
-    this.props.myComponentApp.navigator = this;
+    this.props.onRef(this);
 
     this.changePage = this.changePage.bind(this);
   }
@@ -128,7 +159,7 @@ export default class Navigator extends React.Component {
   }
 
   changePage(goToPage, animationIn, animationOut, timeAnimationInMS, callbackFun) {
-    //debugger
+
     if (!this.busy) {
       const fthis = this;
 
@@ -161,6 +192,16 @@ export default class Navigator extends React.Component {
           //שמירת שינויים בהיסטוריה
           this.setState({ historyPages: new_historyPages });
         }
+
+        if (!window.cordova)
+          location.href = location.href.substr(0,
+            location.href.lastIndexOf("/") + 1)
+            + "#" + (goToPage !== this.props.homePageKey ? goToPage : "");
+        else if (window.cordova.platformId === "browser")
+          location.href = location.href.substr(0,
+            location.href.lastIndexOf("/") + 1)
+            + "#" + (goToPage !== this.props.homePageKey ? goToPage : "");
+
 
         //----navigator and animation----///
 
@@ -207,7 +248,7 @@ export default class Navigator extends React.Component {
 
   componentWillMount() {
     const fthis = this;
-    if (window.cordova) {
+    if (fthis.state.mobileMode) {
 
       // //---lock portrait
       // window.screen.orientation.lock('portrait');
@@ -216,10 +257,23 @@ export default class Navigator extends React.Component {
 
       document.addEventListener("backbutton"
         , (e) => {
-          fthis.changePage(fthis.state.historyPages[fthis.state.historyPages.length - 2])
+          fthis.back();
         }
         , false);
+    } else {
+      //--back on change browser url
+      window.addEventListener("hashchange"
+        , function (e) {
+          fthis.changePage(
+            location.href.substr(
+              location.href.lastIndexOf("/") + 2) === "" ? fthis.state.homePageKey
+              : location.href.substr(
+                location.href.lastIndexOf("/") + 2)
+          );
+        });
     }
+
+
   }
 
   back() {
@@ -227,22 +281,29 @@ export default class Navigator extends React.Component {
   }
   render() {
     const fthis = this;
-
+    window.navigation_controller=this;
     const nowPage = this.state.historyPages[this.state.historyPages.length - 1];
+
+    if (this.first) {
+      if (this.props.onChangePage !== undefined)
+        this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], "In");
+      this.first = false;
+    }
+
 
 
     this.historyPages = this.state.historyPages.slice();
     return Array.isArray(this.props.children)
       ? this.props.children.map(child => {
-        return <div style={{ backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff", height: fthis.state.height }} 
-        id={child.key} key={child.key} className={fthis.props.homePageKey === child.key ? "showPage scrollPage" : "hiddenPage"}>
+        return <div style={{ backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff", height: fthis.state.height }}
+          id={child.key} key={child.key} className={fthis.state.startPage === child.key ? "showPage scrollPage" : "hiddenPage"}>
           {nowPage === child.key || fthis.state.historyPages.includes(child.key) || child.props.alwaysLive
             ? child
             : <div />}
         </div>
       })
-      : <div style={{ backgroundColor: this.props.children.props.backgroundColor ? this.props.children.props.backgroundColor : "#fff", height: fthis.state.height }} 
-      id={this.props.children.key} key={this.props.children.key} className={fthis.props.homePageKey === this.props.children.key ? "showPage scrollPage" : "hiddenPage"}>
+      : <div style={{ backgroundColor: this.props.children.props.backgroundColor ? this.props.children.props.backgroundColor : "#fff", height: fthis.state.height }}
+        id={this.props.children.key} key={this.props.children.key} className={fthis.state.startPage === this.props.children.key ? "showPage scrollPage" : "hiddenPage"}>
         {nowPage === this.props.children.key || fthis.state.historyPages.includes(this.props.children.key) || this.props.children.props.alwaysLive
           ? this.props.children
           : <div />}

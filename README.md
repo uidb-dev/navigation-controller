@@ -10,11 +10,13 @@ In the render function return
 
  ```
  <Navigator
+       onRef={ref => (this.navigator = ref)} // Required
         height={"100%"}
-        myComponentApp={this}
+        myComponentApp={this} // Required
         onChangePage={(nowPageKey,levelAction) => { ... }}//levelAction="Out"||"In"||"SameLevel"  
          beforChangePage={(goToPageKey,levelAction) => { ... }}//levelAction="Out"||"In"||"SameLevel"    
-        homePageKey={"home"}>
+        homePageKey={"home"} // Required
+        >
             <MyHomePage key="home" levelPage={0} 
            //alwaysLive={true} ///defult=>false
            //backgroundColor="..." ///defult=>#fff
@@ -24,11 +26,11 @@ In the render function return
 ```
 **Note: prop `levelPage` important to manage the returs (from back button) in the structure of a tree**<br><br>
 
-To change page you need get the component that you send in 'myComponentApp' and do:
-#### `myComponentApp.navigator.changePage("about");` 
+To change page you get the ref and do:
+#### `this.navigator.changePage("about");` 
 the option to changePage it's:
 ```
-myComponentApp.navigator.changePage(
+this.navigator.changePage(
                 goToPage //it's must
                 ,animationIn//have defult
                 ,animationOut//have defult
@@ -44,21 +46,21 @@ myComponentApp.navigator.changePage(
 
 ### Get the historyPages list
 ```
-const historyPages= myComponentApp.navigator.historyPages();
+const historyPages= this.navigator.historyPages();
 ```
 
 ### Get the listLevelPages list
 ```
-const listLevelPages= myComponentApp.navigator.listLevelPages();
+const listLevelPages= this.navigator.listLevelPages();
 ```
 ### Back 1 page history
 ```
-myComponentApp.nvigator.back();
+this.nvigator.back();
 ```
 
 ### Check if the mangerPages is busy
 ```
-const navigator_busy= myComponentApp.nvigator.busy;
+const navigator_busy= this.nvigator.busy;
 ```
 *busy return boolean  
 <br><br><br>
