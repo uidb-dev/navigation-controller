@@ -60,8 +60,6 @@ var Navigator = function (_React$Component) {
     };
     _this.myComponentApp = _this.props.myComponentApp;
 
-    _this.first = true;
-
     _this.historyPages = _this.state.historyPages;
 
     _this.listLevelPages = [];
@@ -82,13 +80,22 @@ var Navigator = function (_React$Component) {
     _this.props.onRef(_this);
 
     _this.changePage = _this.changePage.bind(_this);
+
+    if (Array.isArray(_this.props.children)) _this.props.children.map(function (child) {
+      if (child.key === null || child.key === "") window.console.log("react.cordova-navigation_controller: key value it's required");
+    });
+
     return _this;
   }
 
-  //----navigator and animation----///
-
-
   _createClass(Navigator, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      if (this.props.onChangePage !== undefined) this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], "In");
+    }
+    //----navigator and animation----///
+
+  }, {
     key: 'funAnimationIn1',
     value: function funAnimationIn1(goToPage, fromPage) {
       var fthis = this;
@@ -272,11 +279,6 @@ var Navigator = function (_React$Component) {
       var fthis = this;
       window.navigation_controller = this;
       var nowPage = this.state.historyPages[this.state.historyPages.length - 1];
-
-      if (this.first) {
-        if (this.props.onChangePage !== undefined) this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], "In");
-        this.first = false;
-      }
 
       this.historyPages = this.state.historyPages.slice();
       return Array.isArray(this.props.children) ? this.props.children.map(function (child) {
