@@ -247,7 +247,6 @@ export default class Navigator extends React.Component {
                 //     $('#navigatorBack').css('display', "flex");
                 // }
 
-                this.setState({ height: this.props.height });
 
                 if (callbackFun !== undefined)
                     callbackFun();
