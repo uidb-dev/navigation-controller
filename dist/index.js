@@ -242,7 +242,6 @@ var Navigator = function (_React$Component) {
                     //     $('#navigatorBack').css('display', "flex");
                     // }
 
-                    this.setState({ height: this.props.height });
 
                     if (callbackFun !== undefined) callbackFun();
                 }
