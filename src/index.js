@@ -294,14 +294,14 @@ export default class Navigator extends React.Component {
         this.historyPages = this.state.historyPages.slice();
         return Array.isArray(this.props.children)
             ? this.props.children.map(child => {
-                return <div style={{ backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff", height: fthis.state.height }}
+                return <div style={{ backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff", height: child.props.height !== null ? child.props.height : fthis.state.height }}
                     id={child.key} key={child.key} className={fthis.state.startPage === child.key ? "showPage scrollPage" : "hiddenPage"}>
                     {nowPage === child.key || fthis.state.historyPages.includes(child.key) || child.props.alwaysLive
                         ? child
                         : <div />}
                 </div>
             })
-            : <div style={{ backgroundColor: this.props.children.props.backgroundColor ? this.props.children.props.backgroundColor : "#fff", height: fthis.state.height }}
+            : <div style={{ backgroundColor: this.props.children.props.backgroundColor ? this.props.children.props.backgroundColor : "#fff", height: this.props.children.props.height !== null ? this.props.children.props : fthis.state.height }}
                 id={this.props.children.key} key={this.props.children.key} className={fthis.state.startPage === this.props.children.key ? "showPage scrollPage" : "hiddenPage"}>
                 {nowPage === this.props.children.key || fthis.state.historyPages.includes(this.props.children.key) || this.props.children.props.alwaysLive
                     ? this.props.children
