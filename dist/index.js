@@ -284,13 +284,19 @@ var Navigator = function (_React$Component) {
             return Array.isArray(this.props.children) ? this.props.children.map(function (child) {
                 return _react2.default.createElement(
                     'div',
-                    { style: { backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff", height: child.props.height !== null ? child.props.height : fthis.state.height },
+                    { style: {
+                            backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff",
+                            height: child.props.height ? child.props.height : fthis.state.height
+                        },
                         id: child.key, key: child.key, className: fthis.state.startPage === child.key ? "showPage scrollPage" : "hiddenPage" },
                     nowPage === child.key || fthis.state.historyPages.includes(child.key) || child.props.alwaysLive ? child : _react2.default.createElement('div', null)
                 );
             }) : _react2.default.createElement(
                 'div',
-                { style: { backgroundColor: this.props.children.props.backgroundColor ? this.props.children.props.backgroundColor : "#fff", height: this.props.children.props.height !== null ? this.props.children.props : fthis.state.height },
+                { style: {
+                        backgroundColor: this.props.children.props.backgroundColor ? this.props.children.props.backgroundColor : "#fff",
+                        height: this.props.children.props.height ? this.props.children.props : fthis.state.height
+                    },
                     id: this.props.children.key, key: this.props.children.key, className: fthis.state.startPage === this.props.children.key ? "showPage scrollPage" : "hiddenPage" },
                 nowPage === this.props.children.key || fthis.state.historyPages.includes(this.props.children.key) || this.props.children.props.alwaysLive ? this.props.children : _react2.default.createElement('div', null)
             );
