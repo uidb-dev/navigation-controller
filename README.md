@@ -10,18 +10,19 @@ In the render function return
 
  ```
  <Navigator
-       onRef={ref => (this.navigator = ref)} // Required
+       onRef={ref => (this.navigatorRef = ref)} // Required
         height={"100%"}
-        myComponentApp={this} // Required
-        onChangePage={(nowPageKey,levelAction) => { ... }}//levelAction="Out"||"In"||"SameLevel"  
-         beforChangePage={(goToPageKey,levelAction) => { ... }}//levelAction="Out"||"In"||"SameLevel"    
-        homePageKey={"home"} // Required
+        onChangePage={(nowPageKey,levelAction) => { ... }}// levelAction==>> "Out"||"In"||"SameLevel"  
+         beforChangePage={(goToPageKey,levelAction) => { ... }}// levelAction==>> "Out"||"In"||"SameLevel"    
+        homePageKey={"home"} // defult==>> The key of the first child
         >
+
             <MyHomePage key="home" levelPage={0} 
-           //alwaysLive={true} ///defult=>false
-           //backgroundColor="..." ///defult=>#fff
+           //alwaysLive={true} // defult==>> false
+           //backgroundColor="..." // defult==>> #fff
             />   
             <AboutPage key="about" levelPage={1} />
+  
   </Navigator>
 ```
 **Note: prop `levelPage` important to manage the returs (from back button) in the structure of a tree**<br><br>
@@ -30,11 +31,10 @@ To change page you get the ref and do:
 #### `this.navigator.changePage("about");` 
 the option to changePage it's:
 ```
-this.navigator.changePage(
-                goToPage //it's must
+this.navigatorRef.changePage(
+                goToPage //Required
                 ,animationIn//have defult
-                ,animationOut//have defult
-                //'animationIn' and 'animationOut' need name of the animated
+                ,animationOut//have defult ==>> 'animationIn' and 'animationOut' need name of the animated
                 , timeAnimationInMS // defult=250//ms
                 , callbackFun
               );
@@ -46,21 +46,21 @@ this.navigator.changePage(
 
 ### Get the historyPages list
 ```
-const historyPages= this.navigator.historyPages();
+const historyPages= this.navigatorRef.historyPages();
 ```
 
 ### Get the listLevelPages list
 ```
-const listLevelPages= this.navigator.listLevelPages();
+const listLevelPages= navigatorRef.listLevelPages();
 ```
 ### Back 1 page history
 ```
-this.nvigator.back();
+this.navigatorRef.back();
 ```
 
-### Check if the mangerPages is busy
+### Check if the mangerPages is busy 
 ```
-const navigator_busy= this.nvigator.busy;
+const navigator_busy= this.navigatorRef.busy;
 ```
 *busy return boolean  
 <br><br><br>

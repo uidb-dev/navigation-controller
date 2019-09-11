@@ -14,35 +14,41 @@ export default class Navigator extends React.Component {
             if (window.cordova.platformId !== "browser")
                 mobileMode = true;
         }
+        
+        const homePage = this.props.homePageKey ? this.props.homePageKey :
+            Array.isArray(this.props.children)
+                ? this.props.children[0].key
+                : this.props.children.key;
+
 
         if (mobileMode) {
-            startPage = this.props.homePageKey;
+            startPage = homePage;
         } else {
             startPage = location.href.substr(
                 location.href.lastIndexOf("/")) === "/" ||
                 location.href.substr(
                     location.href.lastIndexOf("/")) === "/#" ?
-                this.props.homePageKey :
+                    homePage :
                 location.href.substr(
                     location.href.lastIndexOf("/") + 2);
         }
 
 
         const historyPages = [];
-        historyPages.push(this.props.homePageKey);
-        if (startPage !== this.props.homePageKey)
+        historyPages.push(homePage);
+        if (startPage !== homePage)
             historyPages.push(startPage);
 
 
         this.state = {
             historyPages: historyPages,
             nowPage: startPage,
-            homePageKey: this.props.homePageKey,
+            homePageKey: homePage,
             height: this.props.height === null ? "100%" : this.props.height,
             startPage: startPage,
             mobileMode: mobileMode
         }
-        this.myComponentApp = this.props.myComponentApp;
+        // this.myComponentApp = this.props.myComponentApp;
 
         this.historyPages = this.state.historyPages;
 
@@ -54,13 +60,13 @@ export default class Navigator extends React.Component {
             this.props.children.forEach((child) => {
                 listLevelPages[child.key] =
                     child.props.levelPage === undefined ?
-                        child.key === this.state.homePageKey ?
+                        child.key === homePage ?
                             0 : 99 :
                         child.props.levelPage
             }) :
             listLevelPages[this.props.children.key] =
             this.props.children.props.levelPage === undefined ?
-                this.props.children.key === this.state.homePageKey ?
+                this.props.children.key === homePage ?
                     0 : 99 :
                 this.props.children.props.levelPage;
 
@@ -187,9 +193,9 @@ export default class Navigator extends React.Component {
                 if (this.state.historyPages.length === 1 &&
                     goToPage === undefined) {
                     console.log('"window.navigator.app.exitApp()"');
-                    fthis.showSwalLater ?
-                        fthis.myChildrens.swal.runSwal(true) :
-                        window.navigator.app.exitApp();
+                    // fthis.showSwalLater ?
+                    //     fthis.myChildrens.swal.runSwal(true) :
+                    window.navigator.app.exitApp();
                 } else {
                     ///שמור היסטוריה
                     let new_historyPages = this.state.historyPages.slice();
@@ -207,11 +213,11 @@ export default class Navigator extends React.Component {
                 if (!window.cordova)
                     location.href = location.href.substr(0,
                         location.href.lastIndexOf("/") + 1) +
-                        "#" + (goToPage !== this.props.homePageKey ? goToPage : "");
+                        "#" + (goToPage !== this.state.homePageKey ? goToPage : "");
                 else if (window.cordova.platformId === "browser")
                     location.href = location.href.substr(0,
                         location.href.lastIndexOf("/") + 1) +
-                        "#" + (goToPage !== this.props.homePageKey ? goToPage : "");
+                        "#" + (goToPage !== this.state.homePageKey ? goToPage : "");
 
 
                 //----navigator and animation----///
