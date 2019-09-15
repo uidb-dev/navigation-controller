@@ -40,35 +40,36 @@ var Navigator = function (_React$Component) {
             if (window.cordova.platformId !== "browser") mobileMode = true;
         }
 
+        var homePage = _this.props.homePageKey ? _this.props.homePageKey : Array.isArray(_this.props.children) ? _this.props.children[0].key : _this.props.children.key;
+
         if (mobileMode) {
-            startPage = _this.props.homePageKey;
+            startPage = homePage;
         } else {
             startPage = window.location.href.substr(window.location.href.lastIndexOf("/")) === "/" || window.location.href.substr(window.location.href.lastIndexOf("/")) === "/#" ? _this.props.homePageKey : window.location.href.substr(window.location.href.lastIndexOf("/") + 2);
         }
 
         var historyPages = [];
-        historyPages.push(_this.props.homePageKey);
-        if (startPage !== _this.props.homePageKey) historyPages.push(startPage);
+        historyPages.push(homePage);
+        if (startPage !== homePage) historyPages.push(startPage);
 
         _this.state = {
             historyPages: historyPages,
             nowPage: startPage,
-            homePageKey: _this.props.homePageKey,
+            homePageKey: homePage,
             height: _this.props.height === null ? "100%" : _this.props.height,
             startPage: startPage,
             mobileMode: mobileMode
-        };
-        _this.myComponentApp = _this.props.myComponentApp;
+            // this.myComponentApp = this.props.myComponentApp;
 
-        _this.historyPages = _this.state.historyPages;
+        };_this.historyPages = _this.state.historyPages;
 
         _this.listLevelPages = [];
 
         var listLevelPages = _this.listLevelPages;
 
         Array.isArray(_this.props.children) ? _this.props.children.forEach(function (child) {
-            listLevelPages[child.key] = child.props.levelPage === undefined ? child.key === _this.state.homePageKey ? 0 : 99 : child.props.levelPage;
-        }) : listLevelPages[_this.props.children.key] = _this.props.children.props.levelPage === undefined ? _this.props.children.key === _this.state.homePageKey ? 0 : 99 : _this.props.children.props.levelPage;
+            listLevelPages[child.key] = child.props.levelPage === undefined ? child.key === homePage ? 0 : 99 : child.props.levelPage;
+        }) : listLevelPages[_this.props.children.key] = _this.props.children.props.levelPage === undefined ? _this.props.children.key === homePage ? 0 : 99 : _this.props.children.props.levelPage;
 
         // const childrenWithProps = React.Children.map(this.props.children, child =>
         //   React.cloneElement(child, { doSomething: this.doSomething })
@@ -190,7 +191,9 @@ var Navigator = function (_React$Component) {
                     //סיום האפליקציה, סגור
                     if (this.state.historyPages.length === 1 && goToPage === undefined) {
                         console.log('"window.navigator.app.exitApp()"');
-                        fthis.showSwalLater ? fthis.myChildrens.swal.runSwal(true) : window.navigator.app.exitApp();
+                        // fthis.showSwalLater ?
+                        //     fthis.myChildrens.swal.runSwal(true) :
+                        window.navigator.app.exitApp();
                     } else {
                         ///שמור היסטוריה
                         var new_historyPages = this.state.historyPages.slice();
@@ -286,13 +289,19 @@ var Navigator = function (_React$Component) {
             return Array.isArray(this.props.children) ? this.props.children.map(function (child) {
                 return _react2.default.createElement(
                     'div',
-                    { style: { backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff", height: child.props.height !== null ? child.props.height : fthis.state.height },
+                    { style: {
+                            backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff",
+                            height: child.props.height ? child.props.height : fthis.state.height
+                        },
                         id: child.key, key: child.key, className: fthis.state.startPage === child.key ? "showPage scrollPage" : "hiddenPage" },
                     nowPage === child.key || fthis.state.historyPages.includes(child.key) || child.props.alwaysLive ? child : _react2.default.createElement('div', null)
                 );
             }) : _react2.default.createElement(
                 'div',
-                { style: { backgroundColor: this.props.children.props.backgroundColor ? this.props.children.props.backgroundColor : "#fff", height: this.props.children.props.height !== null ? this.props.children.props : fthis.state.height },
+                { style: {
+                        backgroundColor: this.props.children.props.backgroundColor ? this.props.children.props.backgroundColor : "#fff",
+                        height: this.props.children.props.height ? this.props.children.props : fthis.state.height
+                    },
                     id: this.props.children.key, key: this.props.children.key, className: fthis.state.startPage === this.props.children.key ? "showPage scrollPage" : "hiddenPage" },
                 nowPage === this.props.children.key || fthis.state.historyPages.includes(this.props.children.key) || this.props.children.props.alwaysLive ? this.props.children : _react2.default.createElement('div', null)
             );

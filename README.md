@@ -12,16 +12,16 @@ In the render function return
  <Navigator
        onRef={ref => (this.navigatorRef = ref)} // Required
         height={"100%"}
-        myComponentApp={this} // Required
-        onChangePage={(nowPageKey,levelAction) => { ... }}//levelAction="Out"||"In"||"SameLevel"  
-         beforChangePage={(goToPageKey,levelAction) => { ... }}//levelAction="Out"||"In"||"SameLevel"    
-        homePageKey={"home"} // Required
+        onChangePage={(nowPageKey,levelAction) => { ... }}// levelAction==>> "Out"||"In"||"SameLevel"  
+         beforChangePage={(goToPageKey,levelAction) => { ... }}// levelAction==>> "Out"||"In"||"SameLevel"    
+        homePageKey={"home"} // defult==>> The key of the first child
         >
+         
           <MyHomePage key="home" levelPage={0} />   
             <AboutPage key="about" 
             levelPage={1}   
-            backgroundColor="..." ///defult=>#fff
-            //alwaysLive={true} ///defult=>false
+            backgroundColor="..." // defult==>> #fff
+            //alwaysLive={true}  // defult==>> false
             />
           
   </Navigator>
@@ -33,10 +33,9 @@ To change page you get the ref and do:
 the option to changePage it's:
 ```
 this.navigatorRef.changePage(
-                goToPage //it's must
+                goToPage //Required
                 ,animationIn//have defult
-                ,animationOut//have defult
-                //'animationIn' and 'animationOut' need name of the animated
+                ,animationOut//have defult ==>> 'animationIn' and 'animationOut' need name of the animated
                 , timeAnimationInMS // defult=250//ms
                 , callbackFun
               );
@@ -61,10 +60,10 @@ const listLevelPages= this.navigatorRef.listLevelPages();
 ```
 ### Back 1 page history
 ```
-this.nvigator.back();
+this.navigatorRef.back();
 ```
 
-### Check if the mangerPages is busy
+### Check if the mangerPages is busy 
 ```
 const navigator_busy= this.navigatorRef.busy;
 ```
