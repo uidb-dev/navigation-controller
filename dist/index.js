@@ -45,7 +45,8 @@ var Navigator = function (_React$Component) {
         if (mobileMode) {
             startPage = homePage;
         } else {
-            startPage = window.location.href.substr(window.location.href.lastIndexOf("/")) === "/" || window.location.href.substr(window.location.href.lastIndexOf("/")) === "/#" ? _this.props.homePageKey : window.location.href.substr(window.location.href.lastIndexOf("/") + 2);
+
+            startPage = window.location.href.substr(window.location.href.lastIndexOf("/")) === "/" || window.location.href.substr(window.location.href.lastIndexOf("/")) === "/#" ? homePage : window.location.href.substr(window.location.href.lastIndexOf("/") + 2);
         }
 
         var historyPages = [];
@@ -210,7 +211,7 @@ var Navigator = function (_React$Component) {
                         this.setState({ historyPages: new_historyPages });
                     }
 
-                    if (!window.cordova) window.location.href = window.location.href.substr(0, window.location.href.lastIndexOf("/") + 1) + "#" + (goToPage !== this.props.homePageKey ? goToPage : "");else if (window.cordova.platformId === "browser") window.location.href = window.location.href.substr(0, window.location.href.lastIndexOf("/") + 1) + "#" + (goToPage !== this.props.homePageKey ? goToPage : "");
+                    if (!window.cordova) window.location.href = window.location.href.substr(0, window.location.href.lastIndexOf("/") + 1) + "#" + (goToPage !== this.state.homePageKey ? goToPage : "");else if (window.cordova.platformId === "browser") window.location.href = window.location.href.substr(0, window.location.href.lastIndexOf("/") + 1) + "#" + (goToPage !== this.state.homePageKey ? goToPage : "");
 
                     //----navigator and animation----///
 
