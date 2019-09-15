@@ -43,7 +43,7 @@ var Navigator = function (_React$Component) {
         if (mobileMode) {
             startPage = _this.props.homePageKey;
         } else {
-            startPage = location.href.substr(location.href.lastIndexOf("/")) === "/" || location.href.substr(location.href.lastIndexOf("/")) === "/#" ? _this.props.homePageKey : location.href.substr(location.href.lastIndexOf("/") + 2);
+            startPage = window.location.href.substr(window.location.href.lastIndexOf("/")) === "/" || window.location.href.substr(window.location.href.lastIndexOf("/")) === "/#" ? _this.props.homePageKey : window.location.href.substr(window.location.href.lastIndexOf("/") + 2);
         }
 
         var historyPages = [];
@@ -207,7 +207,7 @@ var Navigator = function (_React$Component) {
                         this.setState({ historyPages: new_historyPages });
                     }
 
-                    if (!window.cordova) location.href = location.href.substr(0, location.href.lastIndexOf("/") + 1) + "#" + (goToPage !== this.props.homePageKey ? goToPage : "");else if (window.cordova.platformId === "browser") location.href = location.href.substr(0, location.href.lastIndexOf("/") + 1) + "#" + (goToPage !== this.props.homePageKey ? goToPage : "");
+                    if (!window.cordova) window.location.href = window.location.href.substr(0, window.location.href.lastIndexOf("/") + 1) + "#" + (goToPage !== this.props.homePageKey ? goToPage : "");else if (window.cordova.platformId === "browser") window.location.href = window.location.href.substr(0, window.location.href.lastIndexOf("/") + 1) + "#" + (goToPage !== this.props.homePageKey ? goToPage : "");
 
                     //----navigator and animation----///
 
@@ -264,7 +264,7 @@ var Navigator = function (_React$Component) {
             } else {
                 //--back on change browser url
                 window.addEventListener("hashchange", function (e) {
-                    fthis.changePage(location.href.substr(location.href.lastIndexOf("/") + 2) === "" ? fthis.state.homePageKey : location.href.substr(location.href.lastIndexOf("/") + 2));
+                    fthis.changePage(window.location.href.substr(window.location.href.lastIndexOf("/") + 2) === "" ? fthis.state.homePageKey : window.location.href.substr(window.location.href.lastIndexOf("/") + 2));
                 });
             }
         }
@@ -277,8 +277,10 @@ var Navigator = function (_React$Component) {
         key: 'render',
         value: function render() {
             var fthis = this;
-            window.navigation_controller = this;
+            // window.navigation_controller = this;
             var nowPage = this.state.historyPages[this.state.historyPages.length - 1];
+            this.historyPages = this.state.historyPages;
+            this.nowPage = this.state.nowPage;
 
             this.historyPages = this.state.historyPages.slice();
             return Array.isArray(this.props.children) ? this.props.children.map(function (child) {

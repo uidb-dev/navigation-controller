@@ -18,13 +18,13 @@ export default class Navigator extends React.Component {
         if (mobileMode) {
             startPage = this.props.homePageKey;
         } else {
-            startPage = location.href.substr(
-                location.href.lastIndexOf("/")) === "/" ||
-                location.href.substr(
-                    location.href.lastIndexOf("/")) === "/#" ?
+            startPage = window.location.href.substr(
+                window.location.href.lastIndexOf("/")) === "/" ||
+                window.location.href.substr(
+                    window.location.href.lastIndexOf("/")) === "/#" ?
                 this.props.homePageKey :
-                location.href.substr(
-                    location.href.lastIndexOf("/") + 2);
+                window.location.href.substr(
+                    window.location.href.lastIndexOf("/") + 2);
         }
 
 
@@ -205,12 +205,12 @@ export default class Navigator extends React.Component {
                 }
 
                 if (!window.cordova)
-                    location.href = location.href.substr(0,
-                        location.href.lastIndexOf("/") + 1) +
+                    window.location.href = window.location.href.substr(0,
+                        window.location.href.lastIndexOf("/") + 1) +
                         "#" + (goToPage !== this.props.homePageKey ? goToPage : "");
                 else if (window.cordova.platformId === "browser")
-                    location.href = location.href.substr(0,
-                        location.href.lastIndexOf("/") + 1) +
+                    window.location.href = window.location.href.substr(0,
+                        window.location.href.lastIndexOf("/") + 1) +
                         "#" + (goToPage !== this.props.homePageKey ? goToPage : "");
 
 
@@ -271,10 +271,10 @@ export default class Navigator extends React.Component {
             //--back on change browser url
             window.addEventListener("hashchange", function (e) {
                 fthis.changePage(
-                    location.href.substr(
-                        location.href.lastIndexOf("/") + 2) === "" ? fthis.state.homePageKey :
-                        location.href.substr(
-                            location.href.lastIndexOf("/") + 2)
+                    window.location.href.substr(
+                        window.location.href.lastIndexOf("/") + 2) === "" ? fthis.state.homePageKey :
+                        window.location.href.substr(
+                            window.location.href.lastIndexOf("/") + 2)
                 );
             });
         }
@@ -287,8 +287,10 @@ export default class Navigator extends React.Component {
     }
     render() {
         const fthis = this;
-        window.navigation_controller = this;
+        // window.navigation_controller = this;
         const nowPage = this.state.historyPages[this.state.historyPages.length - 1];
+        this.historyPages=this.state.historyPages;
+        this.nowPage=this.state.nowPage;
 
 
         this.historyPages = this.state.historyPages.slice();
