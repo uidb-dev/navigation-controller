@@ -18,6 +18,8 @@ require('./styles.css');
 
 require('./animate.css');
 
+var _timers = require('timers');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -48,6 +50,9 @@ var Navigator = function (_React$Component) {
 
             startPage = window.location.href.substr(window.location.href.lastIndexOf("/")) === "/" || window.location.href.substr(window.location.href.lastIndexOf("/")) === "/#" ? homePage : window.location.href.substr(window.location.href.lastIndexOf("/") + 2);
         }
+        _this.touchBackPage = "";
+
+        _this.callbackFunOnChangePage = function () {};
 
         var historyPages = [];
         historyPages.push(homePage);
@@ -59,7 +64,8 @@ var Navigator = function (_React$Component) {
             homePageKey: homePage,
             height: _this.props.height === null ? "100%" : _this.props.height,
             startPage: startPage,
-            mobileMode: mobileMode
+            mobileMode: mobileMode,
+            swipeRight_x: 0
             // this.myComponentApp = this.props.myComponentApp;
 
         };_this.historyPages = _this.state.historyPages;
@@ -157,6 +163,7 @@ var Navigator = function (_React$Component) {
         value: function funAnimationOut2(goToPage, fromPage) {
             (0, _jquery2.default)('#' + fromPage).css('animation', '');
             (0, _jquery2.default)('#' + goToPage).css('z-index', "");
+            (0, _jquery2.default)('#' + goToPage).css('left', "");
             (0, _jquery2.default)('#' + fromPage).css('z-index', "");
             (0, _jquery2.default)('#' + fromPage).removeClass('showPage');
             (0, _jquery2.default)('#' + fromPage).removeClass('scrollPage');
@@ -175,8 +182,10 @@ var Navigator = function (_React$Component) {
         }
     }, {
         key: 'changePage',
-        value: function changePage(goToPage, animationIn, animationOut, timeAnimationInMS, callbackFun) {
+        value: function changePage(goToPage, param) {
             var _this3 = this;
+
+            if (param === undefined || param === null) param = {};
 
             if (!this.busy) {
                 var fthis = this;
@@ -184,7 +193,7 @@ var Navigator = function (_React$Component) {
                 var fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
 
                 //--animation time defult
-                var timeAnimation = timeAnimationInMS !== undefined && timeAnimationInMS !== null ? timeAnimationInMS : 250; //ms
+                var timeAnimation = param.timeAnimationInMS !== undefined && param.timeAnimationInMS !== null ? param.timeAnimationInMS : 250; //ms
 
                 if (goToPage !== fromPage) {
                     //---ניהול חזרות----//
@@ -221,22 +230,22 @@ var Navigator = function (_React$Component) {
 
                         if (this.listLevelPages[goToPage] === 1) {
                             //Up from level 0 to level 1
-                            (0, _jquery2.default)('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'slideInRight') + " " + timeAnimation + 'ms');
+                            (0, _jquery2.default)('#' + goToPage).css('animation', (param.animationIn !== null && param.animationIn !== undefined ? param.animationIn : 'slideInRight') + " " + timeAnimation + 'ms');
                         } else {
                             //else if (this.listLevelPages[goToPage] === 2) {
                             //Up from level 1 to level 2
-                            (0, _jquery2.default)('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'zoomIn') + " " + timeAnimation + 'ms');
+                            (0, _jquery2.default)('#' + goToPage).css('animation', (param.animationIn !== null && param.animationIn !== undefined ? param.animationIn : 'zoomIn') + " " + timeAnimation + 'ms');
                         }
                     } else {
                         //--חזרה בדפים Down--//   
                         this.funAnimationOut1(goToPage, fromPage);
                         if (this.listLevelPages[fromPage] === 1) {
                             //Down from level 1 to level 0
-                            (0, _jquery2.default)('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'slideOutRight') + " " + timeAnimation + 'ms');
+                            (0, _jquery2.default)('#' + fromPage).css('animation', (param.animationOut !== null && param.animationOut !== undefined ? param.animationOut : 'slideOutRight') + " " + timeAnimation + 'ms');
                         } else {
                             //else if (this.listLevelPages[goToPage] === 1) {
                             //Down from level 2 to level 1
-                            (0, _jquery2.default)('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'zoomOut') + " " + timeAnimation + 'ms');
+                            (0, _jquery2.default)('#' + fromPage).css('animation', (param.animationOut !== null && param.animationOut !== undefined ? param.animationOut : 'zoomOut') + " " + timeAnimation + 'ms');
                         }
                     }
                     // //עיצוב כפתור חזרה
@@ -247,7 +256,9 @@ var Navigator = function (_React$Component) {
                     // }
 
 
-                    if (callbackFun !== undefined) callbackFun();
+                    if (param.callbackFun !== undefined) param.callbackFun();
+
+                    this.callbackFunOnChangePage;
                 }
             }
         }
@@ -280,6 +291,8 @@ var Navigator = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
+            var _this4 = this;
+
             var fthis = this;
             // window.navigation_controller = this;
             var nowPage = this.state.historyPages[this.state.historyPages.length - 1];
@@ -290,7 +303,59 @@ var Navigator = function (_React$Component) {
             return Array.isArray(this.props.children) ? this.props.children.map(function (child) {
                 return _react2.default.createElement(
                     'div',
-                    { style: {
+                    {
+                        onTouchStart: function onTouchStart(e) {
+                            if (child.props.backOnSwipeRight) {
+                                if (e.touches[0].clientX < 40) {
+                                    fthis.touchBackPage = nowPage;
+                                    fthis.swipeRight = true;
+                                    fthis.setState({ swipeRight_x: e.touches[0].clientX });
+
+                                    var goToPage = _this4.state.historyPages[_this4.state.historyPages.length - 2];
+
+                                    (0, _jquery2.default)('#' + goToPage).css('z-index', 0);
+                                    (0, _jquery2.default)('#' + nowPage).css('z-index', 89);
+                                    (0, _jquery2.default)('#' + goToPage).removeClass('hiddenPage');
+                                    (0, _jquery2.default)('#' + goToPage).addClass('showPage');
+                                }
+                            }
+                        },
+                        onTouchMove: function onTouchMove(e) {
+                            if (fthis.swipeRight) {
+                                fthis.setState({ swipeRight_x: e.touches[0].clientX });
+                            }
+                        },
+                        onTouchEnd: function onTouchEnd(e) {
+
+                            var goToPage = _this4.state.historyPages[_this4.state.historyPages.length - 2];
+
+                            fthis.callbackFunOnChangePage = function () {
+                                debugger;
+                                (0, _jquery2.default)('#' + fthis.touchBackPage).css('left', "");
+                                fthis.setState({ swipeRight_x: 0 });
+                                fthis.swipeRight = false;
+                                fthis.touchBackPage = "";
+                                fthis.callbackFunOnChangePage = function () {};
+                            };
+
+                            if (fthis.swipeRight && fthis.state.swipeRight_x > 80) {
+                                // fthis.touchBackPage = nowPage;
+                                fthis.back();
+                            } else {
+                                (0, _jquery2.default)('#' + nowPage).css('left', "");
+                                (0, _jquery2.default)('#' + goToPage).css('z-index', "");
+                                (0, _jquery2.default)('#' + nowPage).css('z-index', "");
+                                (0, _jquery2.default)('#' + goToPage).removeClass('showPage');
+                                (0, _jquery2.default)('#' + goToPage).addClass('hiddenPage');
+                                fthis.setState({ swipeRight_x: 0 });
+                                fthis.swipeRight = false;
+                                fthis.touchBackPage = "";
+                            }
+
+                            // }
+                        },
+                        style: {
+                            left: fthis.swipeRight ? fthis.touchBackPage === child.key ? fthis.state.swipeRight_x : "" : "",
                             backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff",
                             height: child.props.height ? child.props.height : fthis.state.height
                         },

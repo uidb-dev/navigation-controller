@@ -2,6 +2,7 @@ import React from 'react';
 import $ from './jquery-3.3.1.min';
 import './styles.css';
 import './animate.css';
+import { setTimeout } from 'timers';
 
 export default class Navigator extends React.Component {
 
@@ -33,7 +34,9 @@ export default class Navigator extends React.Component {
                 window.location.href.substr(
                     window.location.href.lastIndexOf("/") + 2);
         }
+        this.touchBackPage = "";
 
+        this.callbackFunOnChangePage = () => { };
 
         const historyPages = [];
         historyPages.push(homePage);
@@ -47,7 +50,8 @@ export default class Navigator extends React.Component {
             homePageKey: homePage,
             height: this.props.height === null ? "100%" : this.props.height,
             startPage: startPage,
-            mobileMode: mobileMode
+            mobileMode: mobileMode,
+            swipeRight_x: 0
         }
         // this.myComponentApp = this.props.myComponentApp;
 
@@ -156,6 +160,7 @@ export default class Navigator extends React.Component {
     funAnimationOut2(goToPage, fromPage) {
         $('#' + fromPage).css('animation', '');
         $('#' + goToPage).css('z-index', "");
+        $('#' + goToPage).css('left', "");
         $('#' + fromPage).css('z-index', "");
         $('#' + fromPage).removeClass('showPage');
         $('#' + fromPage).removeClass('scrollPage');
@@ -176,7 +181,11 @@ export default class Navigator extends React.Component {
 
     }
 
-    changePage(goToPage, animationIn, animationOut, timeAnimationInMS, callbackFun) {
+
+    changePage(goToPage, param) {
+
+        if (param === undefined || param === null)
+            param = {};
 
         if (!this.busy) {
             const fthis = this;
@@ -184,7 +193,7 @@ export default class Navigator extends React.Component {
             const fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
 
             //--animation time defult
-            const timeAnimation = timeAnimationInMS !== undefined && timeAnimationInMS !== null ? timeAnimationInMS :
+            const timeAnimation = param.timeAnimationInMS !== undefined && param.timeAnimationInMS !== null ? param.timeAnimationInMS :
                 250; //ms
 
             if (goToPage !== fromPage) {
@@ -230,21 +239,21 @@ export default class Navigator extends React.Component {
 
                     if (this.listLevelPages[goToPage] === 1) {
                         //Up from level 0 to level 1
-                        $('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'slideInRight') + " " + timeAnimation + 'ms');
+                        $('#' + goToPage).css('animation', (param.animationIn !== null && param.animationIn !== undefined ? param.animationIn : 'slideInRight') + " " + timeAnimation + 'ms');
 
                     } else { //else if (this.listLevelPages[goToPage] === 2) {
                         //Up from level 1 to level 2
-                        $('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'zoomIn') + " " + timeAnimation + 'ms');
+                        $('#' + goToPage).css('animation', (param.animationIn !== null && param.animationIn !== undefined ? param.animationIn : 'zoomIn') + " " + timeAnimation + 'ms');
                     }
                 } else {
                     //--חזרה בדפים Down--//   
                     this.funAnimationOut1(goToPage, fromPage);
                     if (this.listLevelPages[fromPage] === 1) {
                         //Down from level 1 to level 0
-                        $('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'slideOutRight') + " " + timeAnimation + 'ms');
+                        $('#' + fromPage).css('animation', (param.animationOut !== null && param.animationOut !== undefined ? param.animationOut : 'slideOutRight') + " " + timeAnimation + 'ms');
                     } else { //else if (this.listLevelPages[goToPage] === 1) {
                         //Down from level 2 to level 1
-                        $('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'zoomOut') + " " + timeAnimation + 'ms');
+                        $('#' + fromPage).css('animation', (param.animationOut !== null && param.animationOut !== undefined ? param.animationOut : 'zoomOut') + " " + timeAnimation + 'ms');
 
                     }
                 }
@@ -256,8 +265,10 @@ export default class Navigator extends React.Component {
                 // }
 
 
-                if (callbackFun !== undefined)
-                    callbackFun();
+                if (param.callbackFun !== undefined)
+                    param.callbackFun();
+
+                this.callbackFunOnChangePage
             }
         }
 
@@ -293,21 +304,79 @@ export default class Navigator extends React.Component {
     back() {
         this.changePage(this.state.historyPages[this.state.historyPages.length - 2]);
     }
+
     render() {
         const fthis = this;
         // window.navigation_controller = this;
         const nowPage = this.state.historyPages[this.state.historyPages.length - 1];
         this.historyPages = this.state.historyPages;
         this.nowPage = this.state.nowPage;
-
+      
 
         this.historyPages = this.state.historyPages.slice();
         return Array.isArray(this.props.children)
             ? this.props.children.map(child => {
-                return <div style={{
-                    backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff"
-                    , height: child.props.height ? child.props.height : fthis.state.height
-                }}
+                return <div
+                    onTouchStart={(e) => {
+                        if (child.props.backOnSwipeRight) {
+                            if (e.touches[0].clientX < 40) {
+                                fthis.touchBackPage = nowPage;
+                                fthis.swipeRight = true;
+                                fthis.setState({ swipeRight_x: e.touches[0].clientX });
+
+                                const goToPage = this.state.historyPages[this.state.historyPages.length - 2];
+
+                                $('#' + goToPage).css('z-index', 0);
+                                $('#' + nowPage).css('z-index', 89);
+                                $('#' + goToPage).removeClass('hiddenPage');
+                                $('#' + goToPage).addClass('showPage');
+                            }
+
+                        }
+                    }}
+                    onTouchMove={(e) => {
+                        if (fthis.swipeRight) {
+                            fthis.setState({ swipeRight_x: e.touches[0].clientX });
+                        }
+                    }}
+                    onTouchEnd={(e) => {
+
+                        const goToPage = this.state.historyPages[this.state.historyPages.length - 2];
+
+
+                        fthis.callbackFunOnChangePage = () => {
+                            debugger
+                            $('#' +  fthis.touchBackPage).css('left', "");
+                            fthis.setState({ swipeRight_x: 0 });
+                            fthis.swipeRight = false;
+                            fthis.touchBackPage ="";
+                            fthis.callbackFunOnChangePage = () => { };
+                        }
+
+                        if (fthis.swipeRight && fthis.state.swipeRight_x > 80) {
+                           // fthis.touchBackPage = nowPage;
+                            fthis.back();
+
+                        } else {
+                            $('#' + nowPage).css('left', "");
+                            $('#' + goToPage).css('z-index', "");
+                            $('#' + nowPage).css('z-index', "");
+                            $('#' + goToPage).removeClass('showPage');
+                            $('#' + goToPage).addClass('hiddenPage');
+                            fthis.setState({ swipeRight_x: 0 });
+                            fthis.swipeRight = false;
+                            fthis.touchBackPage ="";
+                        }
+
+
+
+                        // }
+                    }}
+                    style={{
+                        left: fthis.swipeRight ? (fthis.touchBackPage === child.key ? fthis.state.swipeRight_x : "") : "",
+                        backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff"
+                        , height: child.props.height ? child.props.height : fthis.state.height
+                    }}
                     id={child.key} key={child.key} className={fthis.state.startPage === child.key ? "showPage scrollPage" : "hiddenPage"}>
                     {nowPage === child.key || fthis.state.historyPages.includes(child.key) || child.props.alwaysLive
                         ? child
