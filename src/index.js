@@ -170,6 +170,8 @@ export default class Navigator extends React.Component {
 
         if (this.props.onChangePage !== undefined)
             this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], this.compareTwoPagesLavel(goToPage, fromPage));
+
+        this.callbackFunOnChangePage();
     }
 
     compareTwoPagesLavel(goToPage, fromPage) {
@@ -268,7 +270,6 @@ export default class Navigator extends React.Component {
                 if (param.callbackFun !== undefined)
                     param.callbackFun();
 
-                this.callbackFunOnChangePage
             }
         }
 
@@ -311,7 +312,7 @@ export default class Navigator extends React.Component {
         const nowPage = this.state.historyPages[this.state.historyPages.length - 1];
         this.historyPages = this.state.historyPages;
         this.nowPage = this.state.nowPage;
-      
+
 
         this.historyPages = this.state.historyPages.slice();
         return Array.isArray(this.props.children)
@@ -345,16 +346,16 @@ export default class Navigator extends React.Component {
 
 
                         fthis.callbackFunOnChangePage = () => {
-                            debugger
-                            $('#' +  fthis.touchBackPage).css('left', "");
+                            $('#' + fthis.touchBackPage).css('left', "");
                             fthis.setState({ swipeRight_x: 0 });
                             fthis.swipeRight = false;
-                            fthis.touchBackPage ="";
+                            fthis.touchBackPage = "";
                             fthis.callbackFunOnChangePage = () => { };
                         }
 
+
                         if (fthis.swipeRight && fthis.state.swipeRight_x > 80) {
-                           // fthis.touchBackPage = nowPage;
+                            // fthis.touchBackPage = nowPage;
                             fthis.back();
 
                         } else {
@@ -365,7 +366,7 @@ export default class Navigator extends React.Component {
                             $('#' + goToPage).addClass('hiddenPage');
                             fthis.setState({ swipeRight_x: 0 });
                             fthis.swipeRight = false;
-                            fthis.touchBackPage ="";
+                            fthis.touchBackPage = "";
                         }
 
 

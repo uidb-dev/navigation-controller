@@ -28,6 +28,12 @@ In the render function return
 ```
 **Note: prop `levelPage` important to manage the returs (from back button) in the structure of a tree**<br><br>
 
+
+Navigator Props 
+```
+onRef={ref => (this.navigatorRef = ref)} // Required
+```
+
 To change page you get the ref and do:
 #### `this.navigatorRef.changePage("about");` 
 the option to changePage it's:

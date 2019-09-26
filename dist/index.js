@@ -172,6 +172,8 @@ var Navigator = function (_React$Component) {
             this.setState({ nowPage: goToPage });
 
             if (this.props.onChangePage !== undefined) this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], this.compareTwoPagesLavel(goToPage, fromPage));
+
+            this.callbackFunOnChangePage();
         }
     }, {
         key: 'compareTwoPagesLavel',
@@ -257,8 +259,6 @@ var Navigator = function (_React$Component) {
 
 
                     if (param.callbackFun !== undefined) param.callbackFun();
-
-                    this.callbackFunOnChangePage;
                 }
             }
         }
@@ -330,7 +330,6 @@ var Navigator = function (_React$Component) {
                             var goToPage = _this4.state.historyPages[_this4.state.historyPages.length - 2];
 
                             fthis.callbackFunOnChangePage = function () {
-                                debugger;
                                 (0, _jquery2.default)('#' + fthis.touchBackPage).css('left', "");
                                 fthis.setState({ swipeRight_x: 0 });
                                 fthis.swipeRight = false;
