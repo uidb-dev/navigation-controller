@@ -9,14 +9,16 @@ It's manager for your pages like mobile app.<br>
 In the render function return
 
  ```
- <Navigator  onRef={ref => (this.navigatorRef = ref)}   >
+ <Navigator onRef={ref => (this.navigatorRef = ref)} >
+         
          
           <MyHomePage key="home" levelPage={0} />   
            
            <AboutPage key="about" 
             levelPage={1}   
             />
-          
+       
+       
   </Navigator>
 ```
 **Note: prop `levelPage` important to manage the returs (from back button) in the structure of a tree**<br><br>
