@@ -9,19 +9,12 @@ It's manager for your pages like mobile app.<br>
 In the render function return
 
  ```
- <Navigator
-       onRef={ref => (this.navigatorRef = ref)} // Required
-        height={"100%"}
-        onChangePage={(nowPageKey,levelAction) => { ... }}// levelAction==>> "Out"||"In"||"SameLevel"  
-         beforChangePage={(goToPageKey,levelAction) => { ... }}// levelAction==>> "Out"||"In"||"SameLevel"    
-        homePageKey={"home"} // defult==>> The key of the first child
-        >
+ <Navigator  onRef={ref => (this.navigatorRef = ref)}   >
          
           <MyHomePage key="home" levelPage={0} />   
-            <AboutPage key="about" 
+           
+           <AboutPage key="about" 
             levelPage={1}   
-            backgroundColor="..." // defult==>> #fff
-            //alwaysLive={true}  // defult==>> false
             />
           
   </Navigator>
@@ -29,10 +22,7 @@ In the render function return
 **Note: prop `levelPage` important to manage the returs (from back button) in the structure of a tree**<br><br>
 
 
-Navigator Props 
-```
-onRef={ref => (this.navigatorRef = ref)} // Required
-```
+
 
 To change page you get the ref and do:
 #### `this.navigatorRef.changePage("about");` 
@@ -40,36 +30,60 @@ the option to changePage it's:
 ```
 this.navigatorRef.changePage(
                 goToPage //Required
-                ,animationIn//have defult
-                ,animationOut//have defult ==>> 'animationIn' and 'animationOut' need name of the animated
-                , timeAnimationInMS // defult=250//ms
-                , callbackFun
+              ,{options}// Not requred
               );
 ```
+options:{  animationIn:integer // have defult
+                ,animationOut:string // have defult
+                , timeAnimationInMS:integer // defult=250(ms)
+                , callbackFun:function}
+
 *`animationIn` and `animationOut` need name animate from https://daneden.github.io/animate.css/  <br> 
 *the animate.css includ in this package
 
 ## Options:
 
-### Check what is page now
+### Navigator props 
+``key={string}`` Required
+<br>
+``height={...}``
+<br>
+``onChangePage={(nowPageKey,levelAction) => { ... }}`` levelAction==>> "Out"||"In"||"SameLevel"
+<br>
+``beforChangePage={(goToPageKey,levelAction) => { ... }}`` levelAction==>> "Out"||"In"||"SameLevel"
+<br>
+``homePageKey={"home"}``  defult==>> The key of the first child
+
+### Child props 
+``onRef={ref => (this.navigatorRef = ref)}`` required
+<br>
+``levelPage=={integer}`` important
+<br>
+``backgroundColor="..."``  defult==>> #fff
+<br>
+`` //alwaysLive={true}``defult==>> false
+
+
+
+#### Check what is page now
 ```
 const nowPage= this.navigatorRef.nowPage;
 ```
-### Get the historyPages list
+#### Get the historyPages list
 ```
 const historyPages= this.navigatorRef.historyPages();
 ```
 
-### Get the listLevelPages list
+#### Get the listLevelPages list
 ```
 const listLevelPages= this.navigatorRef.listLevelPages();
 ```
-### Back 1 page history
+#### Back 1 page history
 ```
 this.navigatorRef.back();
 ```
 
-### Check if the mangerPages is busy 
+#### Check if the mangerPages is busy 
 ```
 const navigator_busy= this.navigatorRef.busy;
 ```
