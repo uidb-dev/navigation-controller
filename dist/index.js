@@ -65,7 +65,8 @@ var Navigator = function (_React$Component) {
             height: _this.props.height === null ? "100%" : _this.props.height,
             startPage: startPage,
             mobileMode: mobileMode,
-            swipeRight_x: 0
+            swipeRight_x: 0,
+            props: []
             // this.myComponentApp = this.props.myComponentApp;
 
         };_this.historyPages = _this.state.historyPages;
@@ -187,6 +188,12 @@ var Navigator = function (_React$Component) {
         value: function changePage(goToPage, param) {
             var _this3 = this;
 
+            if (param.props !== undefined) {
+                var oldProps = this.state.props;
+                oldProps[goToPage] = param.props;
+                this.setState({ props: oldProps });
+            } else {}
+
             if (param === undefined || param === null) param = {};
 
             if (!this.busy) {
@@ -293,6 +300,7 @@ var Navigator = function (_React$Component) {
         value: function render() {
             var _this4 = this;
 
+            debugger;
             var fthis = this;
             // window.navigation_controller = this;
             var nowPage = this.state.historyPages[this.state.historyPages.length - 1];
@@ -326,29 +334,30 @@ var Navigator = function (_React$Component) {
                             }
                         },
                         onTouchEnd: function onTouchEnd(e) {
-
-                            var goToPage = _this4.state.historyPages[_this4.state.historyPages.length - 2];
-
-                            fthis.callbackFunOnChangePage = function () {
-                                (0, _jquery2.default)('#' + fthis.touchBackPage).css('left', "");
-                                fthis.setState({ swipeRight_x: 0 });
-                                fthis.swipeRight = false;
-                                fthis.touchBackPage = "";
-                                fthis.callbackFunOnChangePage = function () {};
-                            };
-
                             if (fthis.swipeRight && fthis.state.swipeRight_x > 80) {
-                                // fthis.touchBackPage = nowPage;
-                                fthis.back();
-                            } else {
-                                (0, _jquery2.default)('#' + nowPage).css('left', "");
-                                (0, _jquery2.default)('#' + goToPage).css('z-index', "");
-                                (0, _jquery2.default)('#' + nowPage).css('z-index', "");
-                                (0, _jquery2.default)('#' + goToPage).removeClass('showPage');
-                                (0, _jquery2.default)('#' + goToPage).addClass('hiddenPage');
-                                fthis.setState({ swipeRight_x: 0 });
-                                fthis.swipeRight = false;
-                                fthis.touchBackPage = "";
+                                var goToPage = _this4.state.historyPages[_this4.state.historyPages.length - 2];
+
+                                fthis.callbackFunOnChangePage = function () {
+                                    (0, _jquery2.default)('#' + fthis.touchBackPage).css('left', "");
+                                    fthis.setState({ swipeRight_x: 0 });
+                                    fthis.swipeRight = false;
+                                    fthis.touchBackPage = "";
+                                    fthis.callbackFunOnChangePage = function () {};
+                                };
+
+                                if (fthis.swipeRight && fthis.state.swipeRight_x > 80) {
+                                    // fthis.touchBackPage = nowPage;
+                                    fthis.back();
+                                } else {
+                                    (0, _jquery2.default)('#' + nowPage).css('left', "");
+                                    (0, _jquery2.default)('#' + goToPage).css('z-index', "");
+                                    (0, _jquery2.default)('#' + nowPage).css('z-index', "");
+                                    (0, _jquery2.default)('#' + goToPage).removeClass('showPage');
+                                    (0, _jquery2.default)('#' + goToPage).addClass('hiddenPage');
+                                    fthis.setState({ swipeRight_x: 0 });
+                                    fthis.swipeRight = false;
+                                    fthis.touchBackPage = "";
+                                }
                             }
 
                             // }
