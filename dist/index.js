@@ -307,6 +307,17 @@ var Navigator = function (_React$Component) {
             this.historyPages = this.state.historyPages;
             this.nowPage = this.state.nowPage;
 
+            // if (Array.isArray(this.props.children)) {
+            //     this.props.children.map(child => {
+            //         if (fthis.state.props[child.key] !== undefined) { 
+            //             fthis.state.props[child.key].forEach((prop)=>{
+            //                 this.props.children.filter((x)=>x.key===child.key)[0].props[prop]
+            //             })
+            //         }
+            //     });
+            // }
+
+
             this.historyPages = this.state.historyPages.slice();
             return Array.isArray(this.props.children) ? this.props.children.map(function (child) {
                 return _react2.default.createElement(
