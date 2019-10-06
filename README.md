@@ -46,6 +46,8 @@ options=>{  animationIn:integer // have defult
 ## Options:
 
 ### Navigator props 
+``onRef={ref => (this.navigatorRef = ref)}`` required
+<br>
 ``key={string}`` Required
 <br>
 ``height={...}``
@@ -57,11 +59,11 @@ options=>{  animationIn:integer // have defult
 ``homePageKey={"home"}``  defult==>> The key of the first child
 
 ### Child props 
-``onRef={ref => (this.navigatorRef = ref)}`` required
-<br>
 ``levelPage=={integer}`` important
 <br>
 ``backgroundColor="..."``  defult==>> #fff
+<br>
+`` //backOnSwipeRight={true}``defult==>> false
 <br>
 `` //alwaysLive={true}``defult==>> false
 
