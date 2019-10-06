@@ -185,18 +185,27 @@ export default class Navigator extends React.Component {
     }
 
 
-    changePage(goToPage, param) {
-        if (param.props !== undefined) {
+    changePage(goToPage, options) {
+
+        options = options === undefined ? [] : options;
+        
+        const {
+            props = null
+            , animationIn = null
+            , timeAnimationInMS = 250
+            , animationOut = null
+            , callbackFun = null } = options;
+
+
+        if (props !== null) {
             let oldProps = this.state.props;
-            oldProps[goToPage] = param.props;
+            oldProps[goToPage] = props;
             this.setState({ props: oldProps });
         } else {
 
         }
 
 
-        if (param === undefined || param === null)
-            param = {};
 
         if (!this.busy) {
             const fthis = this;
@@ -204,8 +213,8 @@ export default class Navigator extends React.Component {
             const fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
 
             //--animation time defult
-            const timeAnimation = param.timeAnimationInMS !== undefined && param.timeAnimationInMS !== null ? param.timeAnimationInMS :
-                250; //ms
+            const timeAnimation = timeAnimationInMS;  //param.timeAnimationInMS !== undefined && param.timeAnimationInMS !== null ? param.timeAnimationInMS :
+            //     250; //ms
 
             if (goToPage !== fromPage) {
                 //---ניהול חזרות----//
@@ -250,21 +259,21 @@ export default class Navigator extends React.Component {
 
                     if (this.listLevelPages[goToPage] === 1) {
                         //Up from level 0 to level 1
-                        $('#' + goToPage).css('animation', (param.animationIn !== null && param.animationIn !== undefined ? param.animationIn : 'slideInRight') + " " + timeAnimation + 'ms');
+                        $('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'slideInRight') + " " + timeAnimation + 'ms');
 
                     } else { //else if (this.listLevelPages[goToPage] === 2) {
                         //Up from level 1 to level 2
-                        $('#' + goToPage).css('animation', (param.animationIn !== null && param.animationIn !== undefined ? param.animationIn : 'zoomIn') + " " + timeAnimation + 'ms');
+                        $('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'zoomIn') + " " + timeAnimation + 'ms');
                     }
                 } else {
                     //--חזרה בדפים Down--//   
                     this.funAnimationOut1(goToPage, fromPage);
                     if (this.listLevelPages[fromPage] === 1) {
                         //Down from level 1 to level 0
-                        $('#' + fromPage).css('animation', (param.animationOut !== null && param.animationOut !== undefined ? param.animationOut : 'slideOutRight') + " " + timeAnimation + 'ms');
+                        $('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'slideOutRight') + " " + timeAnimation + 'ms');
                     } else { //else if (this.listLevelPages[goToPage] === 1) {
                         //Down from level 2 to level 1
-                        $('#' + fromPage).css('animation', (param.animationOut !== null && param.animationOut !== undefined ? param.animationOut : 'zoomOut') + " " + timeAnimation + 'ms');
+                        $('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'zoomOut') + " " + timeAnimation + 'ms');
 
                     }
                 }
@@ -278,8 +287,8 @@ export default class Navigator extends React.Component {
 
 
 
-                if (param.callbackFun !== undefined)
-                    param.callbackFun();
+                if (callbackFun !== undefined && callbackFun !== null)
+                    callbackFun();
 
             }
         }
@@ -318,7 +327,7 @@ export default class Navigator extends React.Component {
     }
 
     render() {
-        debugger
+        // debugger
         const fthis = this;
         // window.navigation_controller = this;
         const nowPage = this.state.historyPages[this.state.historyPages.length - 1];

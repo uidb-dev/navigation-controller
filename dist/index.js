@@ -185,16 +185,29 @@ var Navigator = function (_React$Component) {
         }
     }, {
         key: 'changePage',
-        value: function changePage(goToPage, param) {
+        value: function changePage(goToPage, options) {
             var _this3 = this;
 
-            if (param.props !== undefined) {
+            options = options === undefined ? [] : options;
+
+            var _options = options,
+                _options$props = _options.props,
+                props = _options$props === undefined ? null : _options$props,
+                _options$animationIn = _options.animationIn,
+                animationIn = _options$animationIn === undefined ? null : _options$animationIn,
+                _options$timeAnimatio = _options.timeAnimationInMS,
+                timeAnimationInMS = _options$timeAnimatio === undefined ? 250 : _options$timeAnimatio,
+                _options$animationOut = _options.animationOut,
+                animationOut = _options$animationOut === undefined ? null : _options$animationOut,
+                _options$callbackFun = _options.callbackFun,
+                callbackFun = _options$callbackFun === undefined ? null : _options$callbackFun;
+
+
+            if (props !== null) {
                 var oldProps = this.state.props;
-                oldProps[goToPage] = param.props;
+                oldProps[goToPage] = props;
                 this.setState({ props: oldProps });
             } else {}
-
-            if (param === undefined || param === null) param = {};
 
             if (!this.busy) {
                 var fthis = this;
@@ -202,7 +215,8 @@ var Navigator = function (_React$Component) {
                 var fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
 
                 //--animation time defult
-                var timeAnimation = param.timeAnimationInMS !== undefined && param.timeAnimationInMS !== null ? param.timeAnimationInMS : 250; //ms
+                var timeAnimation = timeAnimationInMS; //param.timeAnimationInMS !== undefined && param.timeAnimationInMS !== null ? param.timeAnimationInMS :
+                //     250; //ms
 
                 if (goToPage !== fromPage) {
                     //---ניהול חזרות----//
@@ -239,22 +253,22 @@ var Navigator = function (_React$Component) {
 
                         if (this.listLevelPages[goToPage] === 1) {
                             //Up from level 0 to level 1
-                            (0, _jquery2.default)('#' + goToPage).css('animation', (param.animationIn !== null && param.animationIn !== undefined ? param.animationIn : 'slideInRight') + " " + timeAnimation + 'ms');
+                            (0, _jquery2.default)('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'slideInRight') + " " + timeAnimation + 'ms');
                         } else {
                             //else if (this.listLevelPages[goToPage] === 2) {
                             //Up from level 1 to level 2
-                            (0, _jquery2.default)('#' + goToPage).css('animation', (param.animationIn !== null && param.animationIn !== undefined ? param.animationIn : 'zoomIn') + " " + timeAnimation + 'ms');
+                            (0, _jquery2.default)('#' + goToPage).css('animation', (animationIn !== null && animationIn !== undefined ? animationIn : 'zoomIn') + " " + timeAnimation + 'ms');
                         }
                     } else {
                         //--חזרה בדפים Down--//   
                         this.funAnimationOut1(goToPage, fromPage);
                         if (this.listLevelPages[fromPage] === 1) {
                             //Down from level 1 to level 0
-                            (0, _jquery2.default)('#' + fromPage).css('animation', (param.animationOut !== null && param.animationOut !== undefined ? param.animationOut : 'slideOutRight') + " " + timeAnimation + 'ms');
+                            (0, _jquery2.default)('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'slideOutRight') + " " + timeAnimation + 'ms');
                         } else {
                             //else if (this.listLevelPages[goToPage] === 1) {
                             //Down from level 2 to level 1
-                            (0, _jquery2.default)('#' + fromPage).css('animation', (param.animationOut !== null && param.animationOut !== undefined ? param.animationOut : 'zoomOut') + " " + timeAnimation + 'ms');
+                            (0, _jquery2.default)('#' + fromPage).css('animation', (animationOut !== null && animationOut !== undefined ? animationOut : 'zoomOut') + " " + timeAnimation + 'ms');
                         }
                     }
                     // //עיצוב כפתור חזרה
@@ -265,7 +279,7 @@ var Navigator = function (_React$Component) {
                     // }
 
 
-                    if (param.callbackFun !== undefined) param.callbackFun();
+                    if (callbackFun !== undefined && callbackFun !== null) callbackFun();
                 }
             }
         }
@@ -300,12 +314,23 @@ var Navigator = function (_React$Component) {
         value: function render() {
             var _this4 = this;
 
-            debugger;
+            // debugger
             var fthis = this;
             // window.navigation_controller = this;
             var nowPage = this.state.historyPages[this.state.historyPages.length - 1];
             this.historyPages = this.state.historyPages;
             this.nowPage = this.state.nowPage;
+
+            // if (Array.isArray(this.props.children)) {
+            //     this.props.children.map(child => {
+            //         if (fthis.state.props[child.key] !== undefined) { 
+            //             fthis.state.props[child.key].forEach((prop)=>{
+            //                 this.props.children.filter((x)=>x.key===child.key)[0].props[prop]
+            //             })
+            //         }
+            //     });
+            // }
+
 
             this.historyPages = this.state.historyPages.slice();
             return Array.isArray(this.props.children) ? this.props.children.map(function (child) {

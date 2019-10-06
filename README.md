@@ -35,7 +35,7 @@ this.navigatorRef.changePage(
               ,{options}// Not requred
               );
 ```
-options:{  animationIn:integer // have defult
+options=>{  animationIn:integer // have defult
                 ,animationOut:string // have defult
                 , timeAnimationInMS:integer // defult=250(ms)
                 , callbackFun:function}
