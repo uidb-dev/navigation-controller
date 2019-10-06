@@ -34,6 +34,11 @@ var Navigator = function (_React$Component) {
     function Navigator(props) {
         _classCallCheck(this, Navigator);
 
+        /*
+          let newProps = ... clone...(props)
+            this.props = newProps;
+          */
+
         var _this = _possibleConstructorReturn(this, (Navigator.__proto__ || Object.getPrototypeOf(Navigator)).call(this, props));
 
         var startPage = "";
@@ -393,7 +398,7 @@ var Navigator = function (_React$Component) {
                             height: child.props.height ? child.props.height : fthis.state.height
                         },
                         id: child.key, key: child.key, className: fthis.state.startPage === child.key ? "showPage scrollPage" : "hiddenPage" },
-                    nowPage === child.key || fthis.state.historyPages.includes(child.key) || child.props.alwaysLive ? child : _react2.default.createElement('div', null)
+                    nowPage === child.key || fthis.state.historyPages.includes(child.key) || child.props.alwaysLive ? _react2.default.cloneElement(child, fthis.state.props[child.key], child.props.children) : _react2.default.createElement('div', null)
                 );
             }) : _react2.default.createElement(
                 'div',
@@ -402,7 +407,8 @@ var Navigator = function (_React$Component) {
                         height: this.props.children.props.height ? this.props.children.props : fthis.state.height
                     },
                     id: this.props.children.key, key: this.props.children.key, className: fthis.state.startPage === this.props.children.key ? "showPage scrollPage" : "hiddenPage" },
-                nowPage === this.props.children.key || fthis.state.historyPages.includes(this.props.children.key) || this.props.children.props.alwaysLive ? this.props.children : _react2.default.createElement('div', null)
+                nowPage === this.props.children.key || fthis.state.historyPages.includes(this.props.children.key) || this.props.children.props.alwaysLive ? _react2.default.cloneElement(this.props.children, fthis.state.props[this.props.children.key], this.props.children.props.children) // this.props.children
+                : _react2.default.createElement('div', null)
             );
         }
     }]);

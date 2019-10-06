@@ -9,6 +9,13 @@ export default class Navigator extends React.Component {
     constructor(props) {
         super(props);
 
+        /*
+          let newProps = ... clone...(props)
+
+          this.props = newProps;
+
+        */
+
         let startPage = "";
         let mobileMode = false;
         if (window.cordova) {
@@ -188,7 +195,7 @@ export default class Navigator extends React.Component {
     changePage(goToPage, options) {
 
         options = options === undefined ? [] : options;
-        
+
         const {
             props = null
             , animationIn = null
@@ -334,6 +341,7 @@ export default class Navigator extends React.Component {
         this.historyPages = this.state.historyPages;
         this.nowPage = this.state.nowPage;
 
+
         // if (Array.isArray(this.props.children)) {
         //     this.props.children.map(child => {
         //         if (fthis.state.props[child.key] !== undefined) { 
@@ -411,7 +419,11 @@ export default class Navigator extends React.Component {
                     }}
                     id={child.key} key={child.key} className={fthis.state.startPage === child.key ? "showPage scrollPage" : "hiddenPage"}>
                     {nowPage === child.key || fthis.state.historyPages.includes(child.key) || child.props.alwaysLive
-                        ? child
+                        ? React.cloneElement(
+                            child,
+                            fthis.state.props[child.key],
+                            child.props.children,
+                        )
                         : <div />}
                 </div>
             })
@@ -421,7 +433,11 @@ export default class Navigator extends React.Component {
             }}
                 id={this.props.children.key} key={this.props.children.key} className={fthis.state.startPage === this.props.children.key ? "showPage scrollPage" : "hiddenPage"}>
                 {nowPage === this.props.children.key || fthis.state.historyPages.includes(this.props.children.key) || this.props.children.props.alwaysLive
-                    ? this.props.children
+                    ? React.cloneElement(
+                        this.props.children,
+                        fthis.state.props[this.props.children.key],
+                        this.props.children.props.children,
+                    )// this.props.children
                     : <div />}
             </div>;
     }
