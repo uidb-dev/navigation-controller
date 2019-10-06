@@ -35,10 +35,12 @@ this.navigatorRef.changePage(
               ,{options}// Not requred
               );
 ```
-options=>{  animationIn:integer // have defult
-                ,animationOut:string // have defult
-                , timeAnimationInMS:integer // defult=250(ms)
-                , callbackFun:function}
+options => {  animationIn:integer // have defult
+            , animationOut:string // have defult
+            , timeAnimationInMS:integer // defult=250(ms)
+            , callbackFun:function
+            , props:{...} 
+              }
 
 *`animationIn` and `animationOut` need name animate from https://daneden.github.io/animate.css/  <br> 
 *the animate.css includ in this package
