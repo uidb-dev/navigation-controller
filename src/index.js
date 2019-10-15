@@ -205,9 +205,10 @@ export default class Navigator extends React.Component {
 
 
         if (props !== null) {
-            let oldProps = this.state.props;
-            oldProps[goToPage] = props;
-            this.setState({ props: oldProps });
+            // let oldProps = this.state.props;
+            let newProps = [];
+            newProps[goToPage] = props;
+            this.setState({ props: newProps });
         } else {
 
         }

@@ -209,9 +209,10 @@ var Navigator = function (_React$Component) {
 
 
             if (props !== null) {
-                var oldProps = this.state.props;
-                oldProps[goToPage] = props;
-                this.setState({ props: oldProps });
+                // let oldProps = this.state.props;
+                var newProps = [];
+                newProps[goToPage] = props;
+                this.setState({ props: newProps });
             } else {}
 
             if (!this.busy) {
