@@ -192,6 +192,9 @@ const navigator_busy= this.navigatorRef.busy;
 
 
 ## If you have any problem, please let us know [here](https://github.com/orchoban/react.cordova-navigation_controller/issues), and we will make an effort to resolve it soon
+## Feel free to editing the code yourself: go to [src/index.js](https://github.com/orchoban/react.cordova-navigation_controller/blob/master/src/index.js)
+
+
 
 
 Credit:
