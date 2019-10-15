@@ -9,13 +9,6 @@ export default class Navigator extends React.Component {
     constructor(props) {
         super(props);
 
-        /*
-          let newProps = ... clone...(props)
-
-          this.props = newProps;
-
-        */
-
         let startPage = "";
         let mobileMode = false;
         if (window.cordova) {
@@ -370,7 +363,7 @@ export default class Navigator extends React.Component {
                                 $('#' + goToPage).css('z-index', 0);
                                 $('#' + nowPage).css('z-index', 89);
                                 $('#' + goToPage).removeClass('hiddenPage');
-                                $('#' + goToPage).addClass('showPage');
+                                $('#' + goToPage).addClass('showPage overflow_Y_hidden');
                             }
 
                         }
@@ -381,12 +374,13 @@ export default class Navigator extends React.Component {
                         }
                     }}
                     onTouchEnd={(e) => {
-                        if (fthis.swipeRight && fthis.state.swipeRight_x > 80) {
-                            const goToPage = this.state.historyPages[this.state.historyPages.length - 2];
+                        const goToPage = this.state.historyPages[this.state.historyPages.length - 2];
 
+                        if (fthis.swipeRight && fthis.state.swipeRight_x > 80) {
 
                             fthis.callbackFunOnChangePage = () => {
                                 $('#' + fthis.touchBackPage).css('left', "");
+                                $('#' + goToPage).removeClass('overflow_Y_hidden');
                                 fthis.setState({ swipeRight_x: 0 });
                                 fthis.swipeRight = false;
                                 fthis.touchBackPage = "";
@@ -394,21 +388,19 @@ export default class Navigator extends React.Component {
                             }
 
 
-                            if (fthis.swipeRight && fthis.state.swipeRight_x > 80) {
-                                // fthis.touchBackPage = nowPage;
-                                fthis.back();
+                            // fthis.touchBackPage = nowPage;
+                            fthis.back();
 
-                            } else {
-                                $('#' + nowPage).css('left', "");
-                                $('#' + goToPage).css('z-index', "");
-                                $('#' + nowPage).css('z-index', "");
-                                $('#' + goToPage).removeClass('showPage');
-                                $('#' + goToPage).addClass('hiddenPage');
-                                fthis.setState({ swipeRight_x: 0 });
-                                fthis.swipeRight = false;
-                                fthis.touchBackPage = "";
-                            }
 
+                        } else {
+                            $('#' + nowPage).css('left', "");
+                            $('#' + goToPage).css('z-index', "");
+                            $('#' + nowPage).css('z-index', "");
+                            $('#' + goToPage).removeClass('showPage');
+                            $('#' + goToPage).addClass('hiddenPage');
+                            fthis.setState({ swipeRight_x: 0 });
+                            fthis.swipeRight = false;
+                            fthis.touchBackPage = "";
                         }
 
                         // }

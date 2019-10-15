@@ -34,11 +34,6 @@ var Navigator = function (_React$Component) {
     function Navigator(props) {
         _classCallCheck(this, Navigator);
 
-        /*
-          let newProps = ... clone...(props)
-            this.props = newProps;
-          */
-
         var _this = _possibleConstructorReturn(this, (Navigator.__proto__ || Object.getPrototypeOf(Navigator)).call(this, props));
 
         var startPage = "";
@@ -355,7 +350,7 @@ var Navigator = function (_React$Component) {
                                     (0, _jquery2.default)('#' + goToPage).css('z-index', 0);
                                     (0, _jquery2.default)('#' + nowPage).css('z-index', 89);
                                     (0, _jquery2.default)('#' + goToPage).removeClass('hiddenPage');
-                                    (0, _jquery2.default)('#' + goToPage).addClass('showPage');
+                                    (0, _jquery2.default)('#' + goToPage).addClass('showPage overflow_Y_hidden');
                                 }
                             }
                         },
@@ -365,30 +360,30 @@ var Navigator = function (_React$Component) {
                             }
                         },
                         onTouchEnd: function onTouchEnd(e) {
+                            var goToPage = _this4.state.historyPages[_this4.state.historyPages.length - 2];
+
                             if (fthis.swipeRight && fthis.state.swipeRight_x > 80) {
-                                var goToPage = _this4.state.historyPages[_this4.state.historyPages.length - 2];
 
                                 fthis.callbackFunOnChangePage = function () {
                                     (0, _jquery2.default)('#' + fthis.touchBackPage).css('left', "");
+                                    (0, _jquery2.default)('#' + goToPage).removeClass('overflow_Y_hidden');
                                     fthis.setState({ swipeRight_x: 0 });
                                     fthis.swipeRight = false;
                                     fthis.touchBackPage = "";
                                     fthis.callbackFunOnChangePage = function () {};
                                 };
 
-                                if (fthis.swipeRight && fthis.state.swipeRight_x > 80) {
-                                    // fthis.touchBackPage = nowPage;
-                                    fthis.back();
-                                } else {
-                                    (0, _jquery2.default)('#' + nowPage).css('left', "");
-                                    (0, _jquery2.default)('#' + goToPage).css('z-index', "");
-                                    (0, _jquery2.default)('#' + nowPage).css('z-index', "");
-                                    (0, _jquery2.default)('#' + goToPage).removeClass('showPage');
-                                    (0, _jquery2.default)('#' + goToPage).addClass('hiddenPage');
-                                    fthis.setState({ swipeRight_x: 0 });
-                                    fthis.swipeRight = false;
-                                    fthis.touchBackPage = "";
-                                }
+                                // fthis.touchBackPage = nowPage;
+                                fthis.back();
+                            } else {
+                                (0, _jquery2.default)('#' + nowPage).css('left', "");
+                                (0, _jquery2.default)('#' + goToPage).css('z-index', "");
+                                (0, _jquery2.default)('#' + nowPage).css('z-index', "");
+                                (0, _jquery2.default)('#' + goToPage).removeClass('showPage');
+                                (0, _jquery2.default)('#' + goToPage).addClass('hiddenPage');
+                                fthis.setState({ swipeRight_x: 0 });
+                                fthis.swipeRight = false;
+                                fthis.touchBackPage = "";
                             }
 
                             // }

@@ -55,3 +55,7 @@
       display: none;
   }
   
+
+  .overflow_Y_hidden{
+    overflow-y:hidden;
+  }
