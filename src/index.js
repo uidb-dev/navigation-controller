@@ -54,6 +54,8 @@ export default class Navigator extends React.Component {
             swipeRight_x: 0,
             props: []
         }
+
+        this.swipeRight = false;
         // this.myComponentApp = this.props.myComponentApp;
 
         this.historyPages = this.state.historyPages;
@@ -191,9 +193,9 @@ export default class Navigator extends React.Component {
 
         const {
             props = null
-            , animationIn = null
+            , animationIn = this.swipeRight ? 'slideInRight' : null
             , timeAnimationInMS = 250
-            , animationOut = null
+            , animationOut = this.swipeRight ? 'slideOutRight' : null
             , callbackFun = null } = options;
 
 
