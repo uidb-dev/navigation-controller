@@ -62,7 +62,7 @@ var Navigator = function (_React$Component) {
             historyPages: historyPages,
             nowPage: startPage,
             homePageKey: homePage,
-            height: _this.props.height === null ? "100%" : _this.props.height,
+            // height: this.props.height ? this.props.height : "100%",
             startPage: startPage,
             mobileMode: mobileMode,
             swipeRight_x: 0,
@@ -398,7 +398,7 @@ var Navigator = function (_React$Component) {
                         style: {
                             left: fthis.swipeRight ? fthis.touchBackPage === child.key ? fthis.state.swipeRight_x : "" : "",
                             backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff",
-                            height: child.props.height ? child.props.height : fthis.state.height
+                            height: child.props.height ? child.props.height : fthis.props.height ? _this4.props.height : "100%"
                         },
                         id: child.key, key: child.key, className: fthis.state.startPage === child.key ? "showPage scrollPage" : "hiddenPage" },
                     nowPage === child.key || fthis.state.historyPages.includes(child.key) || child.props.alwaysLive ? _react2.default.cloneElement(child, fthis.state.props[child.key], child.props.children) : _react2.default.createElement('div', null)
@@ -407,7 +407,7 @@ var Navigator = function (_React$Component) {
                 'div',
                 { style: {
                         backgroundColor: this.props.children.props.backgroundColor ? this.props.children.props.backgroundColor : "#fff",
-                        height: this.props.children.props.height ? this.props.children.props : fthis.state.height
+                        height: this.props.children.props.height ? this.props.children.props : fthis.props.height ? this.props.height : "100%"
                     },
                     id: this.props.children.key, key: this.props.children.key, className: fthis.state.startPage === this.props.children.key ? "showPage scrollPage" : "hiddenPage" },
                 nowPage === this.props.children.key || fthis.state.historyPages.includes(this.props.children.key) || this.props.children.props.alwaysLive ? _react2.default.cloneElement(this.props.children, fthis.state.props[this.props.children.key], this.props.children.props.children) // this.props.children

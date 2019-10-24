@@ -48,7 +48,7 @@ export default class Navigator extends React.Component {
             historyPages: historyPages,
             nowPage: startPage,
             homePageKey: homePage,
-            height: this.props.height === null ? "100%" : this.props.height,
+            // height: this.props.height ? this.props.height : "100%",
             startPage: startPage,
             mobileMode: mobileMode,
             swipeRight_x: 0,
@@ -329,7 +329,7 @@ export default class Navigator extends React.Component {
         if (options === null || options === undefined) {
             this.changePage(this.state.historyPages[this.state.historyPages.length - 2]);
         } else {
-            this.changePage(this.state.historyPages[this.state.historyPages.length - 2], options);  
+            this.changePage(this.state.historyPages[this.state.historyPages.length - 2], options);
         }
 
     }
@@ -415,7 +415,7 @@ export default class Navigator extends React.Component {
                     style={{
                         left: fthis.swipeRight ? (fthis.touchBackPage === child.key ? fthis.state.swipeRight_x : "") : "",
                         backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff"
-                        , height: child.props.height ? child.props.height : fthis.state.height
+                        , height: child.props.height ? child.props.height : fthis.props.height ? this.props.height : "100%"
                     }}
                     id={child.key} key={child.key} className={fthis.state.startPage === child.key ? "showPage scrollPage" : "hiddenPage"}>
                     {nowPage === child.key || fthis.state.historyPages.includes(child.key) || child.props.alwaysLive
@@ -429,7 +429,7 @@ export default class Navigator extends React.Component {
             })
             : <div style={{
                 backgroundColor: this.props.children.props.backgroundColor ? this.props.children.props.backgroundColor : "#fff"
-                , height: this.props.children.props.height ? this.props.children.props : fthis.state.height
+                , height: this.props.children.props.height ? this.props.children.props : fthis.props.height ? this.props.height : "100%"
             }}
                 id={this.props.children.key} key={this.props.children.key} className={fthis.state.startPage === this.props.children.key ? "showPage scrollPage" : "hiddenPage"}>
                 {nowPage === this.props.children.key || fthis.state.historyPages.includes(this.props.children.key) || this.props.children.props.alwaysLive
