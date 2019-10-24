@@ -67,9 +67,12 @@ var Navigator = function (_React$Component) {
             mobileMode: mobileMode,
             swipeRight_x: 0,
             props: []
-            // this.myComponentApp = this.props.myComponentApp;
+        };
 
-        };_this.historyPages = _this.state.historyPages;
+        _this.swipeRight = false;
+        // this.myComponentApp = this.props.myComponentApp;
+
+        _this.historyPages = _this.state.historyPages;
 
         _this.listLevelPages = [];
 
@@ -194,11 +197,11 @@ var Navigator = function (_React$Component) {
                 _options$props = _options.props,
                 props = _options$props === undefined ? null : _options$props,
                 _options$animationIn = _options.animationIn,
-                animationIn = _options$animationIn === undefined ? null : _options$animationIn,
+                animationIn = _options$animationIn === undefined ? this.swipeRight ? 'slideInRight' : null : _options$animationIn,
                 _options$timeAnimatio = _options.timeAnimationInMS,
                 timeAnimationInMS = _options$timeAnimatio === undefined ? 250 : _options$timeAnimatio,
                 _options$animationOut = _options.animationOut,
-                animationOut = _options$animationOut === undefined ? null : _options$animationOut,
+                animationOut = _options$animationOut === undefined ? this.swipeRight ? 'slideOutRight' : null : _options$animationOut,
                 _options$callbackFun = _options.callbackFun,
                 callbackFun = _options$callbackFun === undefined ? null : _options$callbackFun;
 
