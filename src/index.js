@@ -325,8 +325,13 @@ export default class Navigator extends React.Component {
 
     }
 
-    back() {
-        this.changePage(this.state.historyPages[this.state.historyPages.length - 2]);
+    back(options) {
+        if (options === null || options === undefined) {
+            this.changePage(this.state.historyPages[this.state.historyPages.length - 2]);
+        } else {
+            this.changePage(this.state.historyPages[this.state.historyPages.length - 2], options);  
+        }
+
     }
 
     render() {

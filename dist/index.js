@@ -310,8 +310,12 @@ var Navigator = function (_React$Component) {
         }
     }, {
         key: 'back',
-        value: function back() {
-            this.changePage(this.state.historyPages[this.state.historyPages.length - 2]);
+        value: function back(options) {
+            if (options === null || options === undefined) {
+                this.changePage(this.state.historyPages[this.state.historyPages.length - 2]);
+            } else {
+                this.changePage(this.state.historyPages[this.state.historyPages.length - 2], options);
+            }
         }
     }, {
         key: 'render',
