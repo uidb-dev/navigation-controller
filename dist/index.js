@@ -347,7 +347,7 @@ var Navigator = function (_React$Component) {
                     {
                         onTouchStart: function onTouchStart(e) {
                             if (child.props.backOnSwipeRight) {
-                                if (e.touches[0].clientX < 40) {
+                                if (e.touches[0].clientX < 0.20 * innerWidth) {
                                     fthis.touchBackPage = nowPage;
                                     fthis.swipeRight = true;
                                     fthis.setState({ swipeRight_x: e.touches[0].clientX });
@@ -369,7 +369,7 @@ var Navigator = function (_React$Component) {
                         onTouchEnd: function onTouchEnd(e) {
                             var goToPage = _this4.state.historyPages[_this4.state.historyPages.length - 2];
 
-                            if (fthis.swipeRight && fthis.state.swipeRight_x > 80) {
+                            if (fthis.swipeRight && fthis.state.swipeRight_x > 0.25 * innerWidth) {
 
                                 fthis.callbackFunOnChangePage = function () {
                                     (0, _jquery2.default)('#' + fthis.touchBackPage).css('left', "");
