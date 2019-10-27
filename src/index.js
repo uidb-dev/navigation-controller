@@ -359,6 +359,7 @@ export default class Navigator extends React.Component {
             ? this.props.children.map(child => {
                 return <div
                     onTouchStart={(e) => {
+                        
                         if (child.props.backOnSwipeRight) {
                             if (e.touches[0].clientX < (0.20 * innerWidth)) {
                                 fthis.touchBackPage = nowPage;

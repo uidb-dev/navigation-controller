@@ -346,6 +346,7 @@ var Navigator = function (_React$Component) {
                     'div',
                     {
                         onTouchStart: function onTouchStart(e) {
+
                             if (child.props.backOnSwipeRight) {
                                 if (e.touches[0].clientX < 0.20 * innerWidth) {
                                     fthis.touchBackPage = nowPage;
