@@ -360,7 +360,7 @@ export default class Navigator extends React.Component {
                 return <div
                     onTouchStart={(e) => {
                         if (child.props.backOnSwipeRight) {
-                            if (e.touches[0].clientX < (0.20 * innerWidth)) {
+                            if (e.touches[0].clientX < 40) {
                                 fthis.touchBackPage = nowPage;
                                 fthis.swipeRight = true;
                                 fthis.setState({ swipeRight_x: e.touches[0].clientX });
@@ -383,7 +383,7 @@ export default class Navigator extends React.Component {
                     onTouchEnd={(e) => {
                         const goToPage = this.state.historyPages[this.state.historyPages.length - 2];
 
-                        if (fthis.swipeRight && fthis.state.swipeRight_x > (0.25 * innerWidth)) {
+                        if (fthis.swipeRight && fthis.state.swipeRight_x > 80) {
 
                             fthis.callbackFunOnChangePage = () => {
                                 $('#' + fthis.touchBackPage).css('left', "");
