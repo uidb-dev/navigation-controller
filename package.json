@@ -1,6 +1,6 @@
 {
   "name": "react.cordova-navigation_controller",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Navigator for Cordova with React.js(react.cordova), This will help you to manage your pages history in the app and change pages with animation.",
   "main": "dist/index.js",
   "scripts": {
@@ -32,8 +32,10 @@
     "jqm",
     "back-button-android"
   ],
-  "author":{ "name" : "Or Chuban(Choban)"
-    , "email" : "orchoban@gmail.com"},
+  "author": {
+    "name": "Or Chuban(Choban)",
+    "email": "orchoban@gmail.com"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/orchoban/react.cordova-navigation_controller/issues"
