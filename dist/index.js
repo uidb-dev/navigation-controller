@@ -44,7 +44,11 @@ var Navigator = function (_React$Component) {
 
         var homePage = _this.props.homePageKey ? _this.props.homePageKey : Array.isArray(_this.props.children) ? _this.props.children[0].key : _this.props.children.key;
 
-        if (mobileMode) {
+        var changeRoute = true; //default
+        if (mobileMode) changeRoute = false;
+        if (_this.props.changeRoute !== undefined) changeRoute = _this.props.changeRoute;
+
+        if (!changeRoute) {
             startPage = homePage;
         } else {
 
@@ -59,6 +63,7 @@ var Navigator = function (_React$Component) {
         if (startPage !== homePage) historyPages.push(startPage);
 
         _this.state = {
+            changeRoute: changeRoute,
             historyPages: historyPages,
             nowPage: startPage,
             homePageKey: homePage,
@@ -247,7 +252,10 @@ var Navigator = function (_React$Component) {
                         this.setState({ historyPages: new_historyPages });
                     }
 
-                    if (!window.cordova) window.location.href = window.location.href.substr(0, window.location.href.lastIndexOf("/") + 1) + "#" + (goToPage !== this.state.homePageKey ? goToPage : "");else if (window.cordova.platformId === "browser") window.location.href = window.location.href.substr(0, window.location.href.lastIndexOf("/") + 1) + "#" + (goToPage !== this.state.homePageKey ? goToPage : "");
+                    if (this.state.changeRoute) {
+
+                        window.location.href = window.location.href.substr(0, window.location.href.lastIndexOf("/") + 1) + "#" + (goToPage !== this.state.homePageKey ? goToPage : "");
+                    }
 
                     //----navigator and animation----///
 
@@ -291,7 +299,7 @@ var Navigator = function (_React$Component) {
         key: 'componentWillMount',
         value: function componentWillMount() {
             var fthis = this;
-            if (fthis.state.mobileMode) {
+            if (!fthis.state.changeRoute) {
 
                 // //---lock portrait
                 // window.screen.orientation.lock('portrait');
@@ -346,7 +354,6 @@ var Navigator = function (_React$Component) {
                     'div',
                     {
                         onTouchStart: function onTouchStart(e) {
-
                             if (child.props.backOnSwipeRight) {
                                 if (e.touches[0].clientX < 0.20 * innerWidth) {
                                     fthis.touchBackPage = nowPage;
