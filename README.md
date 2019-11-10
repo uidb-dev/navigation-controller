@@ -98,6 +98,13 @@ options => {  animationIn:integer // have defult
        <td>(goToPageKey,levelAction) => { ... }</td>
     </tr>
     <tr>
+      <tr>
+      <td>changeRoute</td>
+     <td>boolean</td>
+      <td>optional</td>
+       <td>true (on cordova native platforms => false)</td>
+       <td>Determines whether to change the URL to the component key</td>
+    </tr>
       <td>homePageKey</td>
      <td>string</td>
       <td>optional</td>

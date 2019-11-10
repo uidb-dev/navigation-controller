@@ -21,8 +21,13 @@ export default class Navigator extends React.Component {
                 ? this.props.children[0].key
                 : this.props.children.key;
 
+        let changeRoute = true;//default
+        if (mobileMode)
+            changeRoute = false;
+        if (this.props.changeRoute !== undefined)
+            changeRoute = this.props.changeRoute;
 
-        if (mobileMode) {
+        if (!changeRoute) {
             startPage = homePage;
         } else {
 
@@ -45,6 +50,7 @@ export default class Navigator extends React.Component {
 
 
         this.state = {
+            changeRoute: changeRoute,
             historyPages: historyPages,
             nowPage: startPage,
             homePageKey: homePage,
@@ -243,15 +249,12 @@ export default class Navigator extends React.Component {
                     this.setState({ historyPages: new_historyPages });
                 }
 
-                if (!window.cordova)
+                if (this.state.changeRoute) {
 
                     window.location.href = window.location.href.substr(0,
                         window.location.href.lastIndexOf("/") + 1) +
                         "#" + (goToPage !== this.state.homePageKey ? goToPage : "");
-                else if (window.cordova.platformId === "browser")
-                    window.location.href = window.location.href.substr(0,
-                        window.location.href.lastIndexOf("/") + 1) +
-                        "#" + (goToPage !== this.state.homePageKey ? goToPage : "");
+                }
 
 
                 //----navigator and animation----///
@@ -300,7 +303,7 @@ export default class Navigator extends React.Component {
 
     componentWillMount() {
         const fthis = this;
-        if (fthis.state.mobileMode) {
+        if (!fthis.state.changeRoute) {
 
             // //---lock portrait
             // window.screen.orientation.lock('portrait');
@@ -359,7 +362,6 @@ export default class Navigator extends React.Component {
             ? this.props.children.map(child => {
                 return <div
                     onTouchStart={(e) => {
-                        
                         if (child.props.backOnSwipeRight) {
                             if (e.touches[0].clientX < (0.20 * innerWidth)) {
                                 fthis.touchBackPage = nowPage;
