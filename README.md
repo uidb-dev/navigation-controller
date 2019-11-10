@@ -150,7 +150,7 @@ options => {  animationIn:integer // have defult
      <td>boolean</td>
       <td>optional</td>
        <td>false</td>
-       <td>Bata version. may be problematic with css "padding-left" </td>
+       <td>May be problematic with css "padding-left" </td>
     </tr>
    <tr>
       <td>alwaysLive</td>
