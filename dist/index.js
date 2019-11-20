@@ -1,26 +1,17 @@
 'use strict';
 
-var isLocalhost = Boolean(window.location.hostname === 'localhost' ||
-// [::1] is the IPv6 localhost address.
-window.location.hostname === '[::1]' ||
-// 127.0.0.1/8 is considered localhost for IPv4.
-window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/));
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-var cordovaScript_URL = "";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
-    //production
-} else {
-    cordovaScript_URL = document.URL.slice(0, document.URL.lastIndexOf(":")) + ":8597/browser/www";
-}
+var _react = require('react');
 
-window.addEventListener('load', function (e) {
+var _react2 = _interopRequireDefault(_react);
 
-    var tag = document.createElement('script');
-    tag.async = true;
-    tag.src = cordovaScript_URL + process.env.PUBLIC_URL + '/cordova.js';
+var _jquery = require('./jquery-3.3.1.min');
 
-<<<<<<< HEAD
 var _jquery2 = _interopRequireDefault(_jquery);
 
 require('./styles.css');
@@ -441,8 +432,3 @@ var Navigator = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Navigator;
-=======
-    e.currentTarget.document.body.appendChild(document.createComment("This is an automatic switching src according to the run method. Comes from cordova_script"));
-    e.currentTarget.document.body.appendChild(tag);
-});
->>>>>>> 6a7606801b0f33ab81caeedb46a890842d4e0626
