@@ -1,7 +1,13 @@
 {
+<<<<<<< HEAD
   "name": "react.cordova-navigation_controller",
   "version": "1.6.4",
   "description": "Navigator for Cordova with React.js(react.cordova), This will help you to manage your pages history in the app and change pages with animation.",
+=======
+  "name": "cordova_script",
+  "version": "0.0.1",
+  "description": "package for reco cli (react.cordova)",
+>>>>>>> 6a7606801b0f33ab81caeedb46a890842d4e0626
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,34 +17,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/orchoban/react.cordova-navigation_controller.git"
+    "url": "git+https://github.com/orchoban/cordova_script.git"
   },
   "keywords": [
-    "navigator-react.cordova",
-    "react.cordova-manager_pages",
-    "react.cordova-navigator-controller",
-    "react-cordova-navigator-controller",
-    "react-cordova-pages-manager",
-    "navigator-controller",
-    "navigator-cordova-reactjs",
-    "navigator-cordova-react",
-    "navigator cordova react",
-    "react cordova navigator",
-    "react.cordova navigator",
-    "manage-pages",
-    "historyPages",
-    "Cordova",
-    "PhoneGap",
-    "jqm",
-    "back-button-android"
+    "react.cordova",
+    "reco"
   ],
-  "author":{ "name" : "Or Chuban(Choban)"
-    , "email" : "orchoban@gmail.com"},
+  "author": {
+    "name": "Or Chuban(Choban)",
+    "email": "orchoban@gmail.com"
+  },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/orchoban/react.cordova-navigation_controller/issues"
+    "url": "https://github.com/orchoban/cordova_script/issues"
   },
-  "homepage": "https://github.com/orchoban/react.cordova-navigation_controller#readme",
+  "homepage": "https://github.com/orchoban/cordova_script#readme",
   "peerDependencies": {
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
@@ -63,5 +56,8 @@
     "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2",
     "webpack-dev-server": "^3.4.1"
+  },
+  "dependencies": {
+    "fs": "0.0.1-security"
   }
 }

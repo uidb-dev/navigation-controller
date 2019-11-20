@@ -1,48 +1,38 @@
-import React from 'react';
-import $ from './jquery-3.3.1.min';
-import './styles.css';
-import './animate.css';
-import { setTimeout } from 'timers';
 
-export default class Navigator extends React.Component {
+const isLocalhost = Boolean(
+    window.location.hostname === 'localhost' ||
+    // [::1] is the IPv6 localhost address.
+    window.location.hostname === '[::1]' ||
+    // 127.0.0.1/8 is considered localhost for IPv4.
+    window.location.hostname.match(
+        /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
+    )
+);
 
-    constructor(props) {
-        super(props);
+let cordovaScript_URL = "";
 
-        let startPage = "";
-        let mobileMode = false;
-        if (window.cordova) {
-            if (window.cordova.platformId !== "browser")
-                mobileMode = true;
-        }
+if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+    //production
+}
+else {
+    cordovaScript_URL = document.URL.slice(0, document.URL.lastIndexOf(":")) + ":8597/browser/www";
+}
 
-        const homePage = this.props.homePageKey ? this.props.homePageKey :
-            Array.isArray(this.props.children)
-                ? this.props.children[0].key
-                : this.props.children.key;
+window.addEventListener('load', (e) => {
 
-        let changeRoute = true;//default
-        if (mobileMode)
-            changeRoute = false;
-        if (this.props.changeRoute !== undefined)
-            changeRoute = this.props.changeRoute;
 
-        if (!changeRoute) {
-            startPage = homePage;
-        } else {
+    var tag = document.createElement('script');
+    tag.async = true;
+    tag.src = `${cordovaScript_URL + process.env.PUBLIC_URL}/cordova.js`;
 
-            startPage = window.location.href.substr(
-                window.location.href.lastIndexOf("/")) === "/" ||
-                window.location.href.substr(
-                    window.location.href.lastIndexOf("/")) === "/#" ?
-                homePage :
-                window.location.href.substr(
-                    window.location.href.lastIndexOf("/") + 2);
-        }
-        this.touchBackPage = "";
+    e.currentTarget.document.body.appendChild(
+        document.createComment("This is an automatic switching src according to the run method. Comes from cordova_script")
+    );
+    e.currentTarget.document.body.appendChild(tag);
 
-        this.callbackFunOnChangePage = () => { };
+});
 
+<<<<<<< HEAD
         const historyPages = [];
         historyPages.push(homePage);
         if (startPage !== homePage)
@@ -451,3 +441,5 @@ export default class Navigator extends React.Component {
     }
 
 }
+=======
+>>>>>>> 6a7606801b0f33ab81caeedb46a890842d4e0626
