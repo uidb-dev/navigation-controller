@@ -58,6 +58,7 @@ export default class Navigator extends React.Component {
             startPage: startPage,
             mobileMode: mobileMode,
             swipeRight_x: 0,
+            swipeRightStart_x: 0,
             props: []
         }
 
@@ -338,7 +339,7 @@ export default class Navigator extends React.Component {
     }
 
     render() {
-        // debugger
+
         const fthis = this;
         // window.navigation_controller = this;
         const nowPage = this.state.historyPages[this.state.historyPages.length - 1];
@@ -361,12 +362,18 @@ export default class Navigator extends React.Component {
         return Array.isArray(this.props.children)
             ? this.props.children.map(child => {
                 return <div
-                    onTouchStart={(e) => {
-                        if (child.props.backOnSwipeRight) {
+                    // onTouchStart={(e) => {
+                        
+                      
+                    // }}
+
+                    
+                    onTouchMove={(e) => {
+                        if (child.props.backOnSwipeRight &&!fthis.swipeRight) {
                             if (e.touches[0].clientX < (0.20 * innerWidth)) {
                                 fthis.touchBackPage = nowPage;
                                 fthis.swipeRight = true;
-                                fthis.setState({ swipeRight_x: e.touches[0].clientX });
+                                fthis.setState({ swipeRightStart_x: e.touches[0].clientX });
 
                                 const goToPage = this.state.historyPages[this.state.historyPages.length - 2];
 
@@ -377,10 +384,8 @@ export default class Navigator extends React.Component {
                             }
 
                         }
-                    }}
-                    onTouchMove={(e) => {
-                        if (fthis.swipeRight) {
-                            fthis.setState({ swipeRight_x: e.touches[0].clientX });
+                            if (fthis.swipeRight) {
+                            fthis.setState({ swipeRight_x: (e.touches[0].clientX - fthis.state.swipeRightStart_x) <= 0 ? 1 : e.touches[0].clientX - fthis.state.swipeRightStart_x });
                         }
                     }}
                     onTouchEnd={(e) => {

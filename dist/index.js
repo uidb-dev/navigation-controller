@@ -71,6 +71,7 @@ var Navigator = function (_React$Component) {
             startPage: startPage,
             mobileMode: mobileMode,
             swipeRight_x: 0,
+            swipeRightStart_x: 0,
             props: []
         };
 
@@ -330,7 +331,6 @@ var Navigator = function (_React$Component) {
         value: function render() {
             var _this4 = this;
 
-            // debugger
             var fthis = this;
             // window.navigation_controller = this;
             var nowPage = this.state.historyPages[this.state.historyPages.length - 1];
@@ -353,12 +353,18 @@ var Navigator = function (_React$Component) {
                 return _react2.default.createElement(
                     'div',
                     {
-                        onTouchStart: function onTouchStart(e) {
-                            if (child.props.backOnSwipeRight) {
+                        // onTouchStart={(e) => {
+
+
+                        // }}
+
+
+                        onTouchMove: function onTouchMove(e) {
+                            if (child.props.backOnSwipeRight && !fthis.swipeRight) {
                                 if (e.touches[0].clientX < 0.20 * innerWidth) {
                                     fthis.touchBackPage = nowPage;
                                     fthis.swipeRight = true;
-                                    fthis.setState({ swipeRight_x: e.touches[0].clientX });
+                                    fthis.setState({ swipeRightStart_x: e.touches[0].clientX });
 
                                     var goToPage = _this4.state.historyPages[_this4.state.historyPages.length - 2];
 
@@ -368,10 +374,8 @@ var Navigator = function (_React$Component) {
                                     (0, _jquery2.default)('#' + goToPage).addClass('showPage overflow_Y_hidden');
                                 }
                             }
-                        },
-                        onTouchMove: function onTouchMove(e) {
                             if (fthis.swipeRight) {
-                                fthis.setState({ swipeRight_x: e.touches[0].clientX });
+                                fthis.setState({ swipeRight_x: e.touches[0].clientX - fthis.state.swipeRightStart_x <= 0 ? 1 : e.touches[0].clientX - fthis.state.swipeRightStart_x });
                             }
                         },
                         onTouchEnd: function onTouchEnd(e) {
