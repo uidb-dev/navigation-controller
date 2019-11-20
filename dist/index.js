@@ -71,7 +71,10 @@ var Navigator = function (_React$Component) {
             startPage: startPage,
             mobileMode: mobileMode,
             swipeRight_x: 0,
+<<<<<<< HEAD
             swipeRightStart_x: 0,
+=======
+>>>>>>> parent of 6a76068... @0.0.1
             props: []
         };
 
@@ -331,6 +334,10 @@ var Navigator = function (_React$Component) {
         value: function render() {
             var _this4 = this;
 
+<<<<<<< HEAD
+=======
+            // debugger
+>>>>>>> parent of 6a76068... @0.0.1
             var fthis = this;
             // window.navigation_controller = this;
             var nowPage = this.state.historyPages[this.state.historyPages.length - 1];
@@ -353,6 +360,7 @@ var Navigator = function (_React$Component) {
                 return _react2.default.createElement(
                     'div',
                     {
+<<<<<<< HEAD
                         // onTouchStart={(e) => {
 
 
@@ -365,6 +373,14 @@ var Navigator = function (_React$Component) {
                                     fthis.touchBackPage = nowPage;
                                     fthis.swipeRight = true;
                                     fthis.setState({ swipeRightStart_x: e.touches[0].clientX });
+=======
+                        onTouchStart: function onTouchStart(e) {
+                            if (child.props.backOnSwipeRight) {
+                                if (e.touches[0].clientX < 0.20 * innerWidth) {
+                                    fthis.touchBackPage = nowPage;
+                                    fthis.swipeRight = true;
+                                    fthis.setState({ swipeRight_x: e.touches[0].clientX });
+>>>>>>> parent of 6a76068... @0.0.1
 
                                     var goToPage = _this4.state.historyPages[_this4.state.historyPages.length - 2];
 
@@ -374,8 +390,15 @@ var Navigator = function (_React$Component) {
                                     (0, _jquery2.default)('#' + goToPage).addClass('showPage overflow_Y_hidden');
                                 }
                             }
+<<<<<<< HEAD
                             if (fthis.swipeRight) {
                                 fthis.setState({ swipeRight_x: e.touches[0].clientX - fthis.state.swipeRightStart_x <= 0 ? 1 : e.touches[0].clientX - fthis.state.swipeRightStart_x });
+=======
+                        },
+                        onTouchMove: function onTouchMove(e) {
+                            if (fthis.swipeRight) {
+                                fthis.setState({ swipeRight_x: e.touches[0].clientX });
+>>>>>>> parent of 6a76068... @0.0.1
                             }
                         },
                         onTouchEnd: function onTouchEnd(e) {
