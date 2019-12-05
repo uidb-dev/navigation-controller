@@ -59,3 +59,7 @@
   .overflow_Y_hidden{
     overflow-y:hidden;
   }
+
+  .scrollPage::-webkit-scrollbar {
+    display: none;
+  }
