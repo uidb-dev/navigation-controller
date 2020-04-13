@@ -1,55 +1,66 @@
 # react.cordova-navigation_controller
 
 ## Plugin for react
+
 It's manager for your pages like mobile app.<br>
 
-#### `import Navigator from './mobile-navigation-controller';`
+#### `import Navigator from 'react.cordova-navigation_controller';`
 
 <br>
 For example:
 In the render function return
 
- ```
- <Navigator onRef={ref => (this.navigatorRef = ref)} >
-         
-         
-          <MyHomePage key="home" levelPage={0} />   
-           
-           <AboutPage key="about" 
-            levelPage={1}   
-            />
-       
-       
-  </Navigator>
 ```
+<Navigator onRef={ref => (this.navigatorRef = ref)} >
+
+
+         <MyHomePage key="home" levelPage={0} />
+
+          <AboutPage key="about"
+           levelPage={1}
+            transitionIn={
+             animatioPageIn:"fadeIn"
+             ,animatioPageOut:"fadeOut"
+           }
+                   transitionOut={{
+            animatioPageOut: "fadeOut"
+          }}
+           />
+
+
+ </Navigator>
+```
+
 **Note: prop `levelPage` important to manage the returs (from back button) in the structure of a tree**<br><br>
 
-
-
-
 To change page you get the ref and do:
-#### `this.navigatorRef.changePage("about");` 
+
+#### `this.navigatorRef.changePage("about");`
+
 the option to changePage it's:
+
 ```
 this.navigatorRef.changePage(
                 goToPage //Required
               ,{options}// Not requred
               );
 ```
-options => {  animationIn:integer // have defult
-            , animationOut:string // have defult
+
+```
+options = {  animatioPageIn:"fadeInLeft" // have defult
+            , animationPageOut:"fadeOutLeft" // have defult
             , timeAnimationInMS:integer // defult=250(ms)
             , callbackFun:function
-            , props:{...} 
+            , props:{}
               }
+```
 
-*`animationIn` and `animationOut` need name animate from [here](https://daneden.github.io/animate.css/)  <br> 
+*`animationIn` and `animationOut` need name animate from [here](https://daneden.github.io/animate.css/) <br>
 *the animate.css includ in this package
 
 ## Options:
 
 ### Navigator props
-
 
 <table>
   <thead>
@@ -115,10 +126,7 @@ options => {  animationIn:integer // have defult
 </table>
 *levelAction return "Out" or "In" or "SameLevel"
 
-
-
 ### Child props
-
 
 <table>
   <thead>
@@ -159,6 +167,20 @@ options => {  animationIn:integer // have defult
        <td>false</td>
        <td>May be problematic with css "padding-left" </td>
     </tr>
+       <tr>
+      <td>transitionIn</td>
+     <td>json</td>
+      <td>optional</td>
+     <td>-</td>
+     <td></td>
+    </tr>
+       <tr>
+      <td>kill</td>
+     <td>boolean</td>
+      <td>optional</td>
+     <td>-</td>
+     <td></td>
+    </tr>
    <tr>
       <td>alwaysLive</td>
      <td>boolean</td>
@@ -170,48 +192,53 @@ options => {  animationIn:integer // have defult
   </tbody>
 </table>
 
-
 #### Check what is page now
+
 ```
 const nowPage= this.navigatorRef.nowPage;
 ```
+
 #### Get the historyPages list
+
 ```
 const historyPages= this.navigatorRef.historyPages();
 ```
 
 #### Get the listLevelPages list
+
 ```
 const listLevelPages= this.navigatorRef.listLevelPages();
 ```
+
 #### Back 1 page history
+
 ```
 this.navigatorRef.back();
 ```
+
 or
+
 ```
 this.navigatorRef.back({options...});
 ```
+
 options => { animationIn:integer // have defult , animationOut:string // have defult , timeAnimationInMS:integer // defult=250(ms) , callbackFun:function , props:{...} }
 
+#### Check if the mangerPages is busy
 
-#### Check if the mangerPages is busy 
 ```
 const navigator_busy= this.navigatorRef.busy;
 ```
-*busy return boolean  
+
+\*busy return boolean  
 <br><br><br>
 
-
-
 ## If you have any problem, please let us know [here](https://github.com/orchoban/react.cordova-navigation_controller/issues), and we will make an effort to resolve it soon
+
 ## Feel free to editing the code yourself: go to [src/index.js](https://github.com/orchoban/react.cordova-navigation_controller/blob/master/src/index.js)
-
-
-
 
 Credit:
 Arik Wald
 <br><br>
 Credit animated:
- ***animate.css -https://daneden.github.io/animate.css/***
+**_animate.css -https://daneden.github.io/animate.css/_**
