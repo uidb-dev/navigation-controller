@@ -230,6 +230,18 @@ export default class Navigator extends React.Component {
 
     const fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
 
+    let aniTime = 250;
+    if (this.props.children.filter((x) => x.key === goToPage).length > 0) {
+      if (
+        this.props.children.filter((x) => x.key === goToPage)[0].props
+          .animationTimeInMS
+      )
+        aniTime = this.props.children.filter((x) => x.key === goToPage)[0].props
+          .animationTimeInMS;
+    } else {
+      if (this.props.animationTimeInMS) aniTime = this.props.animationTimeInMS;
+    }
+
     options = options === undefined ? [] : options;
 
     const {
@@ -239,7 +251,7 @@ export default class Navigator extends React.Component {
           ? this.componentTransitionIn[goToPage].animatioPageIn
           : null
         : null,
-      timeAnimationInMS = 250,
+      timeAnimationInMS = aniTime,
       animationOut = this.swipeRight
         ? "slideOutRight"
         : this.componentTransitionOut[fromPage]

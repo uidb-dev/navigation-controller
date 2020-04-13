@@ -212,6 +212,19 @@ var Navigator = function (_React$Component) {
 
       var fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
 
+      var aniTime = 250;
+      if (this.props.children.filter(function (x) {
+        return x.key === goToPage;
+      }).length > 0) {
+        if (this.props.children.filter(function (x) {
+          return x.key === goToPage;
+        })[0].props.animationTimeInMS) aniTime = this.props.children.filter(function (x) {
+          return x.key === goToPage;
+        })[0].props.animationTimeInMS;
+      } else {
+        if (this.props.animationTimeInMS) aniTime = this.props.animationTimeInMS;
+      }
+
       options = options === undefined ? [] : options;
 
       var _options = options,
@@ -220,7 +233,7 @@ var Navigator = function (_React$Component) {
           _options$animationIn = _options.animationIn,
           animationIn = _options$animationIn === undefined ? this.componentTransitionIn[goToPage] ? this.componentTransitionIn[goToPage].animatioPageIn ? this.componentTransitionIn[goToPage].animatioPageIn : null : null : _options$animationIn,
           _options$timeAnimatio = _options.timeAnimationInMS,
-          timeAnimationInMS = _options$timeAnimatio === undefined ? 250 : _options$timeAnimatio,
+          timeAnimationInMS = _options$timeAnimatio === undefined ? aniTime : _options$timeAnimatio,
           _options$animationOut = _options.animationOut,
           animationOut = _options$animationOut === undefined ? this.swipeRight ? "slideOutRight" : this.componentTransitionOut[fromPage] ? this.componentTransitionOut[fromPage].animatioPageOut ? this.componentTransitionOut[fromPage].animatioPageOut : null : null : _options$animationOut,
           _options$callbackFun = _options.callbackFun,
