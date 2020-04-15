@@ -20,10 +20,10 @@ In the render function return
            levelPage={1}
             transitionIn={
              animatioPageIn:"fadeInRight"
-             ,animatioPageOut:"fadeOutRight"
+             ,animatioPageOut:"fadeOutLeft"
            }
             transitionOut={{
-            animatioPageOut: "fadeOutRight"
+            animatioPageOut: "fadeOutLeft"
           }}
            />
 
@@ -47,7 +47,7 @@ this.navigatorRef.changePage(
 ```
 
 ```
-options = {  animatioPageIn:"fadeInLeft" // have defult
+options = {  animatioPageIn:"fadeInRight" // have defult
             , animationPageOut:"fadeOutLeft" // have defult
             , timeAnimationInMS:integer // defult=250(ms)
             , callbackFun:function

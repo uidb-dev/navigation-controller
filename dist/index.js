@@ -112,7 +112,7 @@ var Navigator = function (_React$Component) {
     _this.changePage = _this.changePage.bind(_this);
 
     if (Array.isArray(_this.props.children)) _this.props.children.map(function (child) {
-      if (child.key === null || child.key === "") window.console.log("react.cordova-navigation_controller: key value it's required");
+      if (child.key === null || child.key === "") window.console.log("navigation_controller: key value it's required");
     });
     return _this;
   }
@@ -208,6 +208,16 @@ var Navigator = function (_React$Component) {
     value: function changePage(goToPage, options) {
       var _this3 = this;
 
+      var fthis = this;
+
+      this.props.children.forEach(function (child) {
+        if (child.props.kill) {
+          fthis.historyPages = fthis.historyPages.filter(function (x) {
+            return x !== child.key;
+          });
+        }
+      });
+
       this.setState({ historyPages: this.historyPages });
 
       var fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
@@ -248,7 +258,7 @@ var Navigator = function (_React$Component) {
       } else {}
 
       if (!this.busy) {
-        var fthis = this;
+        // const fthis = this;
 
         //--animation time defult
         var timeAnimation = timeAnimationInMS; //param.timeAnimationInMS !== undefined && param.timeAnimationInMS !== null ? param.timeAnimationInMS :
@@ -379,7 +389,7 @@ var Navigator = function (_React$Component) {
 
           return _react2.default.createElement("div", null);
         } else {
-          return _react2.default.createElement(
+          return nowPage === child.key || fthis.state.historyPages.includes(child.key) || child.props.alwaysLive ? _react2.default.createElement(
             "div",
             {
               // onTouchStart={(e) => {
@@ -444,8 +454,8 @@ var Navigator = function (_React$Component) {
               key: child.key,
               className: fthis.state.startPage === child.key ? "showPage scrollPage" : "hiddenPage"
             },
-            nowPage === child.key || fthis.state.historyPages.includes(child.key) || child.props.alwaysLive ? _react2.default.cloneElement(child, fthis.state.props[child.key], child.props.children) : _react2.default.createElement("div", null)
-          );
+            _react2.default.cloneElement(child, fthis.state.props[child.key], child.props.children)
+          ) : null;
         }
       }) : _react2.default.createElement(
         "div",

@@ -114,9 +114,7 @@ export default class Navigator extends React.Component {
     if (Array.isArray(this.props.children))
       this.props.children.map((child) => {
         if (child.key === null || child.key === "")
-          window.console.log(
-            "react.cordova-navigation_controller: key value it's required"
-          );
+          window.console.log("navigation_controller: key value it's required");
       });
   }
 
@@ -226,6 +224,14 @@ export default class Navigator extends React.Component {
   }
 
   changePage(goToPage, options) {
+    const fthis = this;
+
+    this.props.children.forEach((child) => {
+      if (child.props.kill) {
+        fthis.historyPages = fthis.historyPages.filter((x) => x !== child.key);
+      }
+    });
+
     this.setState({ historyPages: this.historyPages });
 
     const fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
@@ -271,7 +277,7 @@ export default class Navigator extends React.Component {
     }
 
     if (!this.busy) {
-      const fthis = this;
+      // const fthis = this;
 
       //--animation time defult
       const timeAnimation = timeAnimationInMS; //param.timeAnimationInMS !== undefined && param.timeAnimationInMS !== null ? param.timeAnimationInMS :
@@ -453,7 +459,9 @@ export default class Navigator extends React.Component {
 
           return <div></div>;
         } else {
-          return (
+          return nowPage === child.key ||
+            fthis.state.historyPages.includes(child.key) ||
+            child.props.alwaysLive ? (
             <div
               // onTouchStart={(e) => {
 
@@ -541,19 +549,13 @@ export default class Navigator extends React.Component {
                   : "hiddenPage"
               }
             >
-              {nowPage === child.key ||
-              fthis.state.historyPages.includes(child.key) ||
-              child.props.alwaysLive ? (
-                React.cloneElement(
-                  child,
-                  fthis.state.props[child.key],
-                  child.props.children
-                )
-              ) : (
-                <div />
+              {React.cloneElement(
+                child,
+                fthis.state.props[child.key],
+                child.props.children
               )}
             </div>
-          );
+          ) : null;
         }
       })
     ) : (
