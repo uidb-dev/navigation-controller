@@ -459,9 +459,7 @@ export default class Navigator extends React.Component {
 
           return <div></div>;
         } else {
-          return nowPage === child.key ||
-            fthis.state.historyPages.includes(child.key) ||
-            child.props.alwaysLive ? (
+          return (
             <div
               // onTouchStart={(e) => {
 
@@ -549,13 +547,17 @@ export default class Navigator extends React.Component {
                   : "hiddenPage"
               }
             >
-              {React.cloneElement(
-                child,
-                fthis.state.props[child.key],
-                child.props.children
-              )}
+              {nowPage === child.key ||
+              fthis.state.historyPages.includes(child.key) ||
+              child.props.alwaysLive
+                ? React.cloneElement(
+                    child,
+                    fthis.state.props[child.key],
+                    child.props.children
+                  )
+                : null}
             </div>
-          ) : null;
+          );
         }
       })
     ) : (

@@ -389,7 +389,7 @@ var Navigator = function (_React$Component) {
 
           return _react2.default.createElement("div", null);
         } else {
-          return nowPage === child.key || fthis.state.historyPages.includes(child.key) || child.props.alwaysLive ? _react2.default.createElement(
+          return _react2.default.createElement(
             "div",
             {
               // onTouchStart={(e) => {
@@ -454,8 +454,8 @@ var Navigator = function (_React$Component) {
               key: child.key,
               className: fthis.state.startPage === child.key ? "showPage scrollPage" : "hiddenPage"
             },
-            _react2.default.cloneElement(child, fthis.state.props[child.key], child.props.children)
-          ) : null;
+            nowPage === child.key || fthis.state.historyPages.includes(child.key) || child.props.alwaysLive ? _react2.default.cloneElement(child, fthis.state.props[child.key], child.props.children) : null
+          );
         }
       }) : _react2.default.createElement(
         "div",
