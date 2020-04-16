@@ -242,6 +242,15 @@ export default class Navigator extends React.Component {
 
     const fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
 
+    //סיום האפליקציה, סגור
+    if (this.state.historyPages.length === 1 && goToPage === undefined) {
+      console.log('"window.navigator.app.exitApp()"');
+      // fthis.showSwalLater ?
+      //     fthis.myChildrens.swal.runSwal(true) :
+      window.navigator.app.exitApp();
+      return;
+    }
+
     let aniTime = 250;
 
     if (
@@ -288,27 +297,20 @@ export default class Navigator extends React.Component {
       if (goToPage !== fromPage) {
         //---ניהול חזרות----//
         this.busy = true;
-        //סיום האפליקציה, סגור
-        if (this.state.historyPages.length === 1 && goToPage === undefined) {
-          console.log('"window.navigator.app.exitApp()"');
-          // fthis.showSwalLater ?
-          //     fthis.myChildrens.swal.runSwal(true) :
-          window.navigator.app.exitApp();
-        } else {
-          ///שמור היסטוריה
-          let new_historyPages = this.state.historyPages.slice();
 
-          if (this.listLevelPages[goToPage] <= this.listLevelPages[fromPage]) {
-            //חוזרים אחורה, מחק את כל הדפים שהרמה שלהם גבוהה משלי.
-            //new_historyPages.splice(new_historyPages.length - 1, 1);
-            new_historyPages = new_historyPages.filter(
-              (x) => this.listLevelPages[x] < this.listLevelPages[goToPage]
-            );
-          }
-          new_historyPages.push(goToPage);
-          //שמירת שינויים בהיסטוריה
-          this.setState({ historyPages: new_historyPages });
+        ///שמור היסטוריה
+        let new_historyPages = this.state.historyPages.slice();
+
+        if (this.listLevelPages[goToPage] <= this.listLevelPages[fromPage]) {
+          //חוזרים אחורה, מחק את כל הדפים שהרמה שלהם גבוהה משלי.
+          //new_historyPages.splice(new_historyPages.length - 1, 1);
+          new_historyPages = new_historyPages.filter(
+            (x) => this.listLevelPages[x] < this.listLevelPages[goToPage]
+          );
         }
+        new_historyPages.push(goToPage);
+        //שמירת שינויים בהיסטוריה
+        this.setState({ historyPages: new_historyPages });
 
         if (this.state.changeRoute) {
           window.location.href =
