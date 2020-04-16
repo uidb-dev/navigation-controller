@@ -28,13 +28,8 @@ In the render function return
 
           <AboutPage key="about"
            levelPage={1}
-            transitionIn={
-             animatioPageIn:"fadeInRight"
-             ,animatioPageOut:"fadeOutLeft"
-           }
-            transitionOut={{
-            animatioPageOut: "fadeOutLeft"
-          }}
+            transitionIn="fadeInRight"
+            transitionOut= "fadeOutLeft"
            />
 
 
@@ -179,8 +174,14 @@ options = {  animatioPageIn:"fadeInRight" // have defult
     </tr>
        <tr>
       <td>transitionIn</td>
-     <td>json:{ animatioPageIn:string
-             ,animatioPageOut:string}</td>
+     <td>string</td>
+      <td>optional</td>
+     <td>-</td>
+     <td></td>
+    </tr>
+     <tr>
+      <td>transitionOut</td>
+     <td>string</td>
       <td>optional</td>
      <td>-</td>
      <td></td>
