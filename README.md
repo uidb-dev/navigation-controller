@@ -4,6 +4,16 @@
 
 It's manager for your pages like mobile app.<br>
 
+<br/><br/>
+
+I dedicate a considerable amount of my free time to developing and maintaining this plugin, along with my other Open Source software. To help ensure this Cli is kept updated, new features are added and bugfixes are implemented quickly, please donate a couple of dollars (or a little more if you can stretch) as this will help me to afford to dedicate time to its maintenance. Please consider donating if you're using this plugin in an app that makes you money, if you're being paid to make the app, if you're asking for new features or priority bug fixes.
+
+<a href="https://paypal.me/orchoban">
+  <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG_global.gif" width="200px" alt=""/>
+</a>
+
+<br/>
+
 #### `import Navigator from 'react.cordova-navigation_controller';`
 
 <br>
@@ -120,7 +130,7 @@ options = {  animatioPageIn:"fadeInRight" // have defult
      <td>string</td>
       <td>optional</td>
        <td>The key of the first child</td>
-       <td>(nowPageKey,levelAction) => { ... }</td>
+       <td></td>
     </tr>
   </tbody>
 </table>
@@ -170,8 +180,14 @@ options = {  animatioPageIn:"fadeInRight" // have defult
        <tr>
       <td>transitionIn</td>
      <td>json:{ animatioPageIn:string
-             ,animatioPageOut:string
-             ,animationTimeInMS:integer}</td>
+             ,animatioPageOut:string}</td>
+      <td>optional</td>
+     <td>-</td>
+     <td></td>
+    </tr>
+      <tr>
+      <td>animationTimeInMS</td>
+     <td>integer</td>
       <td>optional</td>
      <td>-</td>
      <td></td>

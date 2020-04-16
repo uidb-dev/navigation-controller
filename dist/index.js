@@ -110,6 +110,12 @@ var Navigator = function (_React$Component) {
     _this.props.onRef(_this);
 
     _this.changePage = _this.changePage.bind(_this);
+    _this.back = _this.back.bind(_this);
+    _this.funAnimationIn1 = _this.funAnimationIn1.bind(_this);
+    _this.funAnimationIn2 = _this.funAnimationIn2.bind(_this);
+    _this.funAnimationOut1 = _this.funAnimationOut1.bind(_this);
+    _this.funAnimationOut2 = _this.funAnimationOut2.bind(_this);
+    _this.compareTwoPagesLavel = _this.compareTwoPagesLavel.bind(_this);
 
     if (Array.isArray(_this.props.children)) _this.props.children.map(function (child) {
       if (child.key === null || child.key === "") window.console.log("navigation_controller: key value it's required");
@@ -223,12 +229,11 @@ var Navigator = function (_React$Component) {
       var fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
 
       var aniTime = 250;
+
       if (this.props.children.filter(function (x) {
         return x.key === goToPage;
-      }).length > 0) {
-        if (this.props.children.filter(function (x) {
-          return x.key === goToPage;
-        })[0].props.animationTimeInMS) aniTime = this.props.children.filter(function (x) {
+      })[0].props.animationTimeInMS) {
+        aniTime = this.props.children.filter(function (x) {
           return x.key === goToPage;
         })[0].props.animationTimeInMS;
       } else {
@@ -241,11 +246,11 @@ var Navigator = function (_React$Component) {
           _options$props = _options.props,
           props = _options$props === undefined ? null : _options$props,
           _options$animationIn = _options.animationIn,
-          animationIn = _options$animationIn === undefined ? this.componentTransitionIn[goToPage] ? this.componentTransitionIn[goToPage].animatioPageIn ? this.componentTransitionIn[goToPage].animatioPageIn : null : null : _options$animationIn,
+          animationIn = _options$animationIn === undefined ? this.componentTransitionIn[goToPage] ? this.componentTransitionIn[goToPage] : null : _options$animationIn,
           _options$timeAnimatio = _options.timeAnimationInMS,
           timeAnimationInMS = _options$timeAnimatio === undefined ? aniTime : _options$timeAnimatio,
           _options$animationOut = _options.animationOut,
-          animationOut = _options$animationOut === undefined ? this.swipeRight ? "slideOutRight" : this.componentTransitionOut[fromPage] ? this.componentTransitionOut[fromPage].animatioPageOut ? this.componentTransitionOut[fromPage].animatioPageOut : null : null : _options$animationOut,
+          animationOut = _options$animationOut === undefined ? this.swipeRight ? "slideOutRight" : this.componentTransitionOut[fromPage] ? this.componentTransitionOut[fromPage] : null : _options$animationOut,
           _options$callbackFun = _options.callbackFun,
           callbackFun = _options$callbackFun === undefined ? null : _options$callbackFun;
 
@@ -353,6 +358,18 @@ var Navigator = function (_React$Component) {
   }, {
     key: "back",
     value: function back(options) {
+      var _this4 = this;
+
+      this.props.children.forEach(function (child) {
+        if (child.props.kill) {
+          _this4.historyPages = _this4.historyPages.filter(function (x) {
+            return x !== child.key;
+          });
+        }
+      });
+      this.setState({ historyPages: this.historyPages });
+
+      //---
       if (options === null || options === undefined) {
         this.changePage(this.state.historyPages[this.state.historyPages.length - 2]);
       } else {
@@ -362,7 +379,7 @@ var Navigator = function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this4 = this;
+      var _this5 = this;
 
       var fthis = this;
       // window.navigation_controller = this;
@@ -403,7 +420,7 @@ var Navigator = function (_React$Component) {
                     fthis.swipeRight = true;
                     fthis.setState({ swipeRightStart_x: e.touches[0].clientX });
 
-                    var goToPage = _this4.state.historyPages[_this4.state.historyPages.length - 2];
+                    var goToPage = _this5.state.historyPages[_this5.state.historyPages.length - 2];
 
                     (0, _jquery2.default)("#" + goToPage).css("z-index", 0);
                     (0, _jquery2.default)("#" + nowPage).css("z-index", 89);
@@ -418,7 +435,7 @@ var Navigator = function (_React$Component) {
                 }
               },
               onTouchEnd: function onTouchEnd(e) {
-                var goToPage = _this4.state.historyPages[_this4.state.historyPages.length - 2];
+                var goToPage = _this5.state.historyPages[_this5.state.historyPages.length - 2];
 
                 if (fthis.swipeRight && fthis.state.swipeRight_x > 0.25 * innerWidth) {
                   fthis.callbackFunOnChangePage = function () {
@@ -448,7 +465,7 @@ var Navigator = function (_React$Component) {
               style: {
                 left: fthis.swipeRight ? fthis.touchBackPage === child.key ? fthis.state.swipeRight_x : "" : "",
                 backgroundColor: child.props.backgroundColor ? child.props.backgroundColor : "#fff",
-                height: child.props.height ? child.props.height : fthis.props.height ? _this4.props.height : "100%"
+                height: child.props.height ? child.props.height : fthis.props.height ? _this5.props.height : "100%"
               },
               id: child.key,
               key: child.key,

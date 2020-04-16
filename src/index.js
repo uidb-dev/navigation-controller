@@ -110,6 +110,12 @@ export default class Navigator extends React.Component {
     this.props.onRef(this);
 
     this.changePage = this.changePage.bind(this);
+    this.back = this.back.bind(this);
+    this.funAnimationIn1 = this.funAnimationIn1.bind(this);
+    this.funAnimationIn2 = this.funAnimationIn2.bind(this);
+    this.funAnimationOut1 = this.funAnimationOut1.bind(this);
+    this.funAnimationOut2 = this.funAnimationOut2.bind(this);
+    this.compareTwoPagesLavel = this.compareTwoPagesLavel.bind(this);
 
     if (Array.isArray(this.props.children))
       this.props.children.map((child) => {
@@ -237,13 +243,13 @@ export default class Navigator extends React.Component {
     const fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
 
     let aniTime = 250;
-    if (this.props.children.filter((x) => x.key === goToPage).length > 0) {
-      if (
-        this.props.children.filter((x) => x.key === goToPage)[0].props
-          .animationTimeInMS
-      )
-        aniTime = this.props.children.filter((x) => x.key === goToPage)[0].props
-          .animationTimeInMS;
+
+    if (
+      this.props.children.filter((x) => x.key === goToPage)[0].props
+        .animationTimeInMS
+    ) {
+      aniTime = this.props.children.filter((x) => x.key === goToPage)[0].props
+        .animationTimeInMS;
     } else {
       if (this.props.animationTimeInMS) aniTime = this.props.animationTimeInMS;
     }
@@ -253,17 +259,13 @@ export default class Navigator extends React.Component {
     const {
       props = null,
       animationIn = this.componentTransitionIn[goToPage]
-        ? this.componentTransitionIn[goToPage].animatioPageIn
-          ? this.componentTransitionIn[goToPage].animatioPageIn
-          : null
+        ? this.componentTransitionIn[goToPage]
         : null,
       timeAnimationInMS = aniTime,
       animationOut = this.swipeRight
         ? "slideOutRight"
         : this.componentTransitionOut[fromPage]
-        ? this.componentTransitionOut[fromPage].animatioPageOut
-          ? this.componentTransitionOut[fromPage].animatioPageOut
-          : null
+        ? this.componentTransitionOut[fromPage]
         : null,
       callbackFun = null,
     } = options;
@@ -420,6 +422,14 @@ export default class Navigator extends React.Component {
   }
 
   back(options) {
+    this.props.children.forEach((child) => {
+      if (child.props.kill) {
+        this.historyPages = this.historyPages.filter((x) => x !== child.key);
+      }
+    });
+    this.setState({ historyPages: this.historyPages });
+
+    //---
     if (options === null || options === undefined) {
       this.changePage(
         this.state.historyPages[this.state.historyPages.length - 2]
