@@ -21,7 +21,7 @@ For example:
 In the render function return
 
 ```
-<Navigator onRef={ref => (this.navigatorRef = ref)} >
+<Navigator onRef={ref => (this.navigatorRef = ref)} onError={(error)=>{} }>
 
 
          <MyHomePage key="home" levelPage={0} />
@@ -84,6 +84,27 @@ options = {  animatioPageIn:"fadeInRight" // have defult
       <td>required</td>
      <td>-</td>
      <td> onRef={ref => (this.navigatorRef = ref)} </td>
+    </tr>
+     <tr>
+      <td>onError</td>
+     <td>function</td>
+      <td>optional</td>
+     <td>-</td>
+     <td> onError={error => ( do something )} </td>
+    </tr>
+       <tr>
+      <td>beforBack</td>
+     <td>function</td>
+      <td>optional</td>
+     <td>-</td>
+     <td>For android backbutton only.  beforBack={() =>{ ( do something and return false to stop back page process or retun true. )}} </td>
+    </tr>
+      <tr>
+      <td>beforExit</td>
+     <td>function</td>
+      <td>optional</td>
+     <td>-</td>
+     <td>For android backbutton only.  beforExit={() =>{ ( do something and return false to retun true to exit the app. )}} </td>
     </tr>
     <tr>
       <td>key</td>
@@ -192,6 +213,13 @@ options = {  animatioPageIn:"fadeInRight" // have defult
       <td>optional</td>
      <td>-</td>
      <td></td>
+    </tr>
+     <tr>
+      <td>props</td>
+     <td>json</td>
+      <td>optional</td>
+     <td>-</td>
+     <td>props={{myPropExample:this.state.example}}</td>
     </tr>
        <tr>
       <td>kill</td>
