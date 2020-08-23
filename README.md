@@ -63,6 +63,38 @@ options = {  animatioPageIn:"fadeInRight" // have defult
 *`animationIn` and `animationOut` need name animate from [here](https://daneden.github.io/animate.css/) <br>
 *the animate.css includ in this package
 
+## use with react-router
+```
+import React from "react";
+
+import Navigator from "react.cordova-navigation_controller";
+
+import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
+
+export default function Root() {
+  return (
+    <Router>
+      <Route path={["/:key", "/"]}>
+        <App />
+      </Route>
+    </Router>
+  );
+}
+
+const App = (props) => {
+  const { key } = useParams();
+
+  return (
+    <Navigator routerKey={key} changeRoute={false}>
+      <HomePage key="home" levelPage={0} />
+
+      <Page2 key="page2" levelPage={1} />
+    </Navigator>
+  );
+};
+```
+
+
 ## Options:
 
 ### Navigator props
