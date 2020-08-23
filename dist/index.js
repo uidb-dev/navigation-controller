@@ -59,6 +59,10 @@ var Navigator = function (_React$Component) {
     } else {
       startPage = window.location.href.substr(window.location.href.lastIndexOf("/")) === "/" || window.location.href.substr(window.location.href.lastIndexOf("/")) === "/#" ? homePage : window.location.href.substr(window.location.href.lastIndexOf("/") + 2);
     }
+    if (props.routerKey) {
+      startPage = props.routerKey;
+    }
+
     _this.touchBackPage = "";
 
     _this.callbackFunOnChangePage = function () {};

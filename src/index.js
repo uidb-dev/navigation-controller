@@ -40,6 +40,10 @@ export default class Navigator extends React.Component {
               window.location.href.lastIndexOf("/") + 2
             );
     }
+    if (props.routerKey) {
+      startPage = props.routerKey;
+    }
+
     this.touchBackPage = "";
 
     this.callbackFunOnChangePage = () => {};
