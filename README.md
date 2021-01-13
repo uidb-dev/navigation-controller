@@ -118,6 +118,13 @@ const App = (props) => {
      <td> onRef={ref => (this.navigatorRef = ref)} </td>
     </tr>
      <tr>
+      <td>errorPageKey</td>
+     <td>string</td>
+      <td>optional</td>
+     <td>-</td>
+     <td></td>
+    </tr>
+     <tr>
       <td>onError</td>
      <td>function</td>
       <td>optional</td>
@@ -315,6 +322,8 @@ const navigator_busy= this.navigatorRef.busy;
 ## If you have any problem, please let us know [here](https://github.com/orchoban/react.cordova-navigation_controller/issues), and we will make an effort to resolve it soon
 
 ## Feel free to editing the code yourself: go to [src/index.js](https://github.com/orchoban/react.cordova-navigation_controller/blob/master/src/index.js)
+
+## If you have any private problems please ask to support [here] (https://www.fiverr.com/share/5bpN56)
 
 Credit:
 Arik Wald

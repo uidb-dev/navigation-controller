@@ -57,7 +57,7 @@ var Navigator = function (_React$Component) {
     if (!changeRoute) {
       startPage = homePage;
     } else {
-      startPage = window.location.href.substr(window.location.href.lastIndexOf("/")) === "/" || window.location.href.substr(window.location.href.lastIndexOf("/")) === "/#" ? homePage : window.location.href.substr(window.location.href.lastIndexOf("/") + 2);
+      startPage = window.location.href.substr(window.location.href.lastIndexOf("/")) === "/" || window.location.href.substr(window.location.href.lastIndexOf("/")) === "/#" ? homePage : window.location.href.substr(window.location.href.lastIndexOf("/")).includes("/#") ? window.location.href.substr(window.location.href.lastIndexOf("/") + 2) : window.location.href.substr(window.location.href.lastIndexOf("/") + 1);
     }
     if (props.routerKey) {
       startPage = props.routerKey;
@@ -75,6 +75,18 @@ var Navigator = function (_React$Component) {
 
       if (fthis.props.onError) _this.props.onError(e);
     };
+
+    if (startPage && _this.props.children.filter(function (x) {
+      return x.key === startPage;
+    }).length === 0) {
+      if (_this.props.errorPageKey && _this.props.children.filter(function (x) {
+        return x.key === _this.props.errorPageKey;
+      }).length !== 0) {
+        startPage = _this.props.errorPageKey;
+      } else startPage = homePage;
+
+      _this.onError("page undefined");
+    }
 
     var historyPages = [];
     historyPages.push(homePage);
@@ -160,67 +172,110 @@ var Navigator = function (_React$Component) {
 
   }, {
     key: "funAnimationIn1",
-    value: function funAnimationIn1(goToPage, fromPage) {
-      var fthis = this;
+    value: function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(goToPage, fromPage) {
+        var fthis, callbackFun;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                fthis = this;
 
-      try {
-        if (document.getElementById(goToPage) === null || document.getElementById(goToPage) === undefined) {
-          console.error("goToPage not found: ", goToPage);
-        }
-        if (document.getElementById(fromPage) === null || document.getElementById(fromPage) === undefined) {
-          console.error("fromPage not found: ", fromPage);
-        }
 
-        if (this.props.beforChangePage !== undefined) this.props.beforChangePage(goToPage, this.compareTwoPagesLavel(goToPage, fromPage));
+                try {
+                  if (document.getElementById(goToPage) === null || document.getElementById(goToPage) === undefined) {
+                    console.error("goToPage not found: ", goToPage);
+                  }
+                  if (document.getElementById(fromPage) === null || document.getElementById(fromPage) === undefined) {
+                    console.error("fromPage not found: ", fromPage);
+                  }
 
-        //--נכנסים דף פנימה Up--//
-        var callbackFun = function callbackFun() {
-          try {
-            fthis.funAnimationIn2(goToPage, fromPage);
-            document.getElementById(goToPage).removeEventListener("webkitAnimationEnd", callbackFun);
-          } catch (error) {
-            fthis.onError(error);
+                  if (this.props.beforChangePage !== undefined) this.props.beforChangePage(goToPage, this.compareTwoPagesLavel(goToPage, fromPage));
+
+                  //--נכנסים דף פנימה Up--//
+
+                  callbackFun = function callbackFun() {
+                    try {
+                      fthis.funAnimationIn2(goToPage, fromPage);
+                      document.getElementById(goToPage).removeEventListener("webkitAnimationEnd", callbackFun);
+                    } catch (error) {
+                      fthis.onError(error);
+                    }
+                  };
+
+                  document.getElementById(goToPage).addEventListener("webkitAnimationEnd", callbackFun, false);
+
+                  this.busy = true;
+                  (0, _jquery2.default)("#" + goToPage).removeClass("hiddenPage");
+                  (0, _jquery2.default)("#" + goToPage).addClass("scrollPage showPage");
+                  (0, _jquery2.default)("#" + fromPage).css("z-index", 0);
+                  (0, _jquery2.default)("#" + goToPage).css("z-index", 89);
+                } catch (error) {
+                  fthis.onError(error);
+                }
+
+              case 2:
+              case "end":
+                return _context.stop();
+            }
           }
-        };
+        }, _callee, this);
+      }));
 
-        document.getElementById(goToPage).addEventListener("webkitAnimationEnd", callbackFun, false);
-
-        this.busy = true;
-        (0, _jquery2.default)("#" + goToPage).removeClass("hiddenPage");
-        (0, _jquery2.default)("#" + goToPage).addClass("scrollPage showPage");
-        (0, _jquery2.default)("#" + fromPage).css("z-index", 0);
-        (0, _jquery2.default)("#" + goToPage).css("z-index", 89);
-      } catch (error) {
-        fthis.onError(error);
+      function funAnimationIn1(_x, _x2) {
+        return _ref.apply(this, arguments);
       }
-    }
+
+      return funAnimationIn1;
+    }()
   }, {
     key: "funAnimationIn2",
-    value: function funAnimationIn2(goToPage, fromPage) {
-      var fthis = this;
+    value: function () {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(goToPage, fromPage) {
+        var fthis;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                fthis = this;
 
-      try {
-        if (document.getElementById(goToPage) === null || document.getElementById(goToPage) === undefined) {
-          console.error("goToPage not found: ", goToPage);
-        }
-        if (document.getElementById(fromPage) === null || document.getElementById(fromPage) === undefined) {
-          console.error("fromPage not found: ", fromPage);
-        }
 
-        (0, _jquery2.default)("#" + fromPage).css("z-index", "");
-        (0, _jquery2.default)("#" + goToPage).css("z-index", "");
-        (0, _jquery2.default)("#" + goToPage).css("animation", "");
-        (0, _jquery2.default)("#" + fromPage).removeClass("showPage");
-        (0, _jquery2.default)("#" + fromPage).removeClass("scrollPage");
-        (0, _jquery2.default)("#" + fromPage).addClass("hiddenPage");
-        this.busy = false;
-        this.setState({ nowPage: goToPage });
+                try {
+                  if (document.getElementById(goToPage) === null || document.getElementById(goToPage) === undefined) {
+                    console.error("goToPage not found: ", goToPage);
+                  }
+                  if (document.getElementById(fromPage) === null || document.getElementById(fromPage) === undefined) {
+                    console.error("fromPage not found: ", fromPage);
+                  }
 
-        if (this.props.onChangePage !== undefined) this.props.onChangePage(fthis.state.historyPages[this.state.historyPages.length - 1], fthis.compareTwoPagesLavel(goToPage, fromPage));
-      } catch (error) {
-        fthis.onError(error);
+                  (0, _jquery2.default)("#" + fromPage).css("z-index", "");
+                  (0, _jquery2.default)("#" + goToPage).css("z-index", "");
+                  (0, _jquery2.default)("#" + goToPage).css("animation", "");
+                  (0, _jquery2.default)("#" + fromPage).removeClass("showPage");
+                  (0, _jquery2.default)("#" + fromPage).removeClass("scrollPage");
+                  (0, _jquery2.default)("#" + fromPage).addClass("hiddenPage");
+                  this.busy = false;
+                  this.setState({ nowPage: goToPage });
+
+                  if (this.props.onChangePage !== undefined) this.props.onChangePage(fthis.state.historyPages[this.state.historyPages.length - 1], fthis.compareTwoPagesLavel(goToPage, fromPage));
+                } catch (error) {
+                  fthis.onError(error);
+                }
+
+              case 2:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function funAnimationIn2(_x3, _x4) {
+        return _ref2.apply(this, arguments);
       }
-    }
+
+      return funAnimationIn2;
+    }()
   }, {
     key: "funAnimationOut1",
     value: function funAnimationOut1(goToPage, fromPage) {
@@ -300,148 +355,225 @@ var Navigator = function (_React$Component) {
     }
   }, {
     key: "changePage",
-    value: function changePage(goToPage, options) {
-      var _this2 = this;
+    value: function () {
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(goToPage, options) {
+        var _this2 = this;
 
-      var fthis = this;
-      try {
-        //סיום האפליקציה, סגור
-        if (this.state.historyPages.length === 1 && goToPage === undefined) {
-          console.log('"window.navigator.app.exitApp()"');
-          // fthis.showSwalLater ?
-          //     fthis.myChildrens.swal.runSwal(true) :
-          if (this.props.beforExit) if (!this.props.beforExit()) return;
-          window.navigator.app.exitApp();
-          return;
-        }
+        var fthis, fromPage, aniTime, _options, _options$props, props, _options$animationIn, animationIn, _options$timeAnimatio, timeAnimationInMS, _options$animationOut, animationOut, _options$callbackFun, callbackFun, newProps, timeAnimation, new_historyPages;
 
-        if (goToPage === undefined) {
-          console.error("navigator error: changePage function need goToPage parameter.");
-          return;
-        }
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                fthis = this;
+                _context3.prev = 1;
 
-        if (fthis.listLevelPages[goToPage] === undefined) {
-          console.error("navigator error, at changePage. goToPage parameter not found in the pages list.");
-          return;
-        }
+                if (goToPage && this.props.children.filter(function (x) {
+                  return x.key === goToPage;
+                }).length === 0) {
+                  if (fthis.props.errorPageKey) {
+                    goToPage = fthis.props.errorPageKey;
+                  } else {
+                    goToPage = this.state.homePageKey;
+                  }
+                  fthis.onError("page undefined");
+                }
 
-        this.props.children.filter(function (child) {
-          return (typeof child === "undefined" ? "undefined" : _typeof(child)) === "object";
-        }).forEach(function (child) {
-          if (child.props.kill) {
-            fthis.historyPages = fthis.historyPages.filter(function (x) {
-              return x !== child.key;
-            });
+                //סיום האפליקציה, סגור
+
+                if (!(this.state.historyPages.length === 1 && goToPage === undefined)) {
+                  _context3.next = 10;
+                  break;
+                }
+
+                console.log('"window.navigator.app.exitApp()"');
+                // fthis.showSwalLater ?
+                //     fthis.myChildrens.swal.runSwal(true) :
+
+                if (!this.props.beforExit) {
+                  _context3.next = 8;
+                  break;
+                }
+
+                if (this.props.beforExit()) {
+                  _context3.next = 8;
+                  break;
+                }
+
+                return _context3.abrupt("return");
+
+              case 8:
+                window.navigator.app.exitApp();
+                return _context3.abrupt("return");
+
+              case 10:
+                if (!(goToPage === undefined)) {
+                  _context3.next = 13;
+                  break;
+                }
+
+                console.error("navigator error: changePage function need goToPage parameter.");
+                return _context3.abrupt("return");
+
+              case 13:
+                if (!(fthis.listLevelPages[goToPage] === undefined)) {
+                  _context3.next = 16;
+                  break;
+                }
+
+                console.error("navigator error, at changePage. goToPage parameter not found in the pages list.");
+                return _context3.abrupt("return");
+
+              case 16:
+
+                this.props.children.filter(function (child) {
+                  return (typeof child === "undefined" ? "undefined" : _typeof(child)) === "object";
+                }).forEach(function (child) {
+                  if (child.props.kill) {
+                    fthis.historyPages = fthis.historyPages.filter(function (x) {
+                      return x !== child.key;
+                    });
+                  }
+                });
+
+                this.setState({ historyPages: this.historyPages });
+
+                fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
+                aniTime = 250;
+
+
+                if (this.props.children.filter(function (x) {
+                  return x.key === goToPage;
+                })[0].props.animationTimeInMS) {
+                  aniTime = this.props.children.filter(function (x) {
+                    return x.key === goToPage;
+                  })[0].props.animationTimeInMS;
+                } else {
+                  if (this.props.animationTimeInMS) aniTime = this.props.animationTimeInMS;
+                }
+
+                options = options === undefined ? [] : options;
+
+                _options = options, _options$props = _options.props, props = _options$props === undefined ? null : _options$props, _options$animationIn = _options.animationIn, animationIn = _options$animationIn === undefined ? this.componentTransitionIn[goToPage] ? this.componentTransitionIn[goToPage] : null : _options$animationIn, _options$timeAnimatio = _options.timeAnimationInMS, timeAnimationInMS = _options$timeAnimatio === undefined ? aniTime : _options$timeAnimatio, _options$animationOut = _options.animationOut, animationOut = _options$animationOut === undefined ? this.swipeRight ? "slideOutRight" : this.componentTransitionOut[fromPage] ? this.componentTransitionOut[fromPage] : null : _options$animationOut, _options$callbackFun = _options.callbackFun, callbackFun = _options$callbackFun === undefined ? null : _options$callbackFun;
+
+
+                if (props !== null) {
+                  // let oldProps = this.state.props;
+                  newProps = [];
+
+                  newProps[goToPage] = props;
+                  this.setState({ props: newProps });
+                } else {}
+
+                if (this.busy) {
+                  _context3.next = 43;
+                  break;
+                }
+
+                // const fthis = this;
+
+                //--animation time defult
+                timeAnimation = timeAnimationInMS; //param.timeAnimationInMS !== undefined && param.timeAnimationInMS !== null ? param.timeAnimationInMS :
+                //     250; //ms
+
+                if (!(goToPage !== fromPage)) {
+                  _context3.next = 43;
+                  break;
+                }
+
+                //---ניהול חזרות----//
+                this.busy = true;
+
+                ///שמור היסטוריה
+                new_historyPages = this.state.historyPages.slice();
+
+
+                if (this.listLevelPages[goToPage] <= this.listLevelPages[fromPage]) {
+                  //חוזרים אחורה, מחק את כל הדפים שהרמה שלהם גבוהה משלי.
+                  //new_historyPages.splice(new_historyPages.length - 1, 1);
+                  new_historyPages = new_historyPages.filter(function (x) {
+                    return _this2.listLevelPages[x] < _this2.listLevelPages[goToPage];
+                  });
+                }
+                new_historyPages.push(goToPage);
+                //שמירת שינויים בהיסטוריה
+                this.setState({ historyPages: new_historyPages });
+
+                if (this.state.changeRoute) {
+                  window.location.href = window.location.href.substr(0, window.location.href.lastIndexOf("/") + 1) + "#" + (goToPage !== this.state.homePageKey ? goToPage : "");
+                }
+
+                //----navigator and animation----///
+
+                if (!(this.listLevelPages[goToPage] > this.listLevelPages[fromPage])) {
+                  _context3.next = 39;
+                  break;
+                }
+
+                _context3.next = 36;
+                return this.funAnimationIn1(goToPage, fromPage);
+
+              case 36:
+
+                if (this.listLevelPages[goToPage] === 1) {
+                  //Up from level 0 to level 1
+                  (0, _jquery2.default)("#" + goToPage).css("animation", (animationIn !== null && animationIn !== undefined ? animationIn : "slideInRight") + " " + timeAnimation + "ms");
+                } else {
+                  //else if (this.listLevelPages[goToPage] === 2) {
+                  //Up from level 1 to level 2
+                  (0, _jquery2.default)("#" + goToPage).css("animation", (animationIn !== null && animationIn !== undefined ? animationIn : "zoomIn") + " " + timeAnimation + "ms");
+                }
+                _context3.next = 42;
+                break;
+
+              case 39:
+                _context3.next = 41;
+                return this.funAnimationOut1(goToPage, fromPage);
+
+              case 41:
+                if (this.listLevelPages[fromPage] === 1) {
+                  //Down from level 1 to level 0
+                  (0, _jquery2.default)("#" + fromPage).css("animation", (animationOut !== null && animationOut !== undefined ? animationOut : "slideOutRight") + " " + timeAnimation + "ms");
+                } else {
+                  //else if (this.listLevelPages[goToPage] === 1) {
+                  //Down from level 2 to level 1
+                  (0, _jquery2.default)("#" + fromPage).css("animation", (animationOut !== null && animationOut !== undefined ? animationOut : "zoomOut") + " " + timeAnimation + "ms");
+                }
+
+              case 42:
+                // //עיצוב כפתור חזרה
+                // if (goToPage === "home") {
+                //     $('#navigatorBack').css('display', "none");
+                // } else {
+                //     $('#navigatorBack').css('display', "flex");
+                // }
+
+                if (callbackFun !== undefined && callbackFun !== null) callbackFun();
+
+              case 43:
+                _context3.next = 48;
+                break;
+
+              case 45:
+                _context3.prev = 45;
+                _context3.t0 = _context3["catch"](1);
+
+                fthis.onError(_context3.t0);
+
+              case 48:
+              case "end":
+                return _context3.stop();
+            }
           }
-        });
+        }, _callee3, this, [[1, 45]]);
+      }));
 
-        this.setState({ historyPages: this.historyPages });
-
-        var fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
-
-        var aniTime = 250;
-
-        if (this.props.children.filter(function (x) {
-          return x.key === goToPage;
-        })[0].props.animationTimeInMS) {
-          aniTime = this.props.children.filter(function (x) {
-            return x.key === goToPage;
-          })[0].props.animationTimeInMS;
-        } else {
-          if (this.props.animationTimeInMS) aniTime = this.props.animationTimeInMS;
-        }
-
-        options = options === undefined ? [] : options;
-
-        var _options = options,
-            _options$props = _options.props,
-            props = _options$props === undefined ? null : _options$props,
-            _options$animationIn = _options.animationIn,
-            animationIn = _options$animationIn === undefined ? this.componentTransitionIn[goToPage] ? this.componentTransitionIn[goToPage] : null : _options$animationIn,
-            _options$timeAnimatio = _options.timeAnimationInMS,
-            timeAnimationInMS = _options$timeAnimatio === undefined ? aniTime : _options$timeAnimatio,
-            _options$animationOut = _options.animationOut,
-            animationOut = _options$animationOut === undefined ? this.swipeRight ? "slideOutRight" : this.componentTransitionOut[fromPage] ? this.componentTransitionOut[fromPage] : null : _options$animationOut,
-            _options$callbackFun = _options.callbackFun,
-            callbackFun = _options$callbackFun === undefined ? null : _options$callbackFun;
-
-
-        if (props !== null) {
-          // let oldProps = this.state.props;
-          var newProps = [];
-          newProps[goToPage] = props;
-          this.setState({ props: newProps });
-        } else {}
-
-        if (!this.busy) {
-          // const fthis = this;
-
-          //--animation time defult
-          var timeAnimation = timeAnimationInMS; //param.timeAnimationInMS !== undefined && param.timeAnimationInMS !== null ? param.timeAnimationInMS :
-          //     250; //ms
-
-          if (goToPage !== fromPage) {
-            //---ניהול חזרות----//
-            this.busy = true;
-
-            ///שמור היסטוריה
-            var new_historyPages = this.state.historyPages.slice();
-
-            if (this.listLevelPages[goToPage] <= this.listLevelPages[fromPage]) {
-              //חוזרים אחורה, מחק את כל הדפים שהרמה שלהם גבוהה משלי.
-              //new_historyPages.splice(new_historyPages.length - 1, 1);
-              new_historyPages = new_historyPages.filter(function (x) {
-                return _this2.listLevelPages[x] < _this2.listLevelPages[goToPage];
-              });
-            }
-            new_historyPages.push(goToPage);
-            //שמירת שינויים בהיסטוריה
-            this.setState({ historyPages: new_historyPages });
-
-            if (this.state.changeRoute) {
-              window.location.href = window.location.href.substr(0, window.location.href.lastIndexOf("/") + 1) + "#" + (goToPage !== this.state.homePageKey ? goToPage : "");
-            }
-
-            //----navigator and animation----///
-
-            if (this.listLevelPages[goToPage] > this.listLevelPages[fromPage]) {
-              //--נכנסים דף פנימה Up--//
-              this.funAnimationIn1(goToPage, fromPage);
-
-              if (this.listLevelPages[goToPage] === 1) {
-                //Up from level 0 to level 1
-                (0, _jquery2.default)("#" + goToPage).css("animation", (animationIn !== null && animationIn !== undefined ? animationIn : "slideInRight") + " " + timeAnimation + "ms");
-              } else {
-                //else if (this.listLevelPages[goToPage] === 2) {
-                //Up from level 1 to level 2
-                (0, _jquery2.default)("#" + goToPage).css("animation", (animationIn !== null && animationIn !== undefined ? animationIn : "zoomIn") + " " + timeAnimation + "ms");
-              }
-            } else {
-              //--חזרה בדפים Down--//
-              this.funAnimationOut1(goToPage, fromPage);
-              if (this.listLevelPages[fromPage] === 1) {
-                //Down from level 1 to level 0
-                (0, _jquery2.default)("#" + fromPage).css("animation", (animationOut !== null && animationOut !== undefined ? animationOut : "slideOutRight") + " " + timeAnimation + "ms");
-              } else {
-                //else if (this.listLevelPages[goToPage] === 1) {
-                //Down from level 2 to level 1
-                (0, _jquery2.default)("#" + fromPage).css("animation", (animationOut !== null && animationOut !== undefined ? animationOut : "zoomOut") + " " + timeAnimation + "ms");
-              }
-            }
-            // //עיצוב כפתור חזרה
-            // if (goToPage === "home") {
-            //     $('#navigatorBack').css('display', "none");
-            // } else {
-            //     $('#navigatorBack').css('display', "flex");
-            // }
-
-            if (callbackFun !== undefined && callbackFun !== null) callbackFun();
-          }
-        }
-      } catch (error) {
-        fthis.onError(error);
+      function changePage(_x5, _x6) {
+        return _ref3.apply(this, arguments);
       }
-    }
+
+      return changePage;
+    }()
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
@@ -459,7 +591,8 @@ var Navigator = function (_React$Component) {
         //--back on change browser url
 
         if (fthis.state.changeRoute) window.addEventListener("hashchange", function (e) {
-          fthis.changePage(window.location.pathname.substr(2) === "" ? fthis.state.homePageKey : window.location.pathname.substr(2));
+          var pagePath = window.location.href.substr(window.location.href.lastIndexOf("/")).includes("/#") ? window.location.href.substr(window.location.href.lastIndexOf("/") + 2) : window.location.href.substr(window.location.href.lastIndexOf("/") + 1);
+          fthis.changePage(pagePath === "" ? fthis.state.homePageKey : pagePath);
         });
       } catch (error) {
         fthis.onError(error);
@@ -468,29 +601,29 @@ var Navigator = function (_React$Component) {
   }, {
     key: "back",
     value: function () {
-      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(options) {
+      var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(options) {
         var fthis;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
                 fthis = this;
 
                 if (!this.props.beforBack) {
-                  _context.next = 6;
+                  _context4.next = 6;
                   break;
                 }
 
-                _context.next = 4;
+                _context4.next = 4;
                 return this.props.beforBack();
 
               case 4:
-                if (_context.sent) {
-                  _context.next = 6;
+                if (_context4.sent) {
+                  _context4.next = 6;
                   break;
                 }
 
-                return _context.abrupt("return");
+                return _context4.abrupt("return");
 
               case 6:
 
@@ -519,14 +652,14 @@ var Navigator = function (_React$Component) {
 
               case 8:
               case "end":
-                return _context.stop();
+                return _context4.stop();
             }
           }
-        }, _callee, this);
+        }, _callee4, this);
       }));
 
-      function back(_x) {
-        return _ref.apply(this, arguments);
+      function back(_x7) {
+        return _ref4.apply(this, arguments);
       }
 
       return back;

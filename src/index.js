@@ -36,8 +36,14 @@ export default class Navigator extends React.Component {
         window.location.href.substr(window.location.href.lastIndexOf("/")) ===
           "/#"
           ? homePage
-          : window.location.href.substr(
+          : window.location.href
+              .substr(window.location.href.lastIndexOf("/"))
+              .includes("/#")
+          ? window.location.href.substr(
               window.location.href.lastIndexOf("/") + 2
+            )
+          : window.location.href.substr(
+              window.location.href.lastIndexOf("/") + 1
             );
     }
     if (props.routerKey) {
@@ -56,6 +62,21 @@ export default class Navigator extends React.Component {
 
       if (fthis.props.onError) this.props.onError(e);
     };
+
+    if (
+      startPage &&
+      this.props.children.filter((x) => x.key === startPage).length === 0
+    ) {
+      if (
+        this.props.errorPageKey &&
+        this.props.children.filter((x) => x.key === this.props.errorPageKey)
+          .length !== 0
+      ) {
+        startPage = this.props.errorPageKey;
+      } else startPage = homePage;
+
+      this.onError("page undefined");
+    }
 
     const historyPages = [];
     historyPages.push(homePage);
@@ -345,6 +366,18 @@ export default class Navigator extends React.Component {
   changePage(goToPage, options) {
     const fthis = this;
     try {
+      if (
+        goToPage &&
+        this.props.children.filter((x) => x.key === goToPage).length === 0
+      ) {
+        if (fthis.props.errorPageKey) {
+          goToPage = fthis.props.errorPageKey;
+        } else {
+          goToPage = this.state.homePageKey;
+        }
+        fthis.onError("page undefined");
+      }
+
       //סיום האפליקציה, סגור
       if (this.state.historyPages.length === 1 && goToPage === undefined) {
         console.log('"window.navigator.app.exitApp()"');
@@ -549,10 +582,19 @@ export default class Navigator extends React.Component {
 
       if (fthis.state.changeRoute)
         window.addEventListener("hashchange", function (e) {
+         const pagePath= window.location.href
+         .substr(window.location.href.lastIndexOf("/"))
+         .includes("/#")
+     ? window.location.href.substr(
+         window.location.href.lastIndexOf("/") + 2
+       )
+     : window.location.href.substr(
+         window.location.href.lastIndexOf("/") + 1
+       );
           fthis.changePage(
-            window.location.pathname.substr(2) === ""
+           pagePath === ""
               ? fthis.state.homePageKey
-              : window.location.pathname.substr(2)
+              : pagePath
           );
         });
     } catch (error) {
