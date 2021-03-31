@@ -2,27 +2,17 @@ import React from "react";
 import $ from "./jquery-3.3.1.min";
 import "./styles.css";
 import "./animate.css";
-import { addNavigatorPropTypes } from "./proptypes";
 // import { setTimeout } from "timers";
 
-class Navigator extends React.Component {
+export default class Navigator extends React.Component {
   constructor(props) {
     super(props);
 
     let startPage = "";
-
-    // add PropsTypes to children
-    // this.props.children.forEach((element) => addChildPropTypes(element));
-
-    //
-    // if (this.props.routerKey) this.props.routeKey = this.props.routerKey;
-
-    // mobileMode
     let mobileMode = false;
     if (window.cordova) {
       if (window.cordova.platformId !== "browser") mobileMode = true;
     }
-    if (props.mobileMode) mobileMode = props.mobileMode;
 
     const homePage = this.props.homePageKey
       ? this.props.homePageKey
@@ -58,9 +48,9 @@ class Navigator extends React.Component {
               window.location.href.lastIndexOf("/") + 1
             );
     }
-    if (props.routeKey && !mobileMode) {
-      console.log("routeKey:", routeKey);
-      startPage = props.routeKey;
+    if (props.routerKey && !mobileMode) {
+      console.log("routerKey:", routerKey);
+      startPage = props.routerKey;
     }
 
     this.touchBackPage = "";
@@ -185,12 +175,15 @@ class Navigator extends React.Component {
       );
   }
   componentDidUpdate(prevProps) {
+    // console.log("now props: ",this.props);
+    // console.log("prevProps props: ",prevProps);
+    // console.log("nowPage: ",this.nowPage);
     // if (!this.state.mobileMode)
-    if (this.props.routeKey !== prevProps.routeKey) {
-      this.changePage(
-        this.props.routeKey ? this.props.routeKey : this.state.homePageKey
-      );
-    }
+      if (this.props.routerKey !== prevProps.routerKey) {
+        this.changePage(
+          this.props.routerKey ? this.props.routerKey : this.state.homePageKey
+        );
+      }
   }
   //----navigator and animation----///
   funAnimationIn1(goToPage, fromPage) {
@@ -380,8 +373,6 @@ class Navigator extends React.Component {
   changePage(goToPage, options) {
     const fthis = this;
     try {
-      // if (goToPage === "#/") goToPage = undefined;
-
       if (
         goToPage &&
         this.props.children.filter((x) => x.key === goToPage).length === 0
@@ -509,7 +500,7 @@ class Navigator extends React.Component {
           //----navigator and animation----///
 
           if (this.listLevelPages[goToPage] > this.listLevelPages[fromPage]) {
-            //--Go Up Lavel--//
+            //--נכנסים דף פנימה Up--//
             this.funAnimationIn1(goToPage, fromPage);
 
             if (this.listLevelPages[goToPage] === 1) {
@@ -539,7 +530,7 @@ class Navigator extends React.Component {
               );
             }
           } else {
-            //--Go Down Level--//
+            //--חזרה בדפים Down--//
             this.funAnimationOut1(goToPage, fromPage);
             if (this.listLevelPages[fromPage] === 1) {
               //Down from level 1 to level 0
@@ -566,6 +557,12 @@ class Navigator extends React.Component {
               );
             }
           }
+          // //עיצוב כפתור חזרה
+          // if (goToPage === "home") {
+          //     $('#navigatorBack').css('display', "none");
+          // } else {
+          //     $('#navigatorBack').css('display', "flex");
+          // }
 
           if (callbackFun !== undefined && callbackFun !== null) callbackFun();
         }
@@ -578,7 +575,11 @@ class Navigator extends React.Component {
   componentDidMount() {
     const fthis = this;
     try {
+      // //---lock portrait
+      // window.screen.orientation.lock('portrait');
+
       //--back button in android
+
       document.addEventListener(
         "backbutton",
         (e) => {
@@ -588,6 +589,7 @@ class Navigator extends React.Component {
       );
 
       //--back on change browser url
+
       if (fthis.state.changeRoute)
         window.addEventListener("hashchange", function (e) {
           const pagePath = window.location.href
@@ -610,19 +612,9 @@ class Navigator extends React.Component {
 
   async back(options) {
     const fthis = this;
-    const backToPage =
-      fthis.state.historyPages[fthis.state.historyPages.length - 2];
+    if (this.props.beforBack) if (!(await this.props.beforBack())) return;
 
-    if (this.props.beforBack)
-      if (!(await this.props.beforBack(backToPage))) return;
-
-    //
-    if (this.props.routeKey && !options && backToPage !== undefined) {
-      window.location.hash = "#/" + backToPage;
-      return;
-    }
-
-    // console.log("navigator back with options: ", options);
+    console.log("navigator back with options: ", options);
     try {
       fthis.props.children.forEach((child) => {
         if (child.props.kill) {
@@ -635,11 +627,19 @@ class Navigator extends React.Component {
 
       //---
       if (options === null || options === undefined) {
-        console.log("back=> changePage to: ", backToPage);
+        console.log(
+          "back=> changePage to: ",
+          fthis.state.historyPages[fthis.state.historyPages.length - 2]
+        );
 
-        fthis.changePage(backToPage);
+        fthis.changePage(
+          fthis.state.historyPages[fthis.state.historyPages.length - 2]
+        );
       } else {
-        fthis.changePage(backToPage, options);
+        fthis.changePage(
+          fthis.state.historyPages[fthis.state.historyPages.length - 2],
+          options
+        );
       }
     } catch (error) {
       fthis.onError(error);
@@ -812,7 +812,3 @@ class Navigator extends React.Component {
     );
   }
 }
-
-addNavigatorPropTypes(Navigator);
-
-export default Navigator;

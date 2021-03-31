@@ -66,32 +66,60 @@ options = {  animatioPageIn:"fadeInRight" // have defult
 ## use with react-router
 ```
 import React from "react";
-
 import Navigator from "react.cordova-navigation_controller";
 
-import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
+//import all pages
+import Home from "../pages/index";
+import Page2 from "../pages/page2";
 
-export default function Root() {
+// #Hooks
+import {
+  BrowserRouter,
+  HashRouter,
+  Route,
+  useParams,
+} from "react-router-dom";
+import { createBrowserHistory } from "history";
+
+// ## use history
+const history = createBrowserHistory();
+
+const useRouter = (props) => {
+  let Router = BrowserRouter;
+  if (window.cordova.platformId !== "browser") Router = HashRouter;
+
   return (
-    <Router>
+    <Router
+      history={history}
+    >
       <Route path={["/:key", "/"]}>
-        <App />
+        <UseNavigator {...props} />
       </Route>
     </Router>
   );
-}
+};
 
-const App = (props) => {
+const UseNavigator = (props) => {
+  // # init navigator ref
+  let navigatorRef = undefined;
+
   const { key } = useParams();
-
+  // let query = useQuery();
   return (
-    <Navigator routerKey={key} changeRoute={false}>
-      <HomePage key="home" levelPage={0} />
-
-      <Page2 key="page2" levelPage={1} />
-    </Navigator>
+    <div>
+      <Navigator
+        routeKey={key}
+        changeRoute={false}
+      >
+        <Home key="home" levelPage={0}/>
+        <Page2 key="page2" levelPage={1}/>
+      </Navigator>
+    </div>
   );
 };
+
+export default useRouter;
+
 ```
 
 
@@ -113,7 +141,7 @@ const App = (props) => {
     <tr>
       <td>onRef</td>
      <td></td>
-      <td>required</td>
+      <td></td>
      <td>-</td>
      <td> onRef={ref => (this.navigatorRef = ref)} </td>
     </tr>
@@ -148,7 +176,7 @@ const App = (props) => {
     <tr>
       <td>key</td>
      <td>string</td>
-      <td>required</td>
+      <td>optional</td>
      <td>-</td>
      <td></td>
     </tr>

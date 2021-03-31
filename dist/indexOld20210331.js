@@ -20,8 +20,6 @@ require("./styles.css");
 
 require("./animate.css");
 
-var _proptypes = require("./proptypes");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
@@ -43,19 +41,10 @@ var Navigator = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Navigator.__proto__ || Object.getPrototypeOf(Navigator)).call(this, props));
 
     var startPage = "";
-
-    // add PropsTypes to children
-    // this.props.children.forEach((element) => addChildPropTypes(element));
-
-    //
-    // if (this.props.routerKey) this.props.routeKey = this.props.routerKey;
-
-    // mobileMode
     var mobileMode = false;
     if (window.cordova) {
       if (window.cordova.platformId !== "browser") mobileMode = true;
     }
-    if (props.mobileMode) mobileMode = props.mobileMode;
 
     var homePage = _this.props.homePageKey ? _this.props.homePageKey : Array.isArray(_this.props.children) ? _this.props.children.filter(function (child) {
       return (typeof child === "undefined" ? "undefined" : _typeof(child)) === "object" && !child.props.kill;
@@ -69,9 +58,9 @@ var Navigator = function (_React$Component) {
     } else {
       startPage = window.location.href.substr(window.location.href.lastIndexOf("/")) === "/" || window.location.href.substr(window.location.href.lastIndexOf("/")) === "/#" || window.location.href.substr(window.location.href.lastIndexOf("/")) === "/index.html" ? homePage : window.location.href.substr(window.location.href.lastIndexOf("/")).includes("/#") ? window.location.href.substr(window.location.href.lastIndexOf("/") + 2) : window.location.href.substr(window.location.href.lastIndexOf("/") + 1);
     }
-    if (props.routeKey && !mobileMode) {
-      console.log("routeKey:", routeKey);
-      startPage = props.routeKey;
+    if (props.routerKey && !mobileMode) {
+      console.log("routerKey:", routerKey);
+      startPage = props.routerKey;
     }
 
     _this.touchBackPage = "";
@@ -175,9 +164,12 @@ var Navigator = function (_React$Component) {
   }, {
     key: "componentDidUpdate",
     value: function componentDidUpdate(prevProps) {
+      // console.log("now props: ",this.props);
+      // console.log("prevProps props: ",prevProps);
+      // console.log("nowPage: ",this.nowPage);
       // if (!this.state.mobileMode)
-      if (this.props.routeKey !== prevProps.routeKey) {
-        this.changePage(this.props.routeKey ? this.props.routeKey : this.state.homePageKey);
+      if (this.props.routerKey !== prevProps.routerKey) {
+        this.changePage(this.props.routerKey ? this.props.routerKey : this.state.homePageKey);
       }
     }
     //----navigator and animation----///
@@ -329,8 +321,6 @@ var Navigator = function (_React$Component) {
 
       var fthis = this;
       try {
-        // if (goToPage === "#/") goToPage = undefined;
-
         if (goToPage && this.props.children.filter(function (x) {
           return x.key === goToPage;
         }).length === 0) {
@@ -443,7 +433,7 @@ var Navigator = function (_React$Component) {
             //----navigator and animation----///
 
             if (this.listLevelPages[goToPage] > this.listLevelPages[fromPage]) {
-              //--Go Up Lavel--//
+              //--נכנסים דף פנימה Up--//
               this.funAnimationIn1(goToPage, fromPage);
 
               if (this.listLevelPages[goToPage] === 1) {
@@ -457,7 +447,7 @@ var Navigator = function (_React$Component) {
                 (0, _jquery2.default)("#" + goToPage).css("animation", (animationIn !== null && animationIn !== undefined ? animationIn : "zoomIn") + " " + timeAnimation + "ms");
               }
             } else {
-              //--Go Down Level--//
+              //--חזרה בדפים Down--//
               this.funAnimationOut1(goToPage, fromPage);
               if (this.listLevelPages[fromPage] === 1) {
                 //Down from level 1 to level 0
@@ -468,6 +458,12 @@ var Navigator = function (_React$Component) {
                 (0, _jquery2.default)("#" + fromPage).css("animation", (animationOut !== null && animationOut !== undefined ? animationOut : "zoomOut") + " " + timeAnimation + "ms");
               }
             }
+            // //עיצוב כפתור חזרה
+            // if (goToPage === "home") {
+            //     $('#navigatorBack').css('display', "none");
+            // } else {
+            //     $('#navigatorBack').css('display', "flex");
+            // }
 
             if (callbackFun !== undefined && callbackFun !== null) callbackFun();
           }
@@ -481,12 +477,17 @@ var Navigator = function (_React$Component) {
     value: function componentDidMount() {
       var fthis = this;
       try {
+        // //---lock portrait
+        // window.screen.orientation.lock('portrait');
+
         //--back button in android
+
         document.addEventListener("backbutton", function (e) {
           fthis.back();
         }, false);
 
         //--back on change browser url
+
         if (fthis.state.changeRoute) window.addEventListener("hashchange", function (e) {
           var pagePath = window.location.href.substr(window.location.href.lastIndexOf("/")).includes("/#") ? window.location.href.substr(window.location.href.lastIndexOf("/") + 2) : window.location.href.substr(window.location.href.lastIndexOf("/") + 1);
           fthis.changePage(pagePath === "" ? fthis.state.homePageKey : pagePath);
@@ -499,42 +500,32 @@ var Navigator = function (_React$Component) {
     key: "back",
     value: function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(options) {
-        var fthis, backToPage;
+        var fthis;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 fthis = this;
-                backToPage = fthis.state.historyPages[fthis.state.historyPages.length - 2];
 
                 if (!this.props.beforBack) {
-                  _context.next = 7;
+                  _context.next = 6;
                   break;
                 }
 
-                _context.next = 5;
-                return this.props.beforBack(backToPage);
+                _context.next = 4;
+                return this.props.beforBack();
 
-              case 5:
+              case 4:
                 if (_context.sent) {
-                  _context.next = 7;
+                  _context.next = 6;
                   break;
                 }
 
                 return _context.abrupt("return");
 
-              case 7:
-                if (!(this.props.routeKey && !options && backToPage !== undefined)) {
-                  _context.next = 10;
-                  break;
-                }
+              case 6:
 
-                window.location.hash = "#/" + backToPage;
-                return _context.abrupt("return");
-
-              case 10:
-
-                // console.log("navigator back with options: ", options);
+                console.log("navigator back with options: ", options);
                 try {
                   fthis.props.children.forEach(function (child) {
                     if (child.props.kill) {
@@ -547,17 +538,17 @@ var Navigator = function (_React$Component) {
 
                   //---
                   if (options === null || options === undefined) {
-                    console.log("back=> changePage to: ", backToPage);
+                    console.log("back=> changePage to: ", fthis.state.historyPages[fthis.state.historyPages.length - 2]);
 
-                    fthis.changePage(backToPage);
+                    fthis.changePage(fthis.state.historyPages[fthis.state.historyPages.length - 2]);
                   } else {
-                    fthis.changePage(backToPage, options);
+                    fthis.changePage(fthis.state.historyPages[fthis.state.historyPages.length - 2], options);
                   }
                 } catch (error) {
                   fthis.onError(error);
                 }
 
-              case 11:
+              case 8:
               case "end":
                 return _context.stop();
             }
@@ -684,7 +675,5 @@ var Navigator = function (_React$Component) {
 
   return Navigator;
 }(_react2.default.Component);
-
-(0, _proptypes.addNavigatorPropTypes)(Navigator);
 
 exports.default = Navigator;
