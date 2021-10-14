@@ -36,7 +36,7 @@ In the render function return
  </Navigator>
 ```
 
-**Note: prop `levelPage` important to manage the returs (from back button) in the structure of a tree**<br><br>
+**Note: prop `levelPage` important to manage the routes (from back button) in the structure of a tree**<br><br>
 
 To change page you get the ref and do:
 
