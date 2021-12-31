@@ -59,7 +59,6 @@ class Navigator extends React.Component {
             );
     }
     if (props.routeKey && !mobileMode) {
-      console.log("routeKey:", routeKey);
       startPage = props.routeKey;
     }
 

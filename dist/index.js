@@ -70,7 +70,6 @@ var Navigator = function (_React$Component) {
       startPage = window.location.href.substr(window.location.href.lastIndexOf("/")) === "/" || window.location.href.substr(window.location.href.lastIndexOf("/")) === "/#" || window.location.href.substr(window.location.href.lastIndexOf("/")) === "/index.html" ? homePage : window.location.href.substr(window.location.href.lastIndexOf("/")).includes("/#") ? window.location.href.substr(window.location.href.lastIndexOf("/") + 2) : window.location.href.substr(window.location.href.lastIndexOf("/") + 1);
     }
     if (props.routeKey && !mobileMode) {
-      console.log("routeKey:", routeKey);
       startPage = props.routeKey;
     }
 
