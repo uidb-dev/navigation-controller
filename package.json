@@ -8,7 +8,7 @@
     "start": "webpack-dev-server --mode development",
     "transpile": "babel src -d dist --copy-files",
     "prepublishOnly": "npm run transpile",
-    "build": "npm run transpile && cd J:/work/navigation-controller-test && npm i J:/work/react.cordova-navigation_controller --legacy-peer-deps && cd J:/work/react.cordova-navigation_controller"
+    "eli-build": "npm run transpile && cd J:/work/navigation-controller-test && npm i J:/work/react.cordova-navigation_controller --legacy-peer-deps && cd J:/work/react.cordova-navigation_controller"
   },
   "repository": {
     "type": "git",
