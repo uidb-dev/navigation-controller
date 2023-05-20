@@ -1,13 +1,14 @@
 {
   "name": "react.cordova-navigation_controller",
-  "version": "3.0.3",
+  "version": "3.0.9",
   "description": "Navigator for Cordova with React.js(react.cordova), This will help you to manage your pages history in the app and change pages with animation.",
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --mode development",
     "transpile": "babel src -d dist --copy-files",
-    "prepublishOnly": "npm run transpile"
+    "prepublishOnly": "npm run transpile",
+    "build": "npm run transpile && cd J:/work/navigation-controller-test && npm i J:/work/react.cordova-navigation_controller --legacy-peer-deps && cd J:/work/react.cordova-navigation_controller"
   },
   "repository": {
     "type": "git",

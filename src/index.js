@@ -27,10 +27,10 @@ class Navigator extends React.Component {
     const homePage = this.props.homePageKey
       ? this.props.homePageKey
       : Array.isArray(this.props.children)
-      ? this.props.children.filter(
+        ? this.props.children.filter(
           (child) => typeof child === "object" && !child.props.kill
         )[0].key
-      : this.props.children.key;
+        : this.props.children.key;
 
     let changeRoute = true; //default
     if (mobileMode) changeRoute = false;
@@ -43,18 +43,18 @@ class Navigator extends React.Component {
       startPage =
         window.location.href.substr(window.location.href.lastIndexOf("/")) ===
           "/" ||
-        window.location.href.substr(window.location.href.lastIndexOf("/")) ===
+          window.location.href.substr(window.location.href.lastIndexOf("/")) ===
           "/#" ||
-        window.location.href.substr(window.location.href.lastIndexOf("/")) ===
+          window.location.href.substr(window.location.href.lastIndexOf("/")) ===
           "/index.html"
           ? homePage
           : window.location.href
-              .substr(window.location.href.lastIndexOf("/"))
-              .includes("/#")
-          ? window.location.href.substr(
+            .substr(window.location.href.lastIndexOf("/"))
+            .includes("/#")
+            ? window.location.href.substr(
               window.location.href.lastIndexOf("/") + 2
             )
-          : window.location.href.substr(
+            : window.location.href.substr(
               window.location.href.lastIndexOf("/") + 1
             );
     }
@@ -64,7 +64,7 @@ class Navigator extends React.Component {
 
     this.touchBackPage = "";
 
-    this.callbackFunOnChangePage = () => {};
+    this.callbackFunOnChangePage = () => { };
 
     const fthis = this;
     this.onError = (e) => {
@@ -177,6 +177,7 @@ class Navigator extends React.Component {
   }
 
   componentDidMount() {
+
     if (this.props.onChangePage !== undefined)
       this.props.onChangePage(
         this.state.historyPages[this.state.historyPages.length - 1],
@@ -457,8 +458,8 @@ class Navigator extends React.Component {
         animationOut = this.swipeRight
           ? "slideOutRight"
           : this.componentTransitionOut[fromPage]
-          ? this.componentTransitionOut[fromPage]
-          : null,
+            ? this.componentTransitionOut[fromPage]
+            : null,
         callbackFun = null,
       } = options;
 
@@ -520,9 +521,9 @@ class Navigator extends React.Component {
                 (animationIn !== null && animationIn !== undefined
                   ? animationIn
                   : "slideInRight") +
-                  " " +
-                  timeAnimation +
-                  "ms"
+                " " +
+                timeAnimation +
+                "ms"
               );
             } else {
               //else if (this.listLevelPages[goToPage] === 2) {
@@ -532,9 +533,9 @@ class Navigator extends React.Component {
                 (animationIn !== null && animationIn !== undefined
                   ? animationIn
                   : "zoomIn") +
-                  " " +
-                  timeAnimation +
-                  "ms"
+                " " +
+                timeAnimation +
+                "ms"
               );
             }
           } else {
@@ -547,9 +548,9 @@ class Navigator extends React.Component {
                 (animationOut !== null && animationOut !== undefined
                   ? animationOut
                   : "slideOutRight") +
-                  " " +
-                  timeAnimation +
-                  "ms"
+                " " +
+                timeAnimation +
+                "ms"
               );
             } else {
               //else if (this.listLevelPages[goToPage] === 1) {
@@ -559,9 +560,9 @@ class Navigator extends React.Component {
                 (animationOut !== null && animationOut !== undefined
                   ? animationOut
                   : "zoomOut") +
-                  " " +
-                  timeAnimation +
-                  "ms"
+                " " +
+                timeAnimation +
+                "ms"
               );
             }
           }
@@ -593,11 +594,11 @@ class Navigator extends React.Component {
             .substr(window.location.href.lastIndexOf("/"))
             .includes("/#")
             ? window.location.href.substr(
-                window.location.href.lastIndexOf("/") + 2
-              )
+              window.location.href.lastIndexOf("/") + 2
+            )
             : window.location.href.substr(
-                window.location.href.lastIndexOf("/") + 1
-              );
+              window.location.href.lastIndexOf("/") + 1
+            );
           fthis.changePage(
             pagePath === "" ? fthis.state.homePageKey : pagePath
           );
@@ -715,7 +716,7 @@ class Navigator extends React.Component {
                     fthis.setState({ swipeRight_x: 0 });
                     fthis.swipeRight = false;
                     fthis.touchBackPage = "";
-                    fthis.callbackFunOnChangePage = () => {};
+                    fthis.callbackFunOnChangePage = () => { };
                   };
 
                   // fthis.touchBackPage = nowPage;
@@ -745,8 +746,8 @@ class Navigator extends React.Component {
                 height: child.props.height
                   ? child.props.height
                   : fthis.props.height
-                  ? this.props.height
-                  : "100%",
+                    ? this.props.height
+                    : "100%",
               }}
               id={child.key}
               key={child.key}
@@ -756,18 +757,18 @@ class Navigator extends React.Component {
                     ? "showPage scrollPage " + child.props.className
                     : "showPage scrollPage"
                   : child.props.className
-                  ? "hiddenPage " + child.props.className
-                  : "hiddenPage"
+                    ? "hiddenPage " + child.props.className
+                    : "hiddenPage"
               }
             >
               {nowPage === child.key ||
-              fthis.state.historyPages.includes(child.key) ||
-              child.props.alwaysLive
+                fthis.state.historyPages.includes(child.key) ||
+                child.props.alwaysLive
                 ? React.cloneElement(
-                    child,
-                    fthis.state.props[child.key],
-                    child.props.children
-                  )
+                  child,
+                  fthis.state.props[child.key],
+                  child.props.children
+                )
                 : null}
             </div>
           );
@@ -781,8 +782,8 @@ class Navigator extends React.Component {
           height: this.props.children.props.height
             ? this.props.children.props
             : fthis.props.height
-            ? this.props.height
-            : "100%",
+              ? this.props.height
+              : "100%",
         }}
         id={this.props.children.key}
         key={this.props.children.key}
@@ -792,13 +793,13 @@ class Navigator extends React.Component {
               ? "showPage scrollPage " + this.props.children.props.className
               : "showPage scrollPage"
             : this.props.children.props && this.props.children.props.className
-            ? "hiddenPage " + this.props.children.props.className
-            : "hiddenPage"
+              ? "hiddenPage " + this.props.children.props.className
+              : "hiddenPage"
         }
       >
         {nowPage === this.props.children.key ||
-        fthis.state.historyPages.includes(this.props.children.key) ||
-        this.props.children.props.alwaysLive ? (
+          fthis.state.historyPages.includes(this.props.children.key) ||
+          this.props.children.props.alwaysLive ? (
           React.cloneElement(
             this.props.children,
             fthis.state.props[this.props.children.key],

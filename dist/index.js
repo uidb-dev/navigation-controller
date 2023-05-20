@@ -169,6 +169,7 @@ var Navigator = function (_React$Component) {
   _createClass(Navigator, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+
       if (this.props.onChangePage !== undefined) this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], "In");
     }
   }, {
@@ -591,7 +592,6 @@ var Navigator = function (_React$Component) {
       //         }
       //     });
       // }
-
       return Array.isArray(this.props.children) ? this.props.children.filter(function (child) {
         return (typeof child === "undefined" ? "undefined" : _typeof(child)) === "object" && !child.props.kill;
       }).map(function (child) {
