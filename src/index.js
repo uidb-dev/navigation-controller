@@ -161,6 +161,10 @@ class Navigator extends React.Component {
 
     this.changePage = this.changePage.bind(this);
     this.back = this.back.bind(this);
+    this.funAnimationIn1 = this.funAnimationIn1.bind(this);
+    this.funAnimationIn2 = this.funAnimationIn2.bind(this);
+    this.funAnimationOut1 = this.funAnimationOut1.bind(this);
+    this.funAnimationOut2 = this.funAnimationOut2.bind(this);
     this.compareTwoPagesLavel = this.compareTwoPagesLavel.bind(this);
 
     if (Array.isArray(this.props.children))
@@ -189,7 +193,176 @@ class Navigator extends React.Component {
     }
   }
   //----navigator and animation----///
+  funAnimationIn1(goToPage, fromPage) {
+    const fthis = this;
 
+    try {
+      if (
+        document.getElementById(goToPage) === null ||
+        document.getElementById(goToPage) === undefined
+      ) {
+        console.error("goToPage not found: ", goToPage);
+      }
+      if (
+        document.getElementById(fromPage) === null ||
+        document.getElementById(fromPage) === undefined
+      ) {
+        console.error("fromPage not found: ", fromPage);
+      }
+
+      if (this.props.beforChangePage !== undefined)
+        this.props.beforChangePage(
+          goToPage,
+          this.compareTwoPagesLavel(goToPage, fromPage)
+        );
+
+      //--נכנסים דף פנימה Up--//
+      let callbackFun = () => {
+        try {
+          fthis.funAnimationIn2(goToPage, fromPage);
+          document
+            .getElementById(goToPage)
+            .removeEventListener("webkitAnimationEnd", callbackFun);
+        } catch (error) {
+          fthis.onError(error);
+        }
+      };
+
+      document
+        .getElementById(goToPage)
+        .addEventListener("webkitAnimationEnd", callbackFun, false);
+
+      this.busy = true;
+      $("#" + goToPage).removeClass("hiddenPage");
+      $("#" + goToPage).addClass("scrollPage showPage");
+      $("#" + fromPage).css("z-index", 0);
+      $("#" + goToPage).css("z-index", 89);
+    } catch (error) {
+      fthis.onError(error);
+    }
+  }
+
+  funAnimationIn2(goToPage, fromPage) {
+    const fthis = this;
+
+    try {
+      if (
+        document.getElementById(goToPage) === null ||
+        document.getElementById(goToPage) === undefined
+      ) {
+        console.error("goToPage not found: ", goToPage);
+      }
+      if (
+        document.getElementById(fromPage) === null ||
+        document.getElementById(fromPage) === undefined
+      ) {
+        console.error("fromPage not found: ", fromPage);
+      }
+
+      $("#" + fromPage).css("z-index", "");
+      $("#" + goToPage).css("z-index", "");
+      $("#" + goToPage).css("animation", "");
+      $("#" + fromPage).removeClass("showPage");
+      $("#" + fromPage).removeClass("scrollPage");
+      $("#" + fromPage).addClass("hiddenPage");
+      this.busy = false;
+      this.setState({ nowPage: goToPage });
+
+      if (this.props.onChangePage !== undefined)
+        this.props.onChangePage(
+          fthis.state.historyPages[this.state.historyPages.length - 1],
+          fthis.compareTwoPagesLavel(goToPage, fromPage)
+        );
+    } catch (error) {
+      fthis.onError(error);
+    }
+  }
+
+  funAnimationOut1(goToPage, fromPage) {
+    //--Back page: Down--//
+
+    const fthis = this;
+
+    try {
+      if (
+        document.getElementById(goToPage) === null ||
+        document.getElementById(goToPage) === undefined
+      ) {
+        console.error("goToPage not found: ", goToPage);
+      }
+      if (
+        document.getElementById(fromPage) === null ||
+        document.getElementById(fromPage) === undefined
+      ) {
+        console.error("fromPage not found: ", fromPage);
+        // return;
+      }
+
+      if (this.props.beforChangePage !== undefined)
+        fthis.props.beforChangePage(
+          goToPage,
+          fthis.compareTwoPagesLavel(goToPage, fromPage)
+        );
+
+      let callbackFun = () => {
+        try {
+          fthis.funAnimationOut2(goToPage, fromPage);
+          document
+            .getElementById(fromPage)
+            .removeEventListener("webkitAnimationEnd", callbackFun);
+        } catch (error) {
+          fthis.onError(error);
+        }
+      };
+      document
+        .getElementById(fromPage)
+        .addEventListener("webkitAnimationEnd", callbackFun);
+      this.busy = true;
+      $("#" + goToPage).css("z-index", 0);
+      $("#" + fromPage).css("z-index", 89);
+      $("#" + goToPage).removeClass("hiddenPage");
+      $("#" + goToPage).addClass("scrollPage showPage");
+    } catch (error) {
+      fthis.onError(error);
+    }
+  }
+  funAnimationOut2(goToPage, fromPage) {
+    if (
+      document.getElementById(goToPage) === null ||
+      document.getElementById(goToPage) === undefined
+    ) {
+      console.error("goToPage not found: ", goToPage);
+    }
+    if (
+      document.getElementById(fromPage) === null ||
+      document.getElementById(fromPage) === undefined
+    ) {
+      console.error("fromPage not found: ", fromPage);
+    }
+
+    const fthis = this;
+    try {
+      $("#" + fromPage).css("animation", "");
+      $("#" + goToPage).css("z-index", "");
+      $("#" + goToPage).css("left", "");
+      $("#" + fromPage).css("z-index", "");
+      $("#" + fromPage).removeClass("showPage");
+      $("#" + fromPage).removeClass("scrollPage");
+      $("#" + fromPage).addClass("hiddenPage");
+      this.busy = false;
+      this.setState({ nowPage: goToPage });
+
+      if (this.props.onChangePage !== undefined)
+        this.props.onChangePage(
+          fthis.state.historyPages[this.state.historyPages.length - 1],
+          fthis.compareTwoPagesLavel(goToPage, fromPage)
+        );
+
+      this.callbackFunOnChangePage();
+    } catch (error) {
+      fthis.onError(error);
+    }
+  }
 
   compareTwoPagesLavel(goToPage, fromPage) {
     const fthis = this;
@@ -222,10 +395,11 @@ class Navigator extends React.Component {
         fthis.onError("page undefined");
       }
 
-      //close the app
+      //סיום האפליקציה, סגור
       if (this.state.historyPages.length === 1 && goToPage === undefined) {
         console.log('"window.navigator.app.exitApp()"');
-
+        // fthis.showSwalLater ?
+        //     fthis.myChildrens.swal.runSwal(true) :
         if (this.props.beforExit) if (!this.props.beforExit()) return;
         window.navigator.app.exitApp();
         return;
@@ -245,6 +419,18 @@ class Navigator extends React.Component {
         return;
       }
 
+      this.props.children
+        .filter((child) => typeof child === "object")
+        .forEach((child) => {
+          if (child.props.kill) {
+            fthis.historyPages = fthis.historyPages.filter(
+              (x) => x !== child.key
+            );
+          }
+        });
+
+      this.setState({ historyPages: this.historyPages });
+
       const fromPage =
         "" + this.historyPages[this.historyPages.length - 1] + "";
 
@@ -259,33 +445,6 @@ class Navigator extends React.Component {
       } else {
         if (this.props.animationTimeInMS)
           aniTime = this.props.animationTimeInMS;
-      }
-
-
-      const renewHistory = ({fthis,goToPage,fromPage}) => {
-        ///save to history
-        let new_historyPages = fthis.state.historyPages.slice();
-
-        fthis.props.children
-          .filter((child) => typeof child === "object")
-          .forEach((child) => {
-            if (child.props.kill) {
-              new_historyPages = fthis.state.historyPages.filter(
-                (x) => x !== child.key && x !== goToPage
-              );
-            }
-          });
-
-        if (fthis.listLevelPages[goToPage] <= fthis.listLevelPages[fromPage]) {
-          //חוזרים אחורה, מחק את כל הדפים שהרמה שלהם גבוהה משלי.
-          //new_historyPages.splice(new_historyPages.length - 1, 1);
-          new_historyPages = new_historyPages.filter(
-            (x) => fthis.listLevelPages[x] < fthis.listLevelPages[goToPage]
-          );
-        }
-        new_historyPages.push(goToPage);
-        //שמירת שינויים בהיסטוריה
-        fthis.setState({ historyPages: new_historyPages });
       }
 
       options = options === undefined ? [] : options;
@@ -320,8 +479,22 @@ class Navigator extends React.Component {
         //     250; //ms
 
         if (goToPage !== fromPage) {
-          //---manger---//
+          //---ניהול חזרות----//
           this.busy = true;
+
+          ///שמור היסטוריה
+          let new_historyPages = this.state.historyPages.slice();
+
+          if (this.listLevelPages[goToPage] <= this.listLevelPages[fromPage]) {
+            //חוזרים אחורה, מחק את כל הדפים שהרמה שלהם גבוהה משלי.
+            //new_historyPages.splice(new_historyPages.length - 1, 1);
+            new_historyPages = new_historyPages.filter(
+              (x) => this.listLevelPages[x] < this.listLevelPages[goToPage]
+            );
+          }
+          new_historyPages.push(goToPage);
+          //שמירת שינויים בהיסטוריה
+          this.setState({ historyPages: new_historyPages });
 
           if (this.state.changeRoute) {
             window.location.href =
@@ -334,109 +507,65 @@ class Navigator extends React.Component {
           }
 
           //----navigator and animation----///
-          let isUp = null
+
           if (this.listLevelPages[goToPage] > this.listLevelPages[fromPage]) {
             //--Go Up Lavel--//
-            isUp = true;
+            this.funAnimationIn1(goToPage, fromPage);
 
             if (this.listLevelPages[goToPage] === 1) {
               //Up from level 0 to level 1
-              // console.log("goToPage: ", goToPage);
+              console.log("goToPage: ", goToPage);
               // debugger
-              // $("#" + goToPage).css(
-              //   "animation",
-              //   (animationIn !== null && animationIn !== undefined
-              //     ? animationIn
-              //     : "slideInRight") +
-              //   " " +
-              //   timeAnimation +
-              //   "ms"
-              // );
+              $("#" + goToPage).css(
+                "animation",
+                (animationIn !== null && animationIn !== undefined
+                  ? animationIn
+                  : "slideInRight") +
+                " " +
+                timeAnimation +
+                "ms"
+              );
             } else {
               //else if (this.listLevelPages[goToPage] === 2) {
               //Up from level 1 to level 2
-              // $("#" + goToPage).css(
-              //   "animation",
-              //   (animationIn !== null && animationIn !== undefined
-              //     ? animationIn
-              //     : "zoomIn") +
-              //   " " +
-              //   timeAnimation +
-              //   "ms"
-              // );
+              $("#" + goToPage).css(
+                "animation",
+                (animationIn !== null && animationIn !== undefined
+                  ? animationIn
+                  : "zoomIn") +
+                " " +
+                timeAnimation +
+                "ms"
+              );
             }
           } else {
             //--Go Down Level--//
-            isUp = false
+            this.funAnimationOut1(goToPage, fromPage);
             if (this.listLevelPages[fromPage] === 1) {
               //Down from level 1 to level 0
-              // $("#" + fromPage).css(
-              //   "animation",
-              //   (animationOut !== null && animationOut !== undefined
-              //     ? animationOut
-              //     : "slideOutRight") +
-              //   " " +
-              //   timeAnimation +
-              //   "ms"
-              // );
+              $("#" + fromPage).css(
+                "animation",
+                (animationOut !== null && animationOut !== undefined
+                  ? animationOut
+                  : "slideOutRight") +
+                " " +
+                timeAnimation +
+                "ms"
+              );
             } else {
               //else if (this.listLevelPages[goToPage] === 1) {
               //Down from level 2 to level 1
-              // $("#" + fromPage).css(
-              //   "animation",
-              //   (animationOut !== null && animationOut !== undefined
-              //     ? animationOut
-              //     : "zoomOut") +
-              //   " " +
-              //   timeAnimation +
-              //   "ms"
-              // );
+              $("#" + fromPage).css(
+                "animation",
+                (animationOut !== null && animationOut !== undefined
+                  ? animationOut
+                  : "zoomOut") +
+                " " +
+                timeAnimation +
+                "ms"
+              );
             }
           }
-
-          if (isUp) {
-            renewHistory({fthis,goToPage,fromPage})
-          }
-
-          // new version
-
-          //  goToPage
-          window.document.getElementById(goToPage).classList.add("show");
-          // if (isUp) {
-          //   window.document.getElementById(goToPage).style.animation = `up ${timeAnimation}ms`
-          //   window.document.getElementById(goToPage).style.zIndex = 99;
-          //   window.document.getElementById(fromPage).style.zIndex = -100;
-          // }
-          // else {
-          //   window.document.getElementById(fromPage).style.animation = `down ${timeAnimation}ms`
-          //   window.document.getElementById(goToPage).style.zIndex = 99;
-          //   // window.document.getElementById(fromPage).style.zIndex = -100;
-          // }
-          if (isUp) {
-            window.document.getElementById(goToPage).style.animation = `up-rtl ${timeAnimation}ms`
-            window.document.getElementById(goToPage).style.zIndex = 99;
-            window.document.getElementById(fromPage).style.zIndex = -100;
-          }
-          else {
-            window.document.getElementById(fromPage).style.animation = `down-rtl ${timeAnimation}ms`
-            window.document.getElementById(goToPage).style.zIndex = 99;
-            // window.document.getElementById(fromPage).style.zIndex = -100;
-          }
-
-          setTimeout(() => {
-            window.document.getElementById(fromPage).style.display = "";
-            window.document.getElementById(fromPage).style.animation = '';
-            window.document.getElementById(fromPage).classList.remove('show');
-
-            renewHistory({fthis,goToPage,fromPage})
-
-
-            fthis.busy = false;
-          }, timeAnimation+3)
-
-
-
-
 
           if (callbackFun !== undefined && callbackFun !== null) callbackFun();
         }
@@ -606,8 +735,6 @@ class Navigator extends React.Component {
                 // }
               }}
               style={{
-                display: fthis.state.startPage === child.key ? "grid" : "",
-                zIndex: fthis.state.startPage === child.key ? "99" : "",
                 left: fthis.swipeRight
                   ? fthis.touchBackPage === child.key
                     ? fthis.state.swipeRight_x
@@ -627,11 +754,11 @@ class Navigator extends React.Component {
               className={
                 fthis.state.startPage === child.key
                   ? child.props && child.props.className
-                    ? "page " + child.props.className
-                    : "page"
+                    ? "showPage scrollPage " + child.props.className
+                    : "showPage scrollPage"
                   : child.props.className
-                    ? "page " + child.props.className
-                    : "page"
+                    ? "hiddenPage " + child.props.className
+                    : "hiddenPage"
               }
             >
               {nowPage === child.key ||
@@ -649,7 +776,6 @@ class Navigator extends React.Component {
     ) : (
       <div
         style={{
-          display: fthis.state.startPage === child.key ? "grid" : "",
           backgroundColor: this.props.children.props.backgroundColor
             ? this.props.children.props.backgroundColor
             : "#fff",
@@ -664,11 +790,11 @@ class Navigator extends React.Component {
         className={
           fthis.state.startPage === child.key
             ? this.props.children.props && this.props.children.props.className
-              ? "page " + this.props.children.props.className
-              : "page"
+              ? "showPage scrollPage " + this.props.children.props.className
+              : "showPage scrollPage"
             : this.props.children.props && this.props.children.props.className
-              ? " page " + this.props.children.props.className
-              : "page"
+              ? "hiddenPage " + this.props.children.props.className
+              : "hiddenPage"
         }
       >
         {nowPage === this.props.children.key ||
