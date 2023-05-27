@@ -279,7 +279,7 @@ class Navigator extends React.Component {
   }
 
   funAnimationOut1(goToPage, fromPage) {
-    //--חזרה בדפים Down--//
+    //--Back page: Down--//
 
     const fthis = this;
 
