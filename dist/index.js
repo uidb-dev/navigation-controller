@@ -133,17 +133,18 @@ var Navigator = function (_React$Component) {
       }).forEach(function (child) {
         listLevelPages[child.key] = child.props.levelPage === undefined ? child.key === homePage ? 0 : 99999 : child.props.levelPage;
 
-        if (child.props.transitionIn) _this.componentTransitionIn[child.key] = child.props.transitionIn;
-        if (child.props.transitionOut) _this.componentTransitionOut[child.key] = child.props.transitionOut;
+        if (child.props.transitionIn) _this.componentTransitionIn[child.key] = child.props.transitionIn.includes("animate__") ? child.props.transitionIn : "animate__" + child.props.transitionIn;
+        if (child.props.transitionOut) _this.componentTransitionOut[child.key] = child.props.transitionOut.includes("animate__") ? child.props.transitionOut : "animate__" + child.props.transitionOut;
       });
     } else {
       listLevelPages[_this.props.children.key] = _this.props.children.props.levelPage === undefined ? _this.props.children.key === homePage ? 0 : 99 : _this.props.children.props.levelPage;
 
-      if (children.props.transitionIn) _this.componentTransitionIn[children.key] = children.props.transitionIn;
-      if (children.props.transitionOut) _this.componentTransitionOut[children.key] = children.props.transitionOut;
+      if (children.props.transitionIn) _this.componentTransitionIn[children.key] = children.props.transitionIn.includes("animate__") ? children.props.transitionIn.includes : "animate__" + children.props.transitionIn;
+
+      if (children.props.transitionOut) _this.componentTransitionOut[children.key] = children.props.transitionOut.includes("animate__") ? children.props.transitionOut.includes : "animate__" + children.props.transitionOut;
     }
 
-    // const childrenWithProps = React.Children.map(this.props.children, child =>
+    // const childrenWithP`rops = React.Children.map(this.props.children, child =>
     //   React.cloneElement(child, { doSomething: this.doSomething })
     // );
     // this.props.nowPage(this.historyPages[this.historyPages.length - 1]);
@@ -169,7 +170,6 @@ var Navigator = function (_React$Component) {
   _createClass(Navigator, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-
       if (this.props.onChangePage !== undefined) this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], "In");
     }
   }, {
@@ -185,38 +185,44 @@ var Navigator = function (_React$Component) {
   }, {
     key: "funAnimationIn1",
     value: function funAnimationIn1(goToPage, fromPage) {
+      var _this2 = this;
+
       var fthis = this;
-
-      try {
-        if (document.getElementById(goToPage) === null || document.getElementById(goToPage) === undefined) {
-          console.error("goToPage not found: ", goToPage);
-        }
-        if (document.getElementById(fromPage) === null || document.getElementById(fromPage) === undefined) {
-          console.error("fromPage not found: ", fromPage);
-        }
-
-        if (this.props.beforChangePage !== undefined) this.props.beforChangePage(goToPage, this.compareTwoPagesLavel(goToPage, fromPage));
-
-        //--נכנסים דף פנימה Up--//
-        var callbackFun = function callbackFun() {
-          try {
-            fthis.funAnimationIn2(goToPage, fromPage);
-            document.getElementById(goToPage).removeEventListener("webkitAnimationEnd", callbackFun);
-          } catch (error) {
-            fthis.onError(error);
+      return new Promise(function (resolve, reject) {
+        try {
+          if (document.getElementById(goToPage) === null || document.getElementById(goToPage) === undefined) {
+            console.error("goToPage not found: ", goToPage);
           }
-        };
+          if (document.getElementById(fromPage) === null || document.getElementById(fromPage) === undefined) {
+            console.error("fromPage not found: ", fromPage);
+          }
 
-        document.getElementById(goToPage).addEventListener("webkitAnimationEnd", callbackFun, false);
+          if (_this2.props.beforChangePage !== undefined) _this2.props.beforChangePage(goToPage, _this2.compareTwoPagesLavel(goToPage, fromPage));
 
-        this.busy = true;
-        (0, _jquery2.default)("#" + goToPage).removeClass("hiddenPage");
-        (0, _jquery2.default)("#" + goToPage).addClass("scrollPage showPage");
-        (0, _jquery2.default)("#" + fromPage).css("z-index", 0);
-        (0, _jquery2.default)("#" + goToPage).css("z-index", 89);
-      } catch (error) {
-        fthis.onError(error);
-      }
+          //--נכנסים דף פנימה Up--//
+          var callbackFun = function callbackFun() {
+            try {
+              fthis.funAnimationIn2(goToPage, fromPage);
+              document.getElementById(goToPage).removeEventListener("webkitAnimationEnd", callbackFun);
+            } catch (error) {
+              fthis.onError(error);
+            }
+          };
+
+          document.getElementById(goToPage).addEventListener("webkitAnimationEnd", callbackFun, false);
+
+          _this2.busy = true;
+          document.getElementById(fromPage).style.zIndex = 0;
+          document.getElementById(goToPage).style.zIndex = 89;
+          document.getElementById(goToPage).classList.remove("hiddenPage");
+          document.getElementById(goToPage).classList.add("showPage");
+          document.getElementById(goToPage).classList.add("scrollPage");
+          resolve();
+        } catch (error) {
+          fthis.onError(error);
+          reject(error);
+        }
+      });
     }
   }, {
     key: "funAnimationIn2",
@@ -231,9 +237,9 @@ var Navigator = function (_React$Component) {
           console.error("fromPage not found: ", fromPage);
         }
 
-        (0, _jquery2.default)("#" + fromPage).css("z-index", "");
-        (0, _jquery2.default)("#" + goToPage).css("z-index", "");
-        (0, _jquery2.default)("#" + goToPage).css("animation", "");
+        document.getElementById(fromPage).style.zIndex = "";
+        document.getElementById(goToPage).style.zIndex = "";
+        document.getElementById(goToPage).style.animation = "";
         (0, _jquery2.default)("#" + fromPage).removeClass("showPage");
         (0, _jquery2.default)("#" + fromPage).removeClass("scrollPage");
         (0, _jquery2.default)("#" + fromPage).addClass("hiddenPage");
@@ -248,7 +254,7 @@ var Navigator = function (_React$Component) {
   }, {
     key: "funAnimationOut1",
     value: function funAnimationOut1(goToPage, fromPage) {
-      //--חזרה בדפים Down--//
+      //--Back page: Down--//
 
       var fthis = this;
 
@@ -325,8 +331,6 @@ var Navigator = function (_React$Component) {
   }, {
     key: "changePage",
     value: function changePage(goToPage, options) {
-      var _this2 = this;
-
       var fthis = this;
       try {
         // if (goToPage === "#/") goToPage = undefined;
@@ -363,17 +367,39 @@ var Navigator = function (_React$Component) {
           return;
         }
 
-        this.props.children.filter(function (child) {
-          return (typeof child === "undefined" ? "undefined" : _typeof(child)) === "object";
-        }).forEach(function (child) {
-          if (child.props.kill) {
-            fthis.historyPages = fthis.historyPages.filter(function (x) {
-              return x !== child.key;
-            });
-          }
-        });
+        var renewHistory = function renewHistory(_ref) {
+          var fthis = _ref.fthis,
+              goToPage = _ref.goToPage,
+              fromPage = _ref.fromPage;
 
-        this.setState({ historyPages: this.historyPages });
+          return new Promise(function (resolve, reject) {
+            ///save to history
+            var new_historyPages = fthis.state.historyPages.slice();
+
+            fthis.props.children.filter(function (child) {
+              return (typeof child === "undefined" ? "undefined" : _typeof(child)) === "object";
+            }).forEach(function (child) {
+              if (child.props.kill) {
+                new_historyPages = fthis.state.historyPages.filter(function (x) {
+                  return x !== child.key && x !== goToPage;
+                });
+              }
+            });
+
+            if (fthis.listLevelPages[goToPage] <= fthis.listLevelPages[fromPage]) {
+              //חוזרים אחורה, מחק את כל הדפים שהרמה שלהם גבוהה משלי.
+              //new_historyPages.splice(new_historyPages.length - 1, 1);
+              new_historyPages = new_historyPages.filter(function (x) {
+                return fthis.listLevelPages[x] < fthis.listLevelPages[goToPage];
+              });
+            }
+            new_historyPages.push(goToPage);
+            //שמירת שינויים בהיסטוריה
+            fthis.setState({ historyPages: new_historyPages }, function () {
+              resolve('Success!');
+            });
+          });
+        };
 
         var fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
 
@@ -422,20 +448,6 @@ var Navigator = function (_React$Component) {
             //---ניהול חזרות----//
             this.busy = true;
 
-            ///שמור היסטוריה
-            var new_historyPages = this.state.historyPages.slice();
-
-            if (this.listLevelPages[goToPage] <= this.listLevelPages[fromPage]) {
-              //חוזרים אחורה, מחק את כל הדפים שהרמה שלהם גבוהה משלי.
-              //new_historyPages.splice(new_historyPages.length - 1, 1);
-              new_historyPages = new_historyPages.filter(function (x) {
-                return _this2.listLevelPages[x] < _this2.listLevelPages[goToPage];
-              });
-            }
-            new_historyPages.push(goToPage);
-            //שמירת שינויים בהיסטוריה
-            this.setState({ historyPages: new_historyPages });
-
             if (this.state.changeRoute) {
               window.location.href = window.location.href.substr(0, window.location.href.lastIndexOf("/") + 1) + "#" + (goToPage !== this.state.homePageKey ? goToPage : "");
             }
@@ -444,20 +456,36 @@ var Navigator = function (_React$Component) {
 
             if (this.listLevelPages[goToPage] > this.listLevelPages[fromPage]) {
               //--Go Up Lavel--//
-              this.funAnimationIn1(goToPage, fromPage);
+              renewHistory({ fthis: fthis, goToPage: goToPage, fromPage: fromPage }).then(function () {
 
-              if (this.listLevelPages[goToPage] === 1) {
-                //Up from level 0 to level 1
-                console.log("goToPage: ", goToPage);
-                // debugger
-                (0, _jquery2.default)("#" + goToPage).css("animation", (animationIn !== null && animationIn !== undefined ? animationIn : "slideInRight") + " " + timeAnimation + "ms");
-              } else {
-                //else if (this.listLevelPages[goToPage] === 2) {
-                //Up from level 1 to level 2
-                (0, _jquery2.default)("#" + goToPage).css("animation", (animationIn !== null && animationIn !== undefined ? animationIn : "zoomIn") + " " + timeAnimation + "ms");
-              }
+                fthis.funAnimationIn1(goToPage, fromPage).then(function () {
+
+                  var callbackFun = function callbackFun() {
+                    try {
+                      //do on start animation
+                      document.getElementById(fromPage).removeEventListener("animationstart", callbackFun);
+                    } catch (error) {
+                      fthis.onError(error);
+                    }
+                  };
+                  document.getElementById(goToPage).addEventListener("animationstart", callbackFun);
+                  if (fthis.listLevelPages[goToPage] === 1) {
+                    //Up from level 0 to level 1
+                    console.log("goToPage: ", goToPage);
+                    // debugger
+                    (0, _jquery2.default)("#" + goToPage).css("animation", (animationIn !== null && animationIn !== undefined ? animationIn : "slideInRight") + " " + timeAnimation + "ms");
+                  } else {
+                    //else if (this.listLevelPages[goToPage] === 2) {
+                    //Up from level 1 to level 2
+                    (0, _jquery2.default)("#" + goToPage).css("animation", (animationIn !== null && animationIn !== undefined ? animationIn : "zoomIn") + " " + timeAnimation + "ms");
+                  }
+                });
+              });
             } else {
               //--Go Down Level--//
+              setTimeout(function () {
+                renewHistory({ fthis: fthis, goToPage: goToPage, fromPage: fromPage });
+              }, timeAnimation);
               this.funAnimationOut1(goToPage, fromPage);
               if (this.listLevelPages[fromPage] === 1) {
                 //Down from level 1 to level 0
@@ -498,7 +526,7 @@ var Navigator = function (_React$Component) {
   }, {
     key: "back",
     value: function () {
-      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(options) {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(options) {
         var fthis, backToPage;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
@@ -566,7 +594,7 @@ var Navigator = function (_React$Component) {
       }));
 
       function back(_x) {
-        return _ref.apply(this, arguments);
+        return _ref2.apply(this, arguments);
       }
 
       return back;

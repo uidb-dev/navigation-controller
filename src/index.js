@@ -131,9 +131,12 @@ class Navigator extends React.Component {
               : child.props.levelPage;
 
           if (child.props.transitionIn)
-            this.componentTransitionIn[child.key] = child.props.transitionIn;
+            this.componentTransitionIn[child.key] = 
+            child.props.transitionIn.includes("animate__") 
+            ? child.props.transitionIn : "animate__" + child.props.transitionIn;
           if (child.props.transitionOut)
-            this.componentTransitionOut[child.key] = child.props.transitionOut;
+            this.componentTransitionOut[child.key] = child.props.transitionOut.includes("animate__") 
+            ? child.props.transitionOut : "animate__" + child.props.transitionOut;
         });
     } else {
       listLevelPages[this.props.children.key] =
@@ -144,13 +147,15 @@ class Navigator extends React.Component {
           : this.props.children.props.levelPage;
 
       if (children.props.transitionIn)
-        this.componentTransitionIn[children.key] = children.props.transitionIn;
+        this.componentTransitionIn[children.key] =
+          children.props.transitionIn.includes("animate__") ? children.props.transitionIn.includes : "animate__" + children.props.transitionIn;
+
       if (children.props.transitionOut)
         this.componentTransitionOut[children.key] =
-          children.props.transitionOut;
+          children.props.transitionOut.includes("animate__") ? children.props.transitionOut.includes : "animate__" + children.props.transitionOut;
     }
 
-    // const childrenWithProps = React.Children.map(this.props.children, child =>
+    // const childrenWithP`rops = React.Children.map(this.props.children, child =>
     //   React.cloneElement(child, { doSomething: this.doSomething })
     // );
     // this.props.nowPage(this.historyPages[this.historyPages.length - 1]);
@@ -177,7 +182,6 @@ class Navigator extends React.Component {
   }
 
   componentDidMount() {
-
     if (this.props.onChangePage !== undefined)
       this.props.onChangePage(
         this.state.historyPages[this.state.historyPages.length - 1],
@@ -195,51 +199,55 @@ class Navigator extends React.Component {
   //----navigator and animation----///
   funAnimationIn1(goToPage, fromPage) {
     const fthis = this;
-
-    try {
-      if (
-        document.getElementById(goToPage) === null ||
-        document.getElementById(goToPage) === undefined
-      ) {
-        console.error("goToPage not found: ", goToPage);
-      }
-      if (
-        document.getElementById(fromPage) === null ||
-        document.getElementById(fromPage) === undefined
-      ) {
-        console.error("fromPage not found: ", fromPage);
-      }
-
-      if (this.props.beforChangePage !== undefined)
-        this.props.beforChangePage(
-          goToPage,
-          this.compareTwoPagesLavel(goToPage, fromPage)
-        );
-
-      //--נכנסים דף פנימה Up--//
-      let callbackFun = () => {
-        try {
-          fthis.funAnimationIn2(goToPage, fromPage);
-          document
-            .getElementById(goToPage)
-            .removeEventListener("webkitAnimationEnd", callbackFun);
-        } catch (error) {
-          fthis.onError(error);
+    return new Promise((resolve, reject) => {
+      try {
+        if (
+          document.getElementById(goToPage) === null ||
+          document.getElementById(goToPage) === undefined
+        ) {
+          console.error("goToPage not found: ", goToPage);
         }
-      };
+        if (
+          document.getElementById(fromPage) === null ||
+          document.getElementById(fromPage) === undefined
+        ) {
+          console.error("fromPage not found: ", fromPage);
+        }
 
-      document
-        .getElementById(goToPage)
-        .addEventListener("webkitAnimationEnd", callbackFun, false);
+        if (this.props.beforChangePage !== undefined)
+          this.props.beforChangePage(
+            goToPage,
+            this.compareTwoPagesLavel(goToPage, fromPage)
+          );
 
-      this.busy = true;
-      $("#" + goToPage).removeClass("hiddenPage");
-      $("#" + goToPage).addClass("scrollPage showPage");
-      $("#" + fromPage).css("z-index", 0);
-      $("#" + goToPage).css("z-index", 89);
-    } catch (error) {
-      fthis.onError(error);
-    }
+        //--נכנסים דף פנימה Up--//
+        let callbackFun = () => {
+          try {
+            fthis.funAnimationIn2(goToPage, fromPage);
+            document
+              .getElementById(goToPage)
+              .removeEventListener("webkitAnimationEnd", callbackFun);
+          } catch (error) {
+            fthis.onError(error);
+          }
+        };
+
+        document
+          .getElementById(goToPage)
+          .addEventListener("webkitAnimationEnd", callbackFun, false);
+
+        this.busy = true;
+        document.getElementById(fromPage).style.zIndex = 0;
+        document.getElementById(goToPage).style.zIndex = 89;
+        document.getElementById(goToPage).classList.remove("hiddenPage");
+        document.getElementById(goToPage).classList.add("showPage");
+        document.getElementById(goToPage).classList.add("scrollPage");
+        resolve()
+      } catch (error) {
+        fthis.onError(error);
+        reject(error);
+      }
+    })
   }
 
   funAnimationIn2(goToPage, fromPage) {
@@ -259,9 +267,9 @@ class Navigator extends React.Component {
         console.error("fromPage not found: ", fromPage);
       }
 
-      $("#" + fromPage).css("z-index", "");
-      $("#" + goToPage).css("z-index", "");
-      $("#" + goToPage).css("animation", "");
+      document.getElementById(fromPage).style.zIndex = "";
+      document.getElementById(goToPage).style.zIndex = "";
+      document.getElementById(goToPage).style.animation = "";
       $("#" + fromPage).removeClass("showPage");
       $("#" + fromPage).removeClass("scrollPage");
       $("#" + fromPage).addClass("hiddenPage");
@@ -419,17 +427,36 @@ class Navigator extends React.Component {
         return;
       }
 
-      this.props.children
-        .filter((child) => typeof child === "object")
-        .forEach((child) => {
-          if (child.props.kill) {
-            fthis.historyPages = fthis.historyPages.filter(
-              (x) => x !== child.key
+      const renewHistory = ({ fthis, goToPage, fromPage }) => {
+        return new Promise((resolve, reject) => {
+          ///save to history
+          let new_historyPages = fthis.state.historyPages.slice();
+
+          fthis.props.children
+            .filter((child) => typeof child === "object")
+            .forEach((child) => {
+              if (child.props.kill) {
+                new_historyPages = fthis.state.historyPages.filter(
+                  (x) => x !== child.key && x !== goToPage
+                );
+              }
+            });
+
+          if (fthis.listLevelPages[goToPage] <= fthis.listLevelPages[fromPage]) {
+            //חוזרים אחורה, מחק את כל הדפים שהרמה שלהם גבוהה משלי.
+            //new_historyPages.splice(new_historyPages.length - 1, 1);
+            new_historyPages = new_historyPages.filter(
+              (x) => fthis.listLevelPages[x] < fthis.listLevelPages[goToPage]
             );
           }
+          new_historyPages.push(goToPage);
+          //שמירת שינויים בהיסטוריה
+          fthis.setState({ historyPages: new_historyPages }, () => { resolve('Success!'); });
+
         });
 
-      this.setState({ historyPages: this.historyPages });
+
+      }
 
       const fromPage =
         "" + this.historyPages[this.historyPages.length - 1] + "";
@@ -482,20 +509,6 @@ class Navigator extends React.Component {
           //---ניהול חזרות----//
           this.busy = true;
 
-          ///שמור היסטוריה
-          let new_historyPages = this.state.historyPages.slice();
-
-          if (this.listLevelPages[goToPage] <= this.listLevelPages[fromPage]) {
-            //חוזרים אחורה, מחק את כל הדפים שהרמה שלהם גבוהה משלי.
-            //new_historyPages.splice(new_historyPages.length - 1, 1);
-            new_historyPages = new_historyPages.filter(
-              (x) => this.listLevelPages[x] < this.listLevelPages[goToPage]
-            );
-          }
-          new_historyPages.push(goToPage);
-          //שמירת שינויים בהיסטוריה
-          this.setState({ historyPages: new_historyPages });
-
           if (this.state.changeRoute) {
             window.location.href =
               window.location.href.substr(
@@ -510,36 +523,57 @@ class Navigator extends React.Component {
 
           if (this.listLevelPages[goToPage] > this.listLevelPages[fromPage]) {
             //--Go Up Lavel--//
-            this.funAnimationIn1(goToPage, fromPage);
+            renewHistory({ fthis, goToPage, fromPage }).then(() => {
 
-            if (this.listLevelPages[goToPage] === 1) {
-              //Up from level 0 to level 1
-              console.log("goToPage: ", goToPage);
-              // debugger
-              $("#" + goToPage).css(
-                "animation",
-                (animationIn !== null && animationIn !== undefined
-                  ? animationIn
-                  : "slideInRight") +
-                " " +
-                timeAnimation +
-                "ms"
-              );
-            } else {
-              //else if (this.listLevelPages[goToPage] === 2) {
-              //Up from level 1 to level 2
-              $("#" + goToPage).css(
-                "animation",
-                (animationIn !== null && animationIn !== undefined
-                  ? animationIn
-                  : "zoomIn") +
-                " " +
-                timeAnimation +
-                "ms"
-              );
-            }
+              fthis.funAnimationIn1(goToPage, fromPage).then(() => {
+
+                const callbackFun = () => {
+                  try {
+                    //do on start animation
+                    document
+                      .getElementById(fromPage)
+                      .removeEventListener("animationstart", callbackFun);
+                  } catch (error) {
+                    fthis.onError(error);
+                  }
+                };
+                document.getElementById(goToPage).addEventListener("animationstart", callbackFun);
+                if (fthis.listLevelPages[goToPage] === 1) {
+                  //Up from level 0 to level 1
+                  console.log("goToPage: ", goToPage);
+                  // debugger
+                  $("#" + goToPage).css(
+                    "animation",
+                    (animationIn !== null && animationIn !== undefined
+                      ? animationIn
+                      : "slideInRight") +
+                    " " +
+                    timeAnimation +
+                    "ms"
+                  );
+                } else {
+                  //else if (this.listLevelPages[goToPage] === 2) {
+                  //Up from level 1 to level 2
+                  $("#" + goToPage).css(
+                    "animation",
+                    (animationIn !== null && animationIn !== undefined
+                      ? animationIn
+                      : "zoomIn") +
+                    " " +
+                    timeAnimation +
+                    "ms"
+                  );
+                }
+              });
+            });
+
+
+
           } else {
             //--Go Down Level--//
+            setTimeout(() => {
+              renewHistory({ fthis, goToPage, fromPage });
+            }, timeAnimation);
             this.funAnimationOut1(goToPage, fromPage);
             if (this.listLevelPages[fromPage] === 1) {
               //Down from level 1 to level 0
