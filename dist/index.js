@@ -133,18 +133,17 @@ var Navigator = function (_React$Component) {
       }).forEach(function (child) {
         listLevelPages[child.key] = child.props.levelPage === undefined ? child.key === homePage ? 0 : 99999 : child.props.levelPage;
 
-        if (child.props.transitionIn) _this.componentTransitionIn[child.key] = child.props.transitionIn.includes("animate__") ? child.props.transitionIn : "animate__" + child.props.transitionIn;
-        if (child.props.transitionOut) _this.componentTransitionOut[child.key] = child.props.transitionOut.includes("animate__") ? child.props.transitionOut : "animate__" + child.props.transitionOut;
+        if (child.props.transitionIn) _this.componentTransitionIn[child.key] = child.props.transitionIn.replace("animate__", "");
+        if (child.props.transitionOut) _this.componentTransitionOut[child.key] = child.props.transitionOut.replace("animate__", "");
       });
     } else {
       listLevelPages[_this.props.children.key] = _this.props.children.props.levelPage === undefined ? _this.props.children.key === homePage ? 0 : 99 : _this.props.children.props.levelPage;
 
-      if (children.props.transitionIn) _this.componentTransitionIn[children.key] = children.props.transitionIn.includes("animate__") ? children.props.transitionIn.includes : "animate__" + children.props.transitionIn;
-
-      if (children.props.transitionOut) _this.componentTransitionOut[children.key] = children.props.transitionOut.includes("animate__") ? children.props.transitionOut.includes : "animate__" + children.props.transitionOut;
+      if (children.props.transitionIn) _this.componentTransitionIn[children.key] = children.props.transitionIn.replace("animate__", "");;
+      if (children.props.transitionOut) _this.componentTransitionOut[children.key] = children.props.transitionOut.replace("animate__", "");
     }
 
-    // const childrenWithP`rops = React.Children.map(this.props.children, child =>
+    // const childrenWithProps = React.Children.map(this.props.children, child =>
     //   React.cloneElement(child, { doSomething: this.doSomething })
     // );
     // this.props.nowPage(this.historyPages[this.historyPages.length - 1]);
@@ -458,28 +457,29 @@ var Navigator = function (_React$Component) {
               //--Go Up Lavel--//
               renewHistory({ fthis: fthis, goToPage: goToPage, fromPage: fromPage }).then(function () {
 
-                fthis.funAnimationIn1(goToPage, fromPage).then(function () {
+                setTimeout(function () {
+                  fthis.funAnimationIn1(goToPage, fromPage).then(function () {
 
-                  var callbackFun = function callbackFun() {
-                    try {
-                      //do on start animation
-                      document.getElementById(fromPage).removeEventListener("animationstart", callbackFun);
-                    } catch (error) {
-                      fthis.onError(error);
-                    }
-                  };
-                  document.getElementById(goToPage).addEventListener("animationstart", callbackFun);
-                  if (fthis.listLevelPages[goToPage] === 1) {
+                    // if (fthis.listLevelPages[goToPage] === 1) {
                     //Up from level 0 to level 1
                     console.log("goToPage: ", goToPage);
                     // debugger
                     (0, _jquery2.default)("#" + goToPage).css("animation", (animationIn !== null && animationIn !== undefined ? animationIn : "slideInRight") + " " + timeAnimation + "ms");
-                  } else {
-                    //else if (this.listLevelPages[goToPage] === 2) {
-                    //Up from level 1 to level 2
-                    (0, _jquery2.default)("#" + goToPage).css("animation", (animationIn !== null && animationIn !== undefined ? animationIn : "zoomIn") + " " + timeAnimation + "ms");
-                  }
-                });
+                    // } else {
+                    //   //else if (this.listLevelPages[goToPage] === 2) {
+                    //   //Up from level 1 to level 2
+                    //   $("#" + goToPage).css(
+                    //     "animation",
+                    //     (animationIn !== null && animationIn !== undefined
+                    //       ? animationIn
+                    //       : "zoomIn") +
+                    //     " " +
+                    //     timeAnimation +
+                    //     "ms"
+                    //   );
+                    // }
+                  });
+                }, 18);
               });
             } else {
               //--Go Down Level--//
@@ -487,14 +487,22 @@ var Navigator = function (_React$Component) {
                 renewHistory({ fthis: fthis, goToPage: goToPage, fromPage: fromPage });
               }, timeAnimation);
               this.funAnimationOut1(goToPage, fromPage);
-              if (this.listLevelPages[fromPage] === 1) {
-                //Down from level 1 to level 0
-                (0, _jquery2.default)("#" + fromPage).css("animation", (animationOut !== null && animationOut !== undefined ? animationOut : "slideOutRight") + " " + timeAnimation + "ms");
-              } else {
-                //else if (this.listLevelPages[goToPage] === 1) {
-                //Down from level 2 to level 1
-                (0, _jquery2.default)("#" + fromPage).css("animation", (animationOut !== null && animationOut !== undefined ? animationOut : "zoomOut") + " " + timeAnimation + "ms");
-              }
+              // if (this.listLevelPages[fromPage] === 1) {
+              //Down from level 1 to level 0
+              (0, _jquery2.default)("#" + fromPage).css("animation", (animationOut !== null && animationOut !== undefined ? animationOut : "slideOutRight") + " " + timeAnimation + "ms");
+              // } else {
+              //   //else if (this.listLevelPages[goToPage] === 1) {
+              //   //Down from level 2 to level 1
+              //   $("#" + fromPage).css(
+              //     "animation",
+              //     (animationOut !== null && animationOut !== undefined
+              //       ? animationOut
+              //       : "zoomOut") +
+              //     " " +
+              //     timeAnimation +
+              //     "ms"
+              //   );
+              // }
             }
 
             if (callbackFun !== undefined && callbackFun !== null) callbackFun();
