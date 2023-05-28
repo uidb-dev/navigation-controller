@@ -1,5 +1,5 @@
 import React from 'react';
-import Navigator from 'react.cordova-navigation_controller';
+import Navigator from 'navigation-controller';
 
 import './app.css';
 
