@@ -139,7 +139,7 @@ var Navigator = function (_React$Component) {
     } else {
       listLevelPages[_this.props.children.key] = _this.props.children.props.levelPage === undefined ? _this.props.children.key === homePage ? 0 : 99 : _this.props.children.props.levelPage;
 
-      if (children.props.transitionIn) _this.componentTransitionIn[children.key] = children.props.transitionIn.replace("animate__", "");;
+      if (children.props.transitionIn) _this.componentTransitionIn[children.key] = children.props.transitionIn.replace("animate__", "");
       if (children.props.transitionOut) _this.componentTransitionOut[children.key] = children.props.transitionOut.replace("animate__", "");
     }
 
@@ -186,6 +186,7 @@ var Navigator = function (_React$Component) {
     value: function funAnimationIn1(goToPage, fromPage) {
       var _this2 = this;
 
+      // debugger;
       var fthis = this;
       return new Promise(function (resolve, reject) {
         try {
@@ -395,7 +396,7 @@ var Navigator = function (_React$Component) {
             new_historyPages.push(goToPage);
             //שמירת שינויים בהיסטוריה
             fthis.setState({ historyPages: new_historyPages }, function () {
-              resolve('Success!');
+              resolve("Success!");
             });
           });
         };
@@ -456,15 +457,22 @@ var Navigator = function (_React$Component) {
             if (this.listLevelPages[goToPage] > this.listLevelPages[fromPage]) {
               //--Go Up Lavel--//
               renewHistory({ fthis: fthis, goToPage: goToPage, fromPage: fromPage }).then(function () {
-
                 setTimeout(function () {
                   fthis.funAnimationIn1(goToPage, fromPage).then(function () {
-
                     // if (fthis.listLevelPages[goToPage] === 1) {
                     //Up from level 0 to level 1
                     console.log("goToPage: ", goToPage);
-                    // debugger
-                    (0, _jquery2.default)("#" + goToPage).css("animation", (animationIn !== null && animationIn !== undefined ? animationIn : "slideInRight") + " " + timeAnimation + "ms");
+                    // debugger;
+                    // $("#" + goToPage).css(
+                    //   "animation",
+                    //   (animationIn !== null && animationIn !== undefined
+                    //     ? animationIn
+                    //     : "slideInRight") +
+                    //     " " +
+                    //     timeAnimation +
+                    //     "ms"
+                    // );
+                    document.getElementById(goToPage).style.animation = (animationIn !== null && animationIn !== undefined ? animationIn : "slideInRight") + " " + timeAnimation + "ms";
                     // } else {
                     //   //else if (this.listLevelPages[goToPage] === 2) {
                     //   //Up from level 1 to level 2
@@ -519,6 +527,7 @@ var Navigator = function (_React$Component) {
       try {
         //--back button in android
         document.addEventListener("backbutton", function (e) {
+          console.log("backbutton");
           fthis.back();
         }, false);
 
@@ -540,37 +549,41 @@ var Navigator = function (_React$Component) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
+                console.log("1 navigator back with options: ", options);
+
                 fthis = this;
                 backToPage = fthis.state.historyPages[fthis.state.historyPages.length - 2];
 
                 if (!this.props.beforBack) {
-                  _context.next = 7;
+                  _context.next = 9;
                   break;
                 }
 
-                _context.next = 5;
+                console.log("this.props.beforBack: ", this.props.beforBack);
+                _context.next = 7;
                 return this.props.beforBack(backToPage);
 
-              case 5:
-                if (_context.sent) {
-                  _context.next = 7;
-                  break;
-                }
-
-                return _context.abrupt("return");
-
               case 7:
-                if (!(this.props.routeKey && !options && backToPage !== undefined)) {
-                  _context.next = 10;
+                if (_context.sent) {
+                  _context.next = 9;
                   break;
                 }
 
-                window.location.hash = "#/" + backToPage;
                 return _context.abrupt("return");
 
-              case 10:
+              case 9:
 
-                // console.log("navigator back with options: ", options);
+                //
+                // if (this.props.routeKey && !options && backToPage !== undefined) {
+                //   // console.log(
+                //   //   "this.props.routeKey && !options && backToPage !== undefined : ",
+                //   //   this.props.routeKey && !options && backToPage !== undefined
+                //   // );
+                //   window.location.hash = "#/" + backToPage;
+                //   return;
+                // }
+
+                console.log("navigator back with options: ", options);
                 try {
                   fthis.props.children.forEach(function (child) {
                     if (child.props.kill) {
@@ -587,6 +600,8 @@ var Navigator = function (_React$Component) {
 
                     fthis.changePage(backToPage);
                   } else {
+                    console.log("back=> changePage to: ", backToPage, options);
+
                     fthis.changePage(backToPage, options);
                   }
                 } catch (error) {
