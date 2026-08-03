@@ -1,0 +1,25 @@
+version: 2
+
+# Both manifests are grouped into a single PR each, so a burst of transitive
+# advisories arrives as one reviewable update instead of the ~20 stale PRs that
+# had accumulated here before.
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      root-build-toolchain:
+        patterns:
+          - "*"
+
+  - package-ecosystem: npm
+    directory: /examples
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      example-app:
+        patterns:
+          - "*"
