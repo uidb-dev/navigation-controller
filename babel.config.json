@@ -1,0 +1,16 @@
+{
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "targets": {
+                    "chrome": "55",
+                    "android": "55",
+                    "safari": "10.1",
+                    "ios": "10.3"
+                }
+            }
+        ],
+        "@babel/preset-react"
+    ]
+}
