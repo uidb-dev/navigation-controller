@@ -24,6 +24,9 @@ export default function App() {
   const back = () => nav.current.back();
 
   useEffect(() => {
+    // Make the URL explicit on a cold load, so every page is shareable.
+    if (!window.location.hash) window.history.replaceState(null, "", "#/" + routeKey);
+
     // One spare history entry sits on top of ours. The browser's Back button
     // consumes it and fires popstate, which lets us decide what back MEANS
     // instead of letting the browser walk its linear history.
