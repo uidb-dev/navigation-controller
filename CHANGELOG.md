@@ -3,6 +3,14 @@
 All notable changes to `navigation-controller` are documented here.
 This project follows [Semantic Versioning](https://semver.org/).
 
+## 4.1.1
+
+### Documentation
+
+- Stated the supported platforms (Android, iPhone/iPad) and documented all three back
+  gestures — Android's hardware button, the iOS-style edge swipe, and the browser's
+  Back button — including what each one requires to be enabled.
+
 ## 4.1.0
 
 First release since 4.0.1. The published 4.0.x bundle could not be imported at

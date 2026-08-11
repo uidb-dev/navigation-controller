@@ -1,7 +1,9 @@
 # navigation-controller
 
-**Level-based back navigation for React mobile & WebView apps.** Every page declares
-how deep it sits in your app. "Back" walks *up the tree*, not backwards through clicks.
+**Level-based back navigation for React apps on Android and iPhone.** Every page
+declares how deep it sits in your app. "Back" walks *up the tree*, not backwards
+through clicks — whether the user taps Android's hardware back button, swipes right
+from the edge as they would on iOS, or presses Back in the browser.
 
 [![npm](https://img.shields.io/npm/v/navigation-controller)](https://www.npmjs.com/package/navigation-controller)
 [![downloads](https://img.shields.io/npm/dm/navigation-controller)](https://www.npmjs.com/package/navigation-controller)
@@ -54,6 +56,31 @@ changePage("item-a")  →  ["home", "hub", "item-a"]
 changePage("item-b")  →  ["home", "hub", "item-b"]   ← item-a pruned
 back()                →  ["home", "hub"]              ← lands on the hub
 ```
+
+## Platforms, and the three ways "back" can happen
+
+Runs on **Android** and **iPhone / iPad**, inside a WebView (Cordova, Capacitor, Ionic)
+or as a plain mobile web app in the browser. It is DOM-based — `<div>`s and CSS
+animations — so it works anywhere a browser engine does.
+
+Whichever way the user goes back, they all land on the same level-based logic: back
+goes **up a level**, never sideways to a sibling.
+
+| The user… | How it is handled | You need |
+| --- | --- | --- |
+| taps **Android's hardware back button** | Cordova's `backbutton` event → `back()`. From the root page it exits the app. | nothing — it is automatic |
+| **swipes right from the left edge** — the iOS gesture, and the same gesture on Android | a drag from the left 20% of the screen, committed past 25% of the width | `backOnSwipeRight` on the page |
+| presses the **browser's Back button** | the `hashchange` event → the page in the URL | `changeRoute` on the `<Navigator>` |
+
+```jsx
+<Navigator changeRoute>                            {/* browser Back button */}
+  <Home    key="home"    levelPage={0} />
+  <Details key="details" levelPage={1} backOnSwipeRight />   {/* iOS-style edge swipe */}
+</Navigator>
+{/* Android's hardware back button needs no opt-in. */}
+```
+
+Details: [Swipe back](#swipe-back) · [Android hardware back button](#android-hardware-back-button)
 
 ## Install
 
