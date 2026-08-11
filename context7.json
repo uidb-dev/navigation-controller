@@ -1,0 +1,33 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "navigation-controller",
+  "description": "Level-based back navigation for React mobile and WebView apps: hierarchical page stack, swipe-back, hardware back button, animated page transitions.",
+  "folders": [],
+  "excludeFolders": [
+    "dist",
+    "examples",
+    "node_modules",
+    "build"
+  ],
+  "excludeFiles": [
+    "LICENSE",
+    "package-lock.json",
+    "animate.css"
+  ],
+  "rules": [
+    "Every child of <Navigator> requires a unique `key`, and that key is used verbatim as the page's DOM element id. Keys must be valid HTML ids: no dots, colons, spaces, or leading digits.",
+    "Every page should declare an explicit `levelPage` number. 0 is the root and higher numbers are deeper. Omitting it defaults the home page to 0 and all other pages to 99999.",
+    "Navigating to a levelPage lower than or equal to the current one prunes every history entry at or below that level. Siblings sharing a levelPage replace each other instead of stacking, so back from a sibling returns to the parent.",
+    "The lifecycle props are spelled without the letter 'e': `beforChangePage`, `beforBack`, `beforExit`. This is the real shipped API, not a typo. Correctly spelled variants are silently ignored.",
+    "`beforBack` must return a truthy value (or a promise resolving to one) or the back navigation is cancelled. A handler returning undefined disables back entirely, including the Android hardware back button.",
+    "`beforChangePage` is notification-only; its return value is ignored and it cannot veto a navigation.",
+    "Use `onRef={(nav) => ...}` to obtain the Navigator instance, then call `nav.changePage(key, options)` and `await nav.back(options)`. Readable fields are `nav.historyPages`, `nav.nowPage` and `nav.busy`.",
+    "Navigation is ignored while a transition is in flight (`nav.busy === true`). Calls are dropped, not queued.",
+    "When pairing with React Router, set `changeRoute={false}` so the Navigator's own hash routing does not fight the router, and drive navigation by passing `routeKey`.",
+    "The prop is `routeKey` in navigation-controller but `routerKey` in the sibling package mobile-navigation-controller. Using the wrong one fails silently.",
+    "Page contents are mounted only while the page is on the current path. Ancestors stay mounted and keep their state; pruned siblings are unmounted. Use `alwaysLive` to keep a page mounted regardless.",
+    "Transition animations use animate.css v4.1.1, which is bundled. The `animate__` class prefix is stripped automatically, so both `fadeIn` and `animate__fadeIn` work.",
+    "Transitions complete on the `webkitAnimationEnd` event, so navigation stalls in desktop Firefox, which does not fire the prefixed event. Shipping WebViews (iOS WKWebView, Android System WebView) are unaffected.",
+    "This library renders DOM elements and is for React in a browser or WebView. It does not work in React Native; use @react-navigation/native there."
+  ]
+}

@@ -5,7 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _react = _interopRequireDefault(require("react"));
-var _jquery = _interopRequireDefault(require("./jquery-3.3.1.min"));
 require("./styles.css");
 require("./animate.css");
 var _proptypes = require("./proptypes");
@@ -14,6 +13,64 @@ function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 // import { setTimeout } from "timers";
 
+// --- minimal DOM helpers (replace the previously vendored jQuery build) ---
+// They no-op when the element is missing, matching jQuery's empty-set
+// behaviour, so the surrounding control flow is unchanged.
+var byId = id => document.getElementById(id);
+var setStyle = (id, prop, value) => {
+  var node = byId(id);
+  if (node) node.style[prop] = value;
+};
+var addClass = function (id) {
+  var node = byId(id);
+  for (var _len = arguments.length, names = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    names[_key - 1] = arguments[_key];
+  }
+  if (node) node.classList.add(...names);
+};
+var removeClass = function (id) {
+  var node = byId(id);
+  for (var _len2 = arguments.length, names = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+    names[_key2 - 1] = arguments[_key2];
+  }
+  if (node) node.classList.remove(...names);
+};
+
+// `props.children` is a single element (not an array) when the consumer renders
+// exactly one page. Normalise before array operations. NOTE: deliberately not
+// React.Children.toArray -- that rewrites keys (".$myKey") and this library uses
+// child keys verbatim as DOM element ids and history entries.
+var asChildArray = children => Array.isArray(children) ? children : children == null ? [] : [children];
+
+// animate.css v4 ships its animations as `animate__`-prefixed CLASS names while
+// its @keyframes stay unprefixed. This library drives transitions through the
+// `animation` style property, which needs the KEYFRAME name -- so a prefixed
+// value (`animate__slideInRight`, the documented v4 naming) matches no keyframe,
+// no animation runs, no animation-end event ever fires, `busy` latches true and
+// the navigator freezes for good. Normalise every transition name we read.
+var animationName = name => typeof name === "string" ? name.replace("animate__", "") : name;
+
+// Transitions complete on an animation-end event. Older WebKit WebViews only
+// fire the prefixed `webkitAnimationEnd`; Firefox only fires the unprefixed
+// `animationend`. Listen for both, but run the handler EXACTLY ONCE: a browser
+// that emits both would otherwise finish the same navigation twice and
+// double-advance the history stack. Both listeners are detached on the first
+// accepted event. Events bubbling up from animated content *inside* the page are
+// ignored, so page content can never end the page transition early.
+var onAnimationEndOnce = (id, handler) => {
+  // Deliberately not null-guarded: a missing element must throw here, exactly as
+  // the previous inline addEventListener did, so the caller reports via onError
+  // instead of arming a transition that can never complete.
+  var node = document.getElementById(id);
+  var wrapped = event => {
+    if (event && event.target !== node) return;
+    node.removeEventListener("webkitAnimationEnd", wrapped);
+    node.removeEventListener("animationend", wrapped);
+    handler();
+  };
+  node.addEventListener("webkitAnimationEnd", wrapped, false);
+  node.addEventListener("animationend", wrapped, false);
+};
 class Navigator extends _react.default.Component {
   constructor(props) {
     super(props);
@@ -50,8 +107,8 @@ class Navigator extends _react.default.Component {
       console.error(e);
       if (fthis.props.onError) this.props.onError(e);
     };
-    if (startPage && this.props.children.filter(x => x.key === startPage).length === 0) {
-      if (this.props.errorPageKey && this.props.children.filter(x => x.key === this.props.errorPageKey).length !== 0) {
+    if (startPage && asChildArray(this.props.children).filter(x => x.key === startPage).length === 0) {
+      if (this.props.errorPageKey && asChildArray(this.props.children).filter(x => x.key === this.props.errorPageKey).length !== 0) {
         startPage = this.props.errorPageKey;
       } else startPage = homePage;
       console.error("startPage ", startPage, " undefined");
@@ -88,8 +145,8 @@ class Navigator extends _react.default.Component {
       });
     } else {
       listLevelPages[this.props.children.key] = this.props.children.props.levelPage === undefined ? this.props.children.key === homePage ? 0 : 99 : this.props.children.props.levelPage;
-      if (children.props.transitionIn) this.componentTransitionIn[children.key] = children.props.transitionIn.replace("animate__", "");
-      if (children.props.transitionOut) this.componentTransitionOut[children.key] = children.props.transitionOut.replace("animate__", "");
+      if (this.props.children.props.transitionIn) this.componentTransitionIn[this.props.children.key] = this.props.children.props.transitionIn.replace("animate__", "");
+      if (this.props.children.props.transitionOut) this.componentTransitionOut[this.props.children.key] = this.props.children.props.transitionOut.replace("animate__", "");
     }
 
     // const childrenWithProps = React.Children.map(this.props.children, child =>
@@ -106,12 +163,9 @@ class Navigator extends _react.default.Component {
     this.funAnimationOut1 = this.funAnimationOut1.bind(this);
     this.funAnimationOut2 = this.funAnimationOut2.bind(this);
     this.compareTwoPagesLavel = this.compareTwoPagesLavel.bind(this);
-    if (Array.isArray(this.props.children)) this.props.children.map(child => {
+    asChildArray(this.props.children).forEach(child => {
       if (child.key === null || child.key === "") window.console.error("navigation_controller: key value it's required");
     });
-  }
-  componentDidMount() {
-    if (this.props.onChangePage !== undefined) this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], "In");
   }
   componentDidUpdate(prevProps) {
     // if (!this.state.mobileMode)
@@ -134,15 +188,13 @@ class Navigator extends _react.default.Component {
         if (this.props.beforChangePage !== undefined) this.props.beforChangePage(goToPage, this.compareTwoPagesLavel(goToPage, fromPage));
 
         //--נכנסים דף פנימה Up--//
-        var callbackFun = () => {
+        onAnimationEndOnce(goToPage, () => {
           try {
             fthis.funAnimationIn2(goToPage, fromPage);
-            document.getElementById(goToPage).removeEventListener("webkitAnimationEnd", callbackFun);
           } catch (error) {
             fthis.onError(error);
           }
-        };
-        document.getElementById(goToPage).addEventListener("webkitAnimationEnd", callbackFun, false);
+        });
         this.busy = true;
         document.getElementById(fromPage).style.zIndex = 0;
         document.getElementById(goToPage).style.zIndex = 89;
@@ -168,9 +220,9 @@ class Navigator extends _react.default.Component {
       document.getElementById(fromPage).style.zIndex = "";
       document.getElementById(goToPage).style.zIndex = "";
       document.getElementById(goToPage).style.animation = "";
-      (0, _jquery.default)("#" + fromPage).removeClass("showPage");
-      (0, _jquery.default)("#" + fromPage).removeClass("scrollPage");
-      (0, _jquery.default)("#" + fromPage).addClass("hiddenPage");
+      removeClass(fromPage, "showPage");
+      removeClass(fromPage, "scrollPage");
+      addClass(fromPage, "hiddenPage");
       this.busy = false;
       this.setState({
         nowPage: goToPage
@@ -193,20 +245,18 @@ class Navigator extends _react.default.Component {
         // return;
       }
       if (this.props.beforChangePage !== undefined) fthis.props.beforChangePage(goToPage, fthis.compareTwoPagesLavel(goToPage, fromPage));
-      var callbackFun = () => {
+      onAnimationEndOnce(fromPage, () => {
         try {
           fthis.funAnimationOut2(goToPage, fromPage);
-          document.getElementById(fromPage).removeEventListener("webkitAnimationEnd", callbackFun);
         } catch (error) {
           fthis.onError(error);
         }
-      };
-      document.getElementById(fromPage).addEventListener("webkitAnimationEnd", callbackFun);
+      });
       this.busy = true;
-      (0, _jquery.default)("#" + goToPage).css("z-index", 0);
-      (0, _jquery.default)("#" + fromPage).css("z-index", 89);
-      (0, _jquery.default)("#" + goToPage).removeClass("hiddenPage");
-      (0, _jquery.default)("#" + goToPage).addClass("scrollPage showPage");
+      setStyle(goToPage, "zIndex", 0);
+      setStyle(fromPage, "zIndex", 89);
+      removeClass(goToPage, "hiddenPage");
+      addClass(goToPage, "scrollPage", "showPage");
     } catch (error) {
       fthis.onError(error);
     }
@@ -220,13 +270,13 @@ class Navigator extends _react.default.Component {
     }
     var fthis = this;
     try {
-      (0, _jquery.default)("#" + fromPage).css("animation", "");
-      (0, _jquery.default)("#" + goToPage).css("z-index", "");
-      (0, _jquery.default)("#" + goToPage).css("left", "");
-      (0, _jquery.default)("#" + fromPage).css("z-index", "");
-      (0, _jquery.default)("#" + fromPage).removeClass("showPage");
-      (0, _jquery.default)("#" + fromPage).removeClass("scrollPage");
-      (0, _jquery.default)("#" + fromPage).addClass("hiddenPage");
+      setStyle(fromPage, "animation", "");
+      setStyle(goToPage, "zIndex", "");
+      setStyle(goToPage, "left", "");
+      setStyle(fromPage, "zIndex", "");
+      removeClass(fromPage, "showPage");
+      removeClass(fromPage, "scrollPage");
+      addClass(fromPage, "hiddenPage");
       this.busy = false;
       this.setState({
         nowPage: goToPage
@@ -252,7 +302,8 @@ class Navigator extends _react.default.Component {
     try {
       // if (goToPage === "#/") goToPage = undefined;
 
-      if (goToPage && this.props.children.filter(x => x.key === goToPage).length === 0) {
+      var childArray = asChildArray(this.props.children);
+      if (goToPage && childArray.filter(x => x.key === goToPage).length === 0) {
         if (fthis.props.errorPageKey) {
           goToPage = fthis.props.errorPageKey;
         } else {
@@ -264,7 +315,6 @@ class Navigator extends _react.default.Component {
 
       //סיום האפליקציה, סגור
       if (this.state.historyPages.length === 1 && goToPage === undefined) {
-        console.log('"window.navigator.app.exitApp()"');
         // fthis.showSwalLater ?
         //     fthis.myChildrens.swal.runSwal(true) :
         if (this.props.beforExit) if (!this.props.beforExit()) return;
@@ -286,7 +336,7 @@ class Navigator extends _react.default.Component {
         return new Promise((resolve, reject) => {
           ///save to history
           var new_historyPages = fthis.state.historyPages.slice();
-          fthis.props.children.filter(child => typeof child === "object").forEach(child => {
+          asChildArray(fthis.props.children).filter(child => typeof child === "object").forEach(child => {
             if (child.props.kill) {
               new_historyPages = fthis.state.historyPages.filter(x => x !== child.key && x !== goToPage);
             }
@@ -307,8 +357,8 @@ class Navigator extends _react.default.Component {
       };
       var fromPage = "" + this.historyPages[this.historyPages.length - 1] + "";
       var aniTime = 250;
-      if (this.props.children.filter(x => x.key === goToPage)[0].props.animationTimeInMS) {
-        aniTime = this.props.children.filter(x => x.key === goToPage)[0].props.animationTimeInMS;
+      if (childArray.filter(x => x.key === goToPage)[0].props.animationTimeInMS) {
+        aniTime = childArray.filter(x => x.key === goToPage)[0].props.animationTimeInMS;
       } else {
         if (this.props.animationTimeInMS) aniTime = this.props.animationTimeInMS;
       }
@@ -324,6 +374,12 @@ class Navigator extends _react.default.Component {
         animationOut = _options$animationOut === void 0 ? this.swipeRight ? "slideOutRight" : this.componentTransitionOut[fromPage] ? this.componentTransitionOut[fromPage] : null : _options$animationOut,
         _options$callbackFun = _options.callbackFun,
         callbackFun = _options$callbackFun === void 0 ? null : _options$callbackFun;
+
+      // Caller-supplied animation names go through the same animate.css v4
+      // normalisation as the child transitionIn/transitionOut props: an
+      // `animate__`-prefixed name here would match no keyframe and latch `busy`.
+      animationIn = animationName(animationIn);
+      animationOut = animationName(animationOut);
       if (props !== null) {
         // let oldProps = this.state.props;
         var newProps = [];
@@ -359,8 +415,6 @@ class Navigator extends _react.default.Component {
                 fthis.funAnimationIn1(goToPage, fromPage).then(() => {
                   // if (fthis.listLevelPages[goToPage] === 1) {
                   //Up from level 0 to level 1
-                  console.log("goToPage: ", goToPage);
-                  // debugger;
                   // $("#" + goToPage).css(
                   //   "animation",
                   //   (animationIn !== null && animationIn !== undefined
@@ -399,7 +453,7 @@ class Navigator extends _react.default.Component {
             this.funAnimationOut1(goToPage, fromPage);
             // if (this.listLevelPages[fromPage] === 1) {
             //Down from level 1 to level 0
-            (0, _jquery.default)("#" + fromPage).css("animation", (animationOut !== null && animationOut !== undefined ? animationOut : "slideOutRight") + " " + timeAnimation + "ms");
+            setStyle(fromPage, "animation", (animationOut !== null && animationOut !== undefined ? animationOut : "slideOutRight") + " " + timeAnimation + "ms");
             // } else {
             //   //else if (this.listLevelPages[goToPage] === 1) {
             //   //Down from level 2 to level 1
@@ -426,7 +480,6 @@ class Navigator extends _react.default.Component {
     try {
       //--back button in android
       document.addEventListener("backbutton", e => {
-        console.log("backbutton");
         fthis.back();
       }, false);
 
@@ -438,15 +491,24 @@ class Navigator extends _react.default.Component {
     } catch (error) {
       fthis.onError(error);
     }
+
+    //--announce the page the navigator started on. This used to live in a
+    //  second componentDidMount that silently shadowed this one, so it never ran.
+    //  Guarded exactly like every other onChangePage call site: a consumer
+    //  handler that throws must be reported through onError, never propagate out
+    //  of componentDidMount and tear down the whole React tree at startup.
+    try {
+      if (this.props.onChangePage !== undefined) this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], "In");
+    } catch (error) {
+      fthis.onError(error);
+    }
   }
   back(options) {
     var _this = this;
     return _asyncToGenerator(function* () {
-      console.log("1 navigator back with options: ", options);
       var fthis = _this;
       var backToPage = fthis.state.historyPages[fthis.state.historyPages.length - 2];
       if (_this.props.beforBack) {
-        console.log("this.props.beforBack: ", _this.props.beforBack);
         if (!(yield _this.props.beforBack(backToPage))) return;
       }
 
@@ -460,9 +522,8 @@ class Navigator extends _react.default.Component {
       //   return;
       // }
 
-      console.log("navigator back with options: ", options);
       try {
-        fthis.props.children.forEach(child => {
+        asChildArray(fthis.props.children).forEach(child => {
           if (child.props.kill) {
             fthis.historyPages = fthis.historyPages.filter(x => x !== child.key);
           }
@@ -473,10 +534,8 @@ class Navigator extends _react.default.Component {
 
         //---
         if (options === null || options === undefined) {
-          console.log("back=> changePage to: ", backToPage);
           fthis.changePage(backToPage);
         } else {
-          console.log("back=> changePage to: ", backToPage, options);
           fthis.changePage(backToPage, options);
         }
       } catch (error) {
@@ -516,10 +575,10 @@ class Navigator extends _react.default.Component {
                 swipeRightStart_x: e.touches[0].clientX
               });
               var goToPage = this.state.historyPages[this.state.historyPages.length - 2];
-              (0, _jquery.default)("#" + goToPage).css("z-index", 0);
-              (0, _jquery.default)("#" + nowPage).css("z-index", 89);
-              (0, _jquery.default)("#" + goToPage).removeClass("hiddenPage");
-              (0, _jquery.default)("#" + goToPage).addClass("showPage overflow_Y_hidden");
+              setStyle(goToPage, "zIndex", 0);
+              setStyle(nowPage, "zIndex", 89);
+              removeClass(goToPage, "hiddenPage");
+              addClass(goToPage, "showPage", "overflow_Y_hidden");
             }
           }
           if (fthis.swipeRight) {
@@ -532,8 +591,8 @@ class Navigator extends _react.default.Component {
           var goToPage = this.state.historyPages[this.state.historyPages.length - 2];
           if (fthis.swipeRight && fthis.state.swipeRight_x > 0.25 * innerWidth) {
             fthis.callbackFunOnChangePage = () => {
-              (0, _jquery.default)("#" + fthis.touchBackPage).css("left", "");
-              (0, _jquery.default)("#" + goToPage).removeClass("overflow_Y_hidden");
+              setStyle(fthis.touchBackPage, "left", "");
+              removeClass(goToPage, "overflow_Y_hidden");
               fthis.setState({
                 swipeRight_x: 0
               });
@@ -545,11 +604,11 @@ class Navigator extends _react.default.Component {
             // fthis.touchBackPage = nowPage;
             fthis.back();
           } else {
-            (0, _jquery.default)("#" + nowPage).css("left", "");
-            (0, _jquery.default)("#" + goToPage).css("z-index", "");
-            (0, _jquery.default)("#" + nowPage).css("z-index", "");
-            (0, _jquery.default)("#" + goToPage).removeClass("showPage");
-            (0, _jquery.default)("#" + goToPage).addClass("hiddenPage");
+            setStyle(nowPage, "left", "");
+            setStyle(goToPage, "zIndex", "");
+            setStyle(nowPage, "zIndex", "");
+            removeClass(goToPage, "showPage");
+            addClass(goToPage, "hiddenPage");
             fthis.setState({
               swipeRight_x: 0
             });
@@ -571,11 +630,11 @@ class Navigator extends _react.default.Component {
     }) : /*#__PURE__*/_react.default.createElement("div", {
       style: {
         backgroundColor: this.props.children.props.backgroundColor ? this.props.children.props.backgroundColor : "#fff",
-        height: this.props.children.props.height ? this.props.children.props : fthis.props.height ? this.props.height : "100%"
+        height: this.props.children.props.height ? this.props.children.props.height : fthis.props.height ? this.props.height : "100%"
       },
       id: this.props.children.key,
       key: this.props.children.key,
-      className: fthis.state.startPage === child.key ? this.props.children.props && this.props.children.props.className ? "showPage scrollPage " + this.props.children.props.className : "showPage scrollPage" : this.props.children.props && this.props.children.props.className ? "hiddenPage " + this.props.children.props.className : "hiddenPage"
+      className: fthis.state.startPage === this.props.children.key ? this.props.children.props && this.props.children.props.className ? "showPage scrollPage " + this.props.children.props.className : "showPage scrollPage" : this.props.children.props && this.props.children.props.className ? "hiddenPage " + this.props.children.props.className : "hiddenPage"
     }, nowPage === this.props.children.key || fthis.state.historyPages.includes(this.props.children.key) || this.props.children.props.alwaysLive ? (/*#__PURE__*/_react.default.cloneElement(this.props.children, fthis.state.props[this.props.children.key], this.props.children.props.children) // this.props.children
     ) : /*#__PURE__*/_react.default.createElement("div", null));
   }

@@ -1,9 +1,66 @@
 import React from "react";
-import $ from "./jquery-3.3.1.min";
 import "./styles.css";
 import "./animate.css";
 import { addNavigatorPropTypes } from "./proptypes";
 // import { setTimeout } from "timers";
+
+// --- minimal DOM helpers (replace the previously vendored jQuery build) ---
+// They no-op when the element is missing, matching jQuery's empty-set
+// behaviour, so the surrounding control flow is unchanged.
+const byId = (id) => document.getElementById(id);
+
+const setStyle = (id, prop, value) => {
+  const node = byId(id);
+  if (node) node.style[prop] = value;
+};
+
+const addClass = (id, ...names) => {
+  const node = byId(id);
+  if (node) node.classList.add(...names);
+};
+
+const removeClass = (id, ...names) => {
+  const node = byId(id);
+  if (node) node.classList.remove(...names);
+};
+
+// `props.children` is a single element (not an array) when the consumer renders
+// exactly one page. Normalise before array operations. NOTE: deliberately not
+// React.Children.toArray -- that rewrites keys (".$myKey") and this library uses
+// child keys verbatim as DOM element ids and history entries.
+const asChildArray = (children) =>
+  Array.isArray(children) ? children : children == null ? [] : [children];
+
+// animate.css v4 ships its animations as `animate__`-prefixed CLASS names while
+// its @keyframes stay unprefixed. This library drives transitions through the
+// `animation` style property, which needs the KEYFRAME name -- so a prefixed
+// value (`animate__slideInRight`, the documented v4 naming) matches no keyframe,
+// no animation runs, no animation-end event ever fires, `busy` latches true and
+// the navigator freezes for good. Normalise every transition name we read.
+const animationName = (name) =>
+  typeof name === "string" ? name.replace("animate__", "") : name;
+
+// Transitions complete on an animation-end event. Older WebKit WebViews only
+// fire the prefixed `webkitAnimationEnd`; Firefox only fires the unprefixed
+// `animationend`. Listen for both, but run the handler EXACTLY ONCE: a browser
+// that emits both would otherwise finish the same navigation twice and
+// double-advance the history stack. Both listeners are detached on the first
+// accepted event. Events bubbling up from animated content *inside* the page are
+// ignored, so page content can never end the page transition early.
+const onAnimationEndOnce = (id, handler) => {
+  // Deliberately not null-guarded: a missing element must throw here, exactly as
+  // the previous inline addEventListener did, so the caller reports via onError
+  // instead of arming a transition that can never complete.
+  const node = document.getElementById(id);
+  const wrapped = (event) => {
+    if (event && event.target !== node) return;
+    node.removeEventListener("webkitAnimationEnd", wrapped);
+    node.removeEventListener("animationend", wrapped);
+    handler();
+  };
+  node.addEventListener("webkitAnimationEnd", wrapped, false);
+  node.addEventListener("animationend", wrapped, false);
+};
 
 class Navigator extends React.Component {
   constructor(props) {
@@ -77,12 +134,14 @@ class Navigator extends React.Component {
 
     if (
       startPage &&
-      this.props.children.filter((x) => x.key === startPage).length === 0
+      asChildArray(this.props.children).filter((x) => x.key === startPage)
+        .length === 0
     ) {
       if (
         this.props.errorPageKey &&
-        this.props.children.filter((x) => x.key === this.props.errorPageKey)
-          .length !== 0
+        asChildArray(this.props.children).filter(
+          (x) => x.key === this.props.errorPageKey
+        ).length !== 0
       ) {
         startPage = this.props.errorPageKey;
       } else startPage = homePage;
@@ -145,12 +204,12 @@ class Navigator extends React.Component {
             : 99
           : this.props.children.props.levelPage;
 
-      if (children.props.transitionIn)
-        this.componentTransitionIn[children.key] =
-          children.props.transitionIn.replace("animate__", "");
-      if (children.props.transitionOut)
-        this.componentTransitionOut[children.key] =
-          children.props.transitionOut.replace("animate__", "");
+      if (this.props.children.props.transitionIn)
+        this.componentTransitionIn[this.props.children.key] =
+          this.props.children.props.transitionIn.replace("animate__", "");
+      if (this.props.children.props.transitionOut)
+        this.componentTransitionOut[this.props.children.key] =
+          this.props.children.props.transitionOut.replace("animate__", "");
     }
 
     // const childrenWithProps = React.Children.map(this.props.children, child =>
@@ -170,22 +229,12 @@ class Navigator extends React.Component {
     this.funAnimationOut2 = this.funAnimationOut2.bind(this);
     this.compareTwoPagesLavel = this.compareTwoPagesLavel.bind(this);
 
-    if (Array.isArray(this.props.children))
-      this.props.children.map((child) => {
-        if (child.key === null || child.key === "")
-          window.console.error(
-            "navigation_controller: key value it's required"
-          );
-      });
+    asChildArray(this.props.children).forEach((child) => {
+      if (child.key === null || child.key === "")
+        window.console.error("navigation_controller: key value it's required");
+    });
   }
 
-  componentDidMount() {
-    if (this.props.onChangePage !== undefined)
-      this.props.onChangePage(
-        this.state.historyPages[this.state.historyPages.length - 1],
-        "In"
-      );
-  }
   componentDidUpdate(prevProps) {
     // if (!this.state.mobileMode)
     if (this.props.routeKey !== prevProps.routeKey) {
@@ -220,20 +269,13 @@ class Navigator extends React.Component {
           );
 
         //--נכנסים דף פנימה Up--//
-        let callbackFun = () => {
+        onAnimationEndOnce(goToPage, () => {
           try {
             fthis.funAnimationIn2(goToPage, fromPage);
-            document
-              .getElementById(goToPage)
-              .removeEventListener("webkitAnimationEnd", callbackFun);
           } catch (error) {
             fthis.onError(error);
           }
-        };
-
-        document
-          .getElementById(goToPage)
-          .addEventListener("webkitAnimationEnd", callbackFun, false);
+        });
 
         this.busy = true;
         document.getElementById(fromPage).style.zIndex = 0;
@@ -269,9 +311,9 @@ class Navigator extends React.Component {
       document.getElementById(fromPage).style.zIndex = "";
       document.getElementById(goToPage).style.zIndex = "";
       document.getElementById(goToPage).style.animation = "";
-      $("#" + fromPage).removeClass("showPage");
-      $("#" + fromPage).removeClass("scrollPage");
-      $("#" + fromPage).addClass("hiddenPage");
+      removeClass(fromPage, "showPage");
+      removeClass(fromPage, "scrollPage");
+      addClass(fromPage, "hiddenPage");
       this.busy = false;
       this.setState({ nowPage: goToPage });
 
@@ -311,24 +353,18 @@ class Navigator extends React.Component {
           fthis.compareTwoPagesLavel(goToPage, fromPage)
         );
 
-      let callbackFun = () => {
+      onAnimationEndOnce(fromPage, () => {
         try {
           fthis.funAnimationOut2(goToPage, fromPage);
-          document
-            .getElementById(fromPage)
-            .removeEventListener("webkitAnimationEnd", callbackFun);
         } catch (error) {
           fthis.onError(error);
         }
-      };
-      document
-        .getElementById(fromPage)
-        .addEventListener("webkitAnimationEnd", callbackFun);
+      });
       this.busy = true;
-      $("#" + goToPage).css("z-index", 0);
-      $("#" + fromPage).css("z-index", 89);
-      $("#" + goToPage).removeClass("hiddenPage");
-      $("#" + goToPage).addClass("scrollPage showPage");
+      setStyle(goToPage, "zIndex", 0);
+      setStyle(fromPage, "zIndex", 89);
+      removeClass(goToPage, "hiddenPage");
+      addClass(goToPage, "scrollPage", "showPage");
     } catch (error) {
       fthis.onError(error);
     }
@@ -349,13 +385,13 @@ class Navigator extends React.Component {
 
     const fthis = this;
     try {
-      $("#" + fromPage).css("animation", "");
-      $("#" + goToPage).css("z-index", "");
-      $("#" + goToPage).css("left", "");
-      $("#" + fromPage).css("z-index", "");
-      $("#" + fromPage).removeClass("showPage");
-      $("#" + fromPage).removeClass("scrollPage");
-      $("#" + fromPage).addClass("hiddenPage");
+      setStyle(fromPage, "animation", "");
+      setStyle(goToPage, "zIndex", "");
+      setStyle(goToPage, "left", "");
+      setStyle(fromPage, "zIndex", "");
+      removeClass(fromPage, "showPage");
+      removeClass(fromPage, "scrollPage");
+      addClass(fromPage, "hiddenPage");
       this.busy = false;
       this.setState({ nowPage: goToPage });
 
@@ -389,9 +425,11 @@ class Navigator extends React.Component {
     try {
       // if (goToPage === "#/") goToPage = undefined;
 
+      const childArray = asChildArray(this.props.children);
+
       if (
         goToPage &&
-        this.props.children.filter((x) => x.key === goToPage).length === 0
+        childArray.filter((x) => x.key === goToPage).length === 0
       ) {
         if (fthis.props.errorPageKey) {
           goToPage = fthis.props.errorPageKey;
@@ -404,7 +442,6 @@ class Navigator extends React.Component {
 
       //סיום האפליקציה, סגור
       if (this.state.historyPages.length === 1 && goToPage === undefined) {
-        console.log('"window.navigator.app.exitApp()"');
         // fthis.showSwalLater ?
         //     fthis.myChildrens.swal.runSwal(true) :
         if (this.props.beforExit) if (!this.props.beforExit()) return;
@@ -431,7 +468,7 @@ class Navigator extends React.Component {
           ///save to history
           let new_historyPages = fthis.state.historyPages.slice();
 
-          fthis.props.children
+          asChildArray(fthis.props.children)
             .filter((child) => typeof child === "object")
             .forEach((child) => {
               if (child.props.kill) {
@@ -464,10 +501,9 @@ class Navigator extends React.Component {
       let aniTime = 250;
 
       if (
-        this.props.children.filter((x) => x.key === goToPage)[0].props
-          .animationTimeInMS
+        childArray.filter((x) => x.key === goToPage)[0].props.animationTimeInMS
       ) {
-        aniTime = this.props.children.filter((x) => x.key === goToPage)[0].props
+        aniTime = childArray.filter((x) => x.key === goToPage)[0].props
           .animationTimeInMS;
       } else {
         if (this.props.animationTimeInMS)
@@ -476,7 +512,7 @@ class Navigator extends React.Component {
 
       options = options === undefined ? [] : options;
 
-      const {
+      let {
         props = null,
         animationIn = this.componentTransitionIn[goToPage]
           ? this.componentTransitionIn[goToPage]
@@ -489,6 +525,12 @@ class Navigator extends React.Component {
           : null,
         callbackFun = null,
       } = options;
+
+      // Caller-supplied animation names go through the same animate.css v4
+      // normalisation as the child transitionIn/transitionOut props: an
+      // `animate__`-prefixed name here would match no keyframe and latch `busy`.
+      animationIn = animationName(animationIn);
+      animationOut = animationName(animationOut);
 
       if (props !== null) {
         // let oldProps = this.state.props;
@@ -528,8 +570,6 @@ class Navigator extends React.Component {
                 fthis.funAnimationIn1(goToPage, fromPage).then(() => {
                   // if (fthis.listLevelPages[goToPage] === 1) {
                   //Up from level 0 to level 1
-                  console.log("goToPage: ", goToPage);
-                  // debugger;
                   // $("#" + goToPage).css(
                   //   "animation",
                   //   (animationIn !== null && animationIn !== undefined
@@ -570,7 +610,8 @@ class Navigator extends React.Component {
             this.funAnimationOut1(goToPage, fromPage);
             // if (this.listLevelPages[fromPage] === 1) {
             //Down from level 1 to level 0
-            $("#" + fromPage).css(
+            setStyle(
+              fromPage,
               "animation",
               (animationOut !== null && animationOut !== undefined
                 ? animationOut
@@ -609,7 +650,6 @@ class Navigator extends React.Component {
       document.addEventListener(
         "backbutton",
         (e) => {
-          console.log("backbutton");
           fthis.back();
         },
         false
@@ -634,17 +674,29 @@ class Navigator extends React.Component {
     } catch (error) {
       fthis.onError(error);
     }
+
+    //--announce the page the navigator started on. This used to live in a
+    //  second componentDidMount that silently shadowed this one, so it never ran.
+    //  Guarded exactly like every other onChangePage call site: a consumer
+    //  handler that throws must be reported through onError, never propagate out
+    //  of componentDidMount and tear down the whole React tree at startup.
+    try {
+      if (this.props.onChangePage !== undefined)
+        this.props.onChangePage(
+          this.state.historyPages[this.state.historyPages.length - 1],
+          "In"
+        );
+    } catch (error) {
+      fthis.onError(error);
+    }
   }
 
   async back(options) {
-    console.log("1 navigator back with options: ", options);
-
     const fthis = this;
     const backToPage =
       fthis.state.historyPages[fthis.state.historyPages.length - 2];
 
     if (this.props.beforBack) {
-      console.log("this.props.beforBack: ", this.props.beforBack);
       if (!(await this.props.beforBack(backToPage))) return;
     }
 
@@ -658,9 +710,8 @@ class Navigator extends React.Component {
     //   return;
     // }
 
-    console.log("navigator back with options: ", options);
     try {
-      fthis.props.children.forEach((child) => {
+      asChildArray(fthis.props.children).forEach((child) => {
         if (child.props.kill) {
           fthis.historyPages = fthis.historyPages.filter(
             (x) => x !== child.key
@@ -671,12 +722,8 @@ class Navigator extends React.Component {
 
       //---
       if (options === null || options === undefined) {
-        console.log("back=> changePage to: ", backToPage);
-
         fthis.changePage(backToPage);
       } else {
-        console.log("back=> changePage to: ", backToPage, options);
-
         fthis.changePage(backToPage, options);
       }
     } catch (error) {
@@ -725,10 +772,10 @@ class Navigator extends React.Component {
                         this.state.historyPages.length - 2
                       ];
 
-                    $("#" + goToPage).css("z-index", 0);
-                    $("#" + nowPage).css("z-index", 89);
-                    $("#" + goToPage).removeClass("hiddenPage");
-                    $("#" + goToPage).addClass("showPage overflow_Y_hidden");
+                    setStyle(goToPage, "zIndex", 0);
+                    setStyle(nowPage, "zIndex", 89);
+                    removeClass(goToPage, "hiddenPage");
+                    addClass(goToPage, "showPage", "overflow_Y_hidden");
                   }
                 }
                 if (fthis.swipeRight) {
@@ -749,8 +796,8 @@ class Navigator extends React.Component {
                   fthis.state.swipeRight_x > 0.25 * innerWidth
                 ) {
                   fthis.callbackFunOnChangePage = () => {
-                    $("#" + fthis.touchBackPage).css("left", "");
-                    $("#" + goToPage).removeClass("overflow_Y_hidden");
+                    setStyle(fthis.touchBackPage, "left", "");
+                    removeClass(goToPage, "overflow_Y_hidden");
                     fthis.setState({ swipeRight_x: 0 });
                     fthis.swipeRight = false;
                     fthis.touchBackPage = "";
@@ -760,11 +807,11 @@ class Navigator extends React.Component {
                   // fthis.touchBackPage = nowPage;
                   fthis.back();
                 } else {
-                  $("#" + nowPage).css("left", "");
-                  $("#" + goToPage).css("z-index", "");
-                  $("#" + nowPage).css("z-index", "");
-                  $("#" + goToPage).removeClass("showPage");
-                  $("#" + goToPage).addClass("hiddenPage");
+                  setStyle(nowPage, "left", "");
+                  setStyle(goToPage, "zIndex", "");
+                  setStyle(nowPage, "zIndex", "");
+                  removeClass(goToPage, "showPage");
+                  addClass(goToPage, "hiddenPage");
                   fthis.setState({ swipeRight_x: 0 });
                   fthis.swipeRight = false;
                   fthis.touchBackPage = "";
@@ -818,7 +865,7 @@ class Navigator extends React.Component {
             ? this.props.children.props.backgroundColor
             : "#fff",
           height: this.props.children.props.height
-            ? this.props.children.props
+            ? this.props.children.props.height
             : fthis.props.height
             ? this.props.height
             : "100%",
@@ -826,7 +873,7 @@ class Navigator extends React.Component {
         id={this.props.children.key}
         key={this.props.children.key}
         className={
-          fthis.state.startPage === child.key
+          fthis.state.startPage === this.props.children.key
             ? this.props.children.props && this.props.children.props.className
               ? "showPage scrollPage " + this.props.children.props.className
               : "showPage scrollPage"

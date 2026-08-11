@@ -3,12 +3,11 @@
 
 # User-specific files
 
-
-
 node_modules
 
 # Only the root lockfile is untracked; examples/package-lock.json is committed
-# so Dependabot can resolve the example app's dependency tree.
+# so Dependabot can resolve the example app's dependency tree and the example
+# app resolves reproducibly.
 /package-lock.json
 
 # webpack dev output (see webpack.config.js)

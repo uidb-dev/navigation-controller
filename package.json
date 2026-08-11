@@ -1,38 +1,42 @@
 {
   "name": "navigation-controller",
   "version": "4.1.0",
-  "description": "Navigator for Cordova with React.js(react.cordova), This will help you to manage your pages history in the app and change pages with animation.",
+  "description": "Level-based back navigation for React mobile & WebView apps: swipe-back, hardware back button, native page transitions.",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm --prefix examples test",
     "start": "webpack serve --mode development",
     "transpile": "babel src -d dist --copy-files",
-    "prepublishOnly": "npm run transpile",
-    "eli-build": "npm run transpile && cd J:/work/navigation-controller-test && npm i J:/work/react.cordova-navigation_controller --legacy-peer-deps && cd J:/work/react.cordova-navigation_controller",
-    "or-build": "npm run transpile && cd ../navigator-example && sudo npm i ../react.cordova-navigation_controller && cd ../react.cordova-navigation_controller"
+    "prepublishOnly": "npm run transpile"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/uidb-dev/navigation-controller.git"
   },
   "keywords": [
-    "navigator-react.cordova",
-    "react.cordova-manager_pages",
-    "react.cordova-navigator-controller",
-    "react-cordova-navigator-controller",
-    "react-cordova-pages-manager",
-    "navigator-controller",
-    "navigator-cordova-reactjs",
-    "navigator-cordova-react",
-    "navigator cordova react",
-    "react cordova navigator",
-    "react.cordova navigator",
-    "manage-pages",
-    "historyPages",
-    "Cordova",
-    "PhoneGap",
-    "jqm",
-    "back-button-android"
+    "swipe-back",
+    "back-navigation",
+    "hardware-back-button",
+    "android-back-button",
+    "navigation-stack",
+    "hierarchical-navigation",
+    "page-transitions",
+    "page-transition",
+    "route-transitions",
+    "native-transitions",
+    "webview",
+    "capacitor",
+    "cordova",
+    "ionic",
+    "react",
+    "mobile"
   ],
   "author": {
     "name": "ui-db.com",
@@ -43,10 +47,12 @@
     "url": "https://github.com/uidb-dev/navigation-controller/issues"
   },
   "homepage": "https://github.com/uidb-dev/navigation-controller#readme",
+  "dependencies": {
+    "prop-types": "^15.6.0"
+  },
   "peerDependencies": {
-    "prop-types": "^15.6.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.28.3",
