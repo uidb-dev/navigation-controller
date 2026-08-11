@@ -1,7 +1,7 @@
 {
   "name": "navigation-controller",
   "version": "4.0.1",
-  "description": "Navigator for Cordova with React.js(react.cordova), This will help you to manage your pages history in the app and change pages with animation.",
+  "description": "Level-based back navigation for React mobile & WebView apps: swipe-back, hardware back button, native page transitions.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -22,23 +22,22 @@
     "url": "git+https://github.com/uidb-dev/navigation-controller.git"
   },
   "keywords": [
-    "navigator-react.cordova",
-    "react.cordova-manager_pages",
-    "react.cordova-navigator-controller",
-    "react-cordova-navigator-controller",
-    "react-cordova-pages-manager",
-    "navigator-controller",
-    "navigator-cordova-reactjs",
-    "navigator-cordova-react",
-    "navigator cordova react",
-    "react cordova navigator",
-    "react.cordova navigator",
-    "manage-pages",
-    "historyPages",
-    "Cordova",
-    "PhoneGap",
-    "jqm",
-    "back-button-android"
+    "swipe-back",
+    "back-navigation",
+    "hardware-back-button",
+    "android-back-button",
+    "navigation-stack",
+    "hierarchical-navigation",
+    "page-transitions",
+    "page-transition",
+    "route-transitions",
+    "native-transitions",
+    "webview",
+    "capacitor",
+    "cordova",
+    "ionic",
+    "react",
+    "mobile"
   ],
   "author": {
     "name": "ui-db.com",
