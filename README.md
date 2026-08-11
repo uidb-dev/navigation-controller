@@ -19,6 +19,26 @@ In a browser, "back" means linear history — *where I've been*. In a native app
 of app-shaped UIs expect the second. This library gives you the second, and
 stays out of everything else.
 
+### ▶ Try it in 10 seconds
+
+**[Open the live demo →](https://uidb-dev.github.io/navigation-controller/)** — four
+pages with the level stack rendered on screen as you click. Go
+`hub → item-a → item-b`, then press **your browser's Back button**: you land on the
+hub, not on item A.
+
+**[Edit it in your browser →](https://stackblitz.com/github/uidb-dev/navigation-controller/tree/master/examples/minimal)**
+— the same demo on StackBlitz, running and editable, nothing to install.
+
+Or run it locally:
+
+```bash
+git clone https://github.com/uidb-dev/navigation-controller
+cd navigation-controller/examples/minimal && npm install && npm run dev
+```
+
+The whole demo is [one file](./examples/minimal/src/App.jsx), and its model is one line:
+`{ home: 0, hub: 1, "item-a": 2, "item-b": 2 }`.
+
 ---
 
 ## The one example that explains everything
