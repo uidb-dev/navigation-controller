@@ -1,9 +1,44 @@
 {
   "name": "navigation-controller",
-  "version": "4.1.1",
-  "description": "Level-based back navigation for React mobile & WebView apps: swipe-back, hardware back button, native page transitions.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "version": "5.0.0-beta.1",
+  "description": "Level-based back navigation for React. Bring your own router and your own animations.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./core": {
+      "import": {
+        "types": "./dist/core.d.mts",
+        "default": "./dist/core.mjs"
+      },
+      "require": {
+        "types": "./dist/core.d.ts",
+        "default": "./dist/core.js"
+      }
+    },
+    "./transitions": {
+      "import": {
+        "types": "./dist/transitions.d.mts",
+        "default": "./dist/transitions.mjs"
+      },
+      "require": {
+        "types": "./dist/transitions.d.ts",
+        "default": "./dist/transitions.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
   "files": [
     "dist/",
     "README.md",
@@ -11,26 +46,33 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "npm --prefix examples test",
-    "start": "webpack serve --mode development",
-    "transpile": "babel src -d dist --copy-files",
-    "prepublishOnly": "npm run transpile"
+    "build": "tsup",
+    "test": "vitest run",
+    "pretest:react18": "npm --prefix test-react18 install --no-audit --no-fund",
+    "test:react18": "vitest run --config vitest.react18.config.ts",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "typecheck:docs": "tsc -p tsconfig.docs.json",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
+  },
+  "publishConfig": {
+    "tag": "next"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/uidb-dev/navigation-controller.git"
   },
   "keywords": [
-    "swipe-back",
     "back-navigation",
-    "hardware-back-button",
-    "android-back-button",
     "navigation-stack",
     "hierarchical-navigation",
-    "page-transitions",
-    "page-transition",
-    "route-transitions",
-    "native-transitions",
+    "level-stack",
+    "hardware-back-button",
+    "android-back-button",
+    "view-transitions",
+    "headless",
+    "react-router",
+    "nextjs",
     "webview",
     "capacitor",
     "cordova",
@@ -47,27 +89,28 @@
     "url": "https://github.com/uidb-dev/navigation-controller/issues"
   },
   "homepage": "https://github.com/uidb-dev/navigation-controller#readme",
-  "dependencies": {
-    "prop-types": "^15.6.0"
-  },
   "peerDependencies": {
     "react": "^18.2.0 || ^19.0.0",
     "react-dom": "^18.2.0 || ^19.0.0"
   },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
   "devDependencies": {
-    "@babel/cli": "^7.28.3",
-    "@babel/core": "^7.28.4",
-    "@babel/preset-env": "^7.28.3",
-    "@babel/preset-react": "^7.27.1",
-    "babel-loader": "^10.0.0",
-    "css-loader": "^7.1.2",
-    "html-webpack-plugin": "^5.6.4",
-    "prop-types": "^15.8.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "style-loader": "^4.0.0",
-    "webpack": "^5.101.3",
-    "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.6"
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitest/coverage-v8": "^4.0.0",
+    "jsdom": "^29.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router": "^7.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^4.0.0"
   }
 }

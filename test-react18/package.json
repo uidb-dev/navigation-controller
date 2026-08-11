@@ -1,0 +1,9 @@
+{
+  "name": "navigation-controller-react18-fixture",
+  "private": true,
+  "description": "Isolated React 18 install so `npm run test:react18` runs the 5.0 suite against React 18. react-dom's internal require('react') must resolve to React 18, which needs a real node_modules tree, not an npm alias.",
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
