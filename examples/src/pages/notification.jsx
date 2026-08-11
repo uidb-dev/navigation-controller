@@ -44,7 +44,6 @@ export default class Notification extends React.Component {
 <br/>
 <p>* It's will work only from <span>reco start</span> (local server on localhost), <span>mobile device</span> or <span>https url</span></p>
 
-            {/* https://www.npmjs.com/package/react-browser-notifications */}
             <BrowserNotifications
                 onRef={ref => (this_.browserNotifications = ref)} // Required
                 title={this_.state.notificationTitle} // Required
