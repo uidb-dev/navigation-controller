@@ -61,7 +61,10 @@ back()                →  ["home", "hub"]              ← lands on the hub
 npm install navigation-controller
 ```
 
-Peer dependencies: `react` / `react-dom` 18+, and `prop-types`.
+Peer dependencies: `react` / `react-dom` — React 18 or 19. (`prop-types` is a real
+dependency and is installed for you; in 4.0.1 and earlier it was a peer dependency that
+npm never installed, so importing the package failed with `Cannot find module
+'prop-types'`.)
 
 ## Minimal working example
 
@@ -441,7 +444,7 @@ lineage, and both are maintained.
 | `mobileMode` prop | yes | auto-detect only |
 | `beforBack` argument | `(backToPage)` | *(no argument)* |
 | Default deep animation | `slideInRight` / `slideOutRight` at every level | `zoomIn` / `zoomOut` below level 1 |
-| `"animate__"` prefix stripped | yes | **no** — you must pass the bare name |
+| `"animate__"` prefix stripped | yes | yes (since 1.5.0) |
 | History update on transition | promise-sequenced | synchronous (older, racier) |
 | Bundled animate.css | 4.1.1 | 3.7.0 |
 
