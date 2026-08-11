@@ -9,6 +9,14 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    ignore:
+      # tsup bundles rollup-plugin-dts against typescript 5. On typescript 7 the
+      # dts step dies with "Cannot read properties of undefined (reading
+      # 'useCaseSensitiveFileNames')" and the build emits NO .d.ts at all, while
+      # still passing tsc, vitest and the JS build -- so it fails silently in
+      # exactly the way a green PR hides. Revisit when tsup supports typescript 7.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     groups:
       root-build-toolchain:
         patterns:
