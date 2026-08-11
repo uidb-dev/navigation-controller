@@ -1,12 +1,13 @@
 {
   "name": "navigation-controller",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "description": "Level-based back navigation for React mobile & WebView apps: swipe-back, hardware back button, native page transitions.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist/",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "scripts": {
