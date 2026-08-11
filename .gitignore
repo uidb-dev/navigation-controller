@@ -3,8 +3,11 @@
 
 # User-specific files
 
-
-
-package.json
 node_modules
-package-lock.json
+
+# Only the root lockfile is untracked; examples/package-lock.json is committed
+# so the example app resolves reproducibly.
+/package-lock.json
+
+# webpack dev output (see webpack.config.js)
+/.dev-build

@@ -1,5 +1,5 @@
 src
 examples
-.babelrc
+babel.config.json
 .gitignore
 webpack.config.js
