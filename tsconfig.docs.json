@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": [],
+    "paths": {
+      "navigation-controller": ["./src/index.ts"],
+      "navigation-controller/core": ["./src/core.ts"],
+      "navigation-controller/transitions": ["./src/transitions.ts"]
+    }
+  },
+  "include": ["docs/adapters", "src"]
+}

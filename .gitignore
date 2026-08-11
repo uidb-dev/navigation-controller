@@ -12,3 +12,6 @@ node_modules
 
 # webpack dev output (see webpack.config.js)
 /.dev-build
+
+# 5.0 build output (tsup)
+/dist

@@ -3,6 +3,48 @@
 All notable changes to `navigation-controller` are documented here.
 This project follows [Semantic Versioning](https://semver.org/).
 
+## 5.0.0-beta.1
+
+A deliberate architectural rewrite: the level-based back algorithm becomes the
+product, usable in any React environment, and everything that restyled or
+hijacked the host page is gone from the default path. 4.x remains maintained
+for the classic animated WebView experience.
+
+### Added
+
+- **`navigation-controller/core`** — the algorithm as a headless, zero-dependency
+  TypeScript module: `createLevelStack({ levels, homeKey, onExit })` with
+  `go` / `back` / `canBack` / `peekBack` / `subscribe`. Runs without React or a DOM.
+- **`useLevelNavigator`** hook (`useSyncExternalStore`-based; React 18 & 19, SSR-safe).
+- **Controlled back**: `onBackRequest(parentKey)` — the Navigator computes the
+  parent and asks *your* router to navigate, mutating nothing.
+- **`bindHardwareBack`** — opt-in Cordova/Capacitor `backbutton` binding that
+  returns its unbinder. Nothing attaches listeners on its own anymore.
+- **`navigation-controller/transitions`** — opt-in View Transitions API helpers
+  (`viewTransition` for the `transition` prop, `withViewTransitions` for the
+  headless path), falling back to an instant swap.
+- Dual ESM + CJS build with generated types, `exports` map, `sideEffects: false`.
+
+### Changed (breaking)
+
+- No global CSS and no side-effect imports; page stacking is CSS Grid
+  (`grid-area: 1/1`) with inline styles — no `position: absolute`, no z-index.
+- No animations by default; the animate.css engine was not ported.
+- Hash routing (`changeRoute`) removed; use controlled mode (`routeKey` +
+  `onBackRequest`) — your router owns the URL.
+- `beforBack` → **`beforeBack`** (spelled right), and only an explicit `false`
+  cancels; `beforExit` → **`onExit`**; `beforChangePage` dropped.
+- `alwaysLive` → **`keepMounted`**; `onRef`/`changePage` → standard `ref` with
+  `go`/`back`; `errorPageKey` silent fallback replaced by an explicit error
+  path (`UnknownPageError` / `onError`).
+- Child `key`s are no longer used as DOM ids (`data-page-key` instead).
+- `prop-types` dependency removed; `react`/`react-dom` peers are optional (only
+  the React layer needs them).
+- Not ported: `mobileMode`, `backOnSwipeRight` swipe gesture, per-page
+  `backgroundColor`/`height`, per-navigation `props` injection via `cloneElement`.
+
+See "Migration from 4.x" in the README for the full table.
+
 ## 4.1.1
 
 ### Documentation
