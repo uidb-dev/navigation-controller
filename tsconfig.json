@@ -15,7 +15,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals", "node"]
   },
   "include": ["src", "tests", "tsup.config.ts", "vitest.config.ts", "vitest.react18.config.ts"]
 }

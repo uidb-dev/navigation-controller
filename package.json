@@ -102,6 +102,7 @@
     }
   },
   "devDependencies": {
+    "@types/node": "^26.2.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitest/coverage-v8": "^4.0.0",
