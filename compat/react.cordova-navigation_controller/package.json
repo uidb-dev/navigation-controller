@@ -1,0 +1,23 @@
+{
+  "name": "react.cordova-navigation_controller",
+  "version": "3.2.0",
+  "description": "Renamed to navigation-controller. This version re-exports it so existing installs keep working.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": ["index.js", "index.d.ts", "README.md"],
+  "dependencies": {
+    "navigation-controller": "^4.1.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uidb-dev/navigation-controller.git"
+  },
+  "bugs": { "url": "https://github.com/uidb-dev/navigation-controller/issues" },
+  "homepage": "https://github.com/uidb-dev/navigation-controller#readme",
+  "keywords": ["deprecated", "navigation-controller"],
+  "license": "ISC"
+}
