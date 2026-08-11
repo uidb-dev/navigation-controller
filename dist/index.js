@@ -41,6 +41,36 @@ var removeClass = function (id) {
 // React.Children.toArray -- that rewrites keys (".$myKey") and this library uses
 // child keys verbatim as DOM element ids and history entries.
 var asChildArray = children => Array.isArray(children) ? children : children == null ? [] : [children];
+
+// animate.css v4 ships its animations as `animate__`-prefixed CLASS names while
+// its @keyframes stay unprefixed. This library drives transitions through the
+// `animation` style property, which needs the KEYFRAME name -- so a prefixed
+// value (`animate__slideInRight`, the documented v4 naming) matches no keyframe,
+// no animation runs, no animation-end event ever fires, `busy` latches true and
+// the navigator freezes for good. Normalise every transition name we read.
+var animationName = name => typeof name === "string" ? name.replace("animate__", "") : name;
+
+// Transitions complete on an animation-end event. Older WebKit WebViews only
+// fire the prefixed `webkitAnimationEnd`; Firefox only fires the unprefixed
+// `animationend`. Listen for both, but run the handler EXACTLY ONCE: a browser
+// that emits both would otherwise finish the same navigation twice and
+// double-advance the history stack. Both listeners are detached on the first
+// accepted event. Events bubbling up from animated content *inside* the page are
+// ignored, so page content can never end the page transition early.
+var onAnimationEndOnce = (id, handler) => {
+  // Deliberately not null-guarded: a missing element must throw here, exactly as
+  // the previous inline addEventListener did, so the caller reports via onError
+  // instead of arming a transition that can never complete.
+  var node = document.getElementById(id);
+  var wrapped = event => {
+    if (event && event.target !== node) return;
+    node.removeEventListener("webkitAnimationEnd", wrapped);
+    node.removeEventListener("animationend", wrapped);
+    handler();
+  };
+  node.addEventListener("webkitAnimationEnd", wrapped, false);
+  node.addEventListener("animationend", wrapped, false);
+};
 class Navigator extends _react.default.Component {
   constructor(props) {
     super(props);
@@ -158,15 +188,13 @@ class Navigator extends _react.default.Component {
         if (this.props.beforChangePage !== undefined) this.props.beforChangePage(goToPage, this.compareTwoPagesLavel(goToPage, fromPage));
 
         //--נכנסים דף פנימה Up--//
-        var callbackFun = () => {
+        onAnimationEndOnce(goToPage, () => {
           try {
             fthis.funAnimationIn2(goToPage, fromPage);
-            document.getElementById(goToPage).removeEventListener("webkitAnimationEnd", callbackFun);
           } catch (error) {
             fthis.onError(error);
           }
-        };
-        document.getElementById(goToPage).addEventListener("webkitAnimationEnd", callbackFun, false);
+        });
         this.busy = true;
         document.getElementById(fromPage).style.zIndex = 0;
         document.getElementById(goToPage).style.zIndex = 89;
@@ -217,15 +245,13 @@ class Navigator extends _react.default.Component {
         // return;
       }
       if (this.props.beforChangePage !== undefined) fthis.props.beforChangePage(goToPage, fthis.compareTwoPagesLavel(goToPage, fromPage));
-      var callbackFun = () => {
+      onAnimationEndOnce(fromPage, () => {
         try {
           fthis.funAnimationOut2(goToPage, fromPage);
-          document.getElementById(fromPage).removeEventListener("webkitAnimationEnd", callbackFun);
         } catch (error) {
           fthis.onError(error);
         }
-      };
-      document.getElementById(fromPage).addEventListener("webkitAnimationEnd", callbackFun);
+      });
       this.busy = true;
       setStyle(goToPage, "zIndex", 0);
       setStyle(fromPage, "zIndex", 89);
@@ -348,6 +374,12 @@ class Navigator extends _react.default.Component {
         animationOut = _options$animationOut === void 0 ? this.swipeRight ? "slideOutRight" : this.componentTransitionOut[fromPage] ? this.componentTransitionOut[fromPage] : null : _options$animationOut,
         _options$callbackFun = _options.callbackFun,
         callbackFun = _options$callbackFun === void 0 ? null : _options$callbackFun;
+
+      // Caller-supplied animation names go through the same animate.css v4
+      // normalisation as the child transitionIn/transitionOut props: an
+      // `animate__`-prefixed name here would match no keyframe and latch `busy`.
+      animationIn = animationName(animationIn);
+      animationOut = animationName(animationOut);
       if (props !== null) {
         // let oldProps = this.state.props;
         var newProps = [];
@@ -462,7 +494,14 @@ class Navigator extends _react.default.Component {
 
     //--announce the page the navigator started on. This used to live in a
     //  second componentDidMount that silently shadowed this one, so it never ran.
-    if (this.props.onChangePage !== undefined) this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], "In");
+    //  Guarded exactly like every other onChangePage call site: a consumer
+    //  handler that throws must be reported through onError, never propagate out
+    //  of componentDidMount and tear down the whole React tree at startup.
+    try {
+      if (this.props.onChangePage !== undefined) this.props.onChangePage(this.state.historyPages[this.state.historyPages.length - 1], "In");
+    } catch (error) {
+      fthis.onError(error);
+    }
   }
   back(options) {
     var _this = this;
@@ -591,7 +630,7 @@ class Navigator extends _react.default.Component {
     }) : /*#__PURE__*/_react.default.createElement("div", {
       style: {
         backgroundColor: this.props.children.props.backgroundColor ? this.props.children.props.backgroundColor : "#fff",
-        height: this.props.children.props.height ? this.props.children.props : fthis.props.height ? this.props.height : "100%"
+        height: this.props.children.props.height ? this.props.children.props.height : fthis.props.height ? this.props.height : "100%"
       },
       id: this.props.children.key,
       key: this.props.children.key,
