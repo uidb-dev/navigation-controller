@@ -17,23 +17,14 @@ export function addNavigatorPropTypes(Component) {
     beforChangePage: PropTypes.func,
     beforBack: PropTypes.func,
     beforExit: PropTypes.func,
-    key: PropTypes.string,
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    animationTimeInMS: PropTypes.number,
   };
 }
 
-export function addChildPropTypes(Component) {
-  Component.propTypes = {
-    key:PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    levelPage: PropTypes.number.isRequired,
-    backgroundColor: PropTypes.string,
-    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    backOnSwipeRight: PropTypes.bool,
-    transitionIn: PropTypes.string,
-    transitionOut: PropTypes.string,
-    animationTimeInMS: PropTypes.number,
-    props: PropTypes.object,
-    kill: PropTypes.bool,
-    alwaysLive: PropTypes.bool,
-  };
-}
+// NOTE: there used to be an `addChildPropTypes(Component)` export here. It was
+// never called, and it could not work as written: React strips `key` from
+// props, so `key: ...isRequired` would have warned on every single page, and
+// `levelPage: ...isRequired` would have warned for every page that relies on
+// the documented default. Child page props are documented in index.d.ts
+// instead. See index.d.ts -> NavigatorPageProps.
