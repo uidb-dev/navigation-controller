@@ -1,7 +1,7 @@
 import React from 'react';
 import Navigator from 'navigation-controller';
 
-import './app.css';
+import './App.css';
 
 //--pages--//
 import Home from './pages/index';

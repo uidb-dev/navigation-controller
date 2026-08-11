@@ -1,5 +1,5 @@
 import React from 'react';
-import BrowserNotifications from 'react-browser-notifications';
+import BrowserNotifications from '../components/BrowserNotifications';
 
 export default class Notification extends React.Component {
 
