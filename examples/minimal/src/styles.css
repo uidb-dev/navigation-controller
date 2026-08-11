@@ -1,0 +1,122 @@
+:root {
+  color-scheme: light dark;
+  --line: color-mix(in srgb, currentColor 18%, transparent);
+  --dim: color-mix(in srgb, currentColor 45%, transparent);
+  font: 15px/1.5 ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+}
+
+.app {
+  width: min(28rem, 100vw - 2rem);
+  display: grid;
+  gap: 1rem;
+}
+
+/* The Navigator renders a grid; pages share one cell. Nothing here is required
+   by the library — it adds no CSS of its own. */
+.pages {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  min-height: 15rem;
+}
+
+.page {
+  padding: 1.25rem;
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+}
+
+h1 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+button:hover {
+  border-color: currentColor;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--dim);
+  margin-top: 0.5rem;
+}
+
+input {
+  font: inherit;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+}
+
+.panel {
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+}
+
+.label {
+  color: var(--dim);
+  width: 3.5rem;
+  flex: none;
+}
+
+.crumbs {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+code {
+  font: 0.85em ui-monospace, monospace;
+  padding: 0.1rem 0.4rem;
+  border-radius: 5px;
+  border: 1px solid var(--line);
+}
+
+code.on {
+  border-color: currentColor;
+}
+
+code.off {
+  color: var(--dim);
+  text-decoration: line-through;
+}
+
+.hint {
+  margin: 0;
+  color: var(--dim);
+  line-height: 1.6;
+}
+
+.hint code {
+  border: none;
+  padding: 0 0.15rem;
+}
