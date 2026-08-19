@@ -3,6 +3,14 @@
 All notable changes to `navigation-controller` are documented here.
 This project follows [Semantic Versioning](https://semver.org/).
 
+## 4.1.2
+
+### Documentation
+
+- Links the live interactive demo from the top of the README. The demo went up
+  after 4.1.1 was published, and npm freezes a package's README at publish time,
+  so the npm page had no way to reach it.
+
 ## 4.1.1
 
 ### Documentation

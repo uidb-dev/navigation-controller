@@ -17,6 +17,16 @@ means hierarchy — *where I am*. `react-router` gives you the first. Mobile app
 the second. This library gives you the second, and wires it to the Android hardware
 back button and the iOS edge-swipe gesture.
 
+### ▶ See it in action
+
+**[Open the live demo →](https://uidb-dev.github.io/navigation-controller/)** — four
+pages with the level stack drawn on screen as you click. Go `hub → item-a → item-b`,
+then press **your browser's Back button**: you land on the hub, not on item A.
+
+The demo runs the 5.0 beta, so the code in it uses the newer API — but the behaviour
+it shows is exactly what 4.x does.
+[Demo source](https://github.com/uidb-dev/navigation-controller/tree/master/examples/minimal).
+
 ---
 
 ## The one example that explains everything
